@@ -1,0 +1,504 @@
+Info: constrained 'i_reset_sync' to bel 'X1/Y33/io0'
+Info: constrained 'i_clk' to bel 'X0/Y16/io1'
+Warning: IO 'i_inst_read_ack' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_ack' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_write_ack' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[24]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[16]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[1]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[0]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[8]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[0]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[21]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[20]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[19]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[18]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[17]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[29]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[13]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[30]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[14]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[31]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[15]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[28]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[27]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[26]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[25]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[23]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[22]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[5]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[6]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[30]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[14]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[13]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[12]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[11]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[10]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[9]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[8]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[7]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[23]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[22]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[21]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[20]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[19]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[18]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[17]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[16]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[15]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[24]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[4]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[3]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[2]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[1]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[0]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[31]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[30]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[21]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[20]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[19]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[18]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[17]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[16]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[15]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[14]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[13]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[12]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[29]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[11]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[10]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[9]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[8]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[7]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[6]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[5]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[4]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[3]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[2]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[28]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[27]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[26]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[25]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[24]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[23]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_read_addr[22]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[31]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[30]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[21]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[20]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[19]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[18]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[17]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[16]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[15]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[14]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[13]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[12]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[29]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[11]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[10]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[9]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[8]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[7]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[6]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[5]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[4]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[3]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[2]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[28]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[1]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[0]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[27]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[26]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[25]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[24]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[23]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_addr[22]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_byte_enable[3]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_byte_enable[2]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_byte_enable[1]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_byte_enable[0]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[31]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[30]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[21]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[20]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[19]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[18]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[17]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[16]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[15]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[14]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[13]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[12]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[29]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[11]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[10]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[9]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[8]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[7]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[6]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[5]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[4]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[3]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[2]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[28]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[1]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[0]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[27]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[26]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[25]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[24]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[23]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_master_write_data[22]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[31]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[30]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[21]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[20]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[19]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[18]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[17]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[16]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[15]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[14]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[13]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[12]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[11]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[29]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[10]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[9]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[8]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[7]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[6]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[5]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[4]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[2]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[3]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[28]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[1]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[0]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[27]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[26]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[25]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[24]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[23]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'o_inst_read_addr[22]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[12]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[11]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[10]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[9]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[1]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[2]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[3]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[4]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[5]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[6]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_master_read_data[7]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[31]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[29]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[28]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[27]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[26]' is unconstrained in PCF and will be automatically placed
+Warning: IO 'i_inst_read_data[25]' is unconstrained in PCF and will be automatically placed
+
+Info: Packing constants..
+Info: Packing IOs..
+Info: Packing LUT-FFs..
+Info:     1260 LCs used as LUT4 only
+Info:       76 LCs used as LUT4 and DFF
+Info: Packing non-LUT FFs..
+Info:      255 LCs used as DFF only
+Info: Packing carries..
+Info:       95 LCs used as CARRY only
+Info: Packing RAMs..
+Info: Placing PLLs..
+Info: Packing special functions..
+Info: Promoting globals..
+Info: promoting i_clk$SB_IO_IN (fanout 339)
+Info: promoting i_reset_sync$SB_IO_IN [reset] (fanout 190)
+Info: promoting r_master_read_SB_DFFESR_Q_R [reset] (fanout 107)
+Info: promoting r_program_counter_valid_SB_LUT4_I2_1_O [cen] (fanout 94)
+Info: promoting i_inst_read_ack_SB_LUT4_I1_1_O_SB_LUT4_I3_O[1] [cen] (fanout 79)
+Info: promoting i_master_write_ack_SB_LUT4_I1_O [cen] (fanout 69)
+Info: promoting i_master_read_ack_SB_LUT4_I1_O [cen] (fanout 38)
+Info: Constraining chains...
+Info:       31 LCs used to legalise carry chains.
+Info: Checksum: 0x5411d7ec
+
+Info: Annotating ports with timing budgets for target frequency 12.00 MHz
+Info: Checksum: 0x4224801a
+
+Info: Device utilisation:
+Info: 	         ICESTORM_LC:  1719/ 7680    22%
+Info: 	        ICESTORM_RAM:     4/   32    12%
+Info: 	               SB_IO:   204/  256    79%
+Info: 	               SB_GB:     7/    8    87%
+Info: 	        ICESTORM_PLL:     0/    2     0%
+Info: 	         SB_WARMBOOT:     0/    1     0%
+
+Info: Placed 2 cells based on constraints.
+Info: Creating initial analytic placement for 1452 cells, random placement wirelen = 52880.
+Info:     at initial placer iter 0, wirelen = 6981
+Info:     at initial placer iter 1, wirelen = 6014
+Info:     at initial placer iter 2, wirelen = 6189
+Info:     at initial placer iter 3, wirelen = 5964
+Info: Running main analytical placer.
+Info:     at iteration #1, type ALL: wirelen solved = 5981, spread = 15556, legal = 16650; time = 0.05s
+Info:     at iteration #2, type ALL: wirelen solved = 6098, spread = 14268, legal = 15165; time = 0.08s
+Info:     at iteration #3, type ALL: wirelen solved = 6074, spread = 13879, legal = 14467; time = 0.06s
+Info:     at iteration #4, type ALL: wirelen solved = 6304, spread = 13619, legal = 14292; time = 0.06s
+Info:     at iteration #5, type ALL: wirelen solved = 6472, spread = 14030, legal = 14251; time = 0.05s
+Info:     at iteration #6, type ALL: wirelen solved = 6840, spread = 14832, legal = 14854; time = 0.05s
+Info:     at iteration #7, type ALL: wirelen solved = 7290, spread = 15080, legal = 15330; time = 0.06s
+Info:     at iteration #8, type ALL: wirelen solved = 7619, spread = 14948, legal = 15427; time = 0.14s
+Info:     at iteration #9, type ALL: wirelen solved = 8095, spread = 15785, legal = 16228; time = 0.06s
+Info:     at iteration #10, type ALL: wirelen solved = 8133, spread = 16499, legal = 17368; time = 0.05s
+Info: HeAP Placer Time: 0.94s
+Info:   of which solving equations: 0.44s
+Info:   of which spreading cells: 0.07s
+Info:   of which strict legalisation: 0.25s
+
+Info: Running simulated annealing placer for refinement.
+Info:   at iteration #1: temp = 0.000000, timing cost = 625, wirelen = 14251
+Info:   at iteration #5: temp = 0.000000, timing cost = 736, wirelen = 11337
+Info:   at iteration #10: temp = 0.000000, timing cost = 719, wirelen = 10489
+Info:   at iteration #15: temp = 0.000000, timing cost = 652, wirelen = 10119
+Info:   at iteration #20: temp = 0.000000, timing cost = 665, wirelen = 9904
+Info:   at iteration #25: temp = 0.000000, timing cost = 673, wirelen = 9760
+Info:   at iteration #25: temp = 0.000000, timing cost = 671, wirelen = 9761 
+Info: SA placement time 3.41s
+
+Info: Max frequency for clock 'i_clk$SB_IO_IN_$glb_clk': 54.28 MHz (PASS at 12.00 MHz)
+
+Info: Max delay <async>                         -> posedge i_clk$SB_IO_IN_$glb_clk: 12.33 ns
+Info: Max delay posedge i_clk$SB_IO_IN_$glb_clk -> <async>                        : 3.51 ns
+
+Info: Slack histogram:
+Info:  legend: * represents 5 endpoint(s)
+Info:          + represents [1,5) endpoint(s)
+Info: [ 64910,  65775) |*****+
+Info: [ 65775,  66640) |*********+
+Info: [ 66640,  67505) |**+
+Info: [ 67505,  68370) |*+
+Info: [ 68370,  69235) |****+
+Info: [ 69235,  70100) |+
+Info: [ 70100,  70965) |**+
+Info: [ 70965,  71830) |****+
+Info: [ 71830,  72695) |**********************+
+Info: [ 72695,  73560) |****************************+
+Info: [ 73560,  74425) |************************************************************ 
+Info: [ 74425,  75290) |******************************************************+
+Info: [ 75290,  76155) |****************************+
+Info: [ 76155,  77020) |*********************+
+Info: [ 77020,  77885) |***********************+
+Info: [ 77885,  78750) |****************************+
+Info: [ 78750,  79615) |****+
+Info: [ 79615,  80480) |****+
+Info: [ 80480,  81345) |*******************+
+Info: [ 81345,  82210) |****************************+
+Info: Checksum: 0x9db9b0f7
+
+Info: Routing..
+Info: Setting up routing queue.
+Info: Routing 5931 arcs.
+Info:            |   (re-)routed arcs  |   delta    | remaining|       time spent     |
+Info:    IterCnt |  w/ripup   wo/ripup |  w/r  wo/r |      arcs| batch(sec) total(sec)|
+Info:       1000 |       43        956 |   43   956 |      4988|       0.17       0.17|
+Info:       2000 |       75       1924 |   32   968 |      4031|       0.15       0.32|
+Info:       3000 |      226       2773 |  151   849 |      3220|       0.35       0.66|
+Info:       4000 |      425       3574 |  199   801 |      2474|       0.50       1.17|
+Info:       5000 |      720       4279 |  295   705 |      1885|       0.69       1.86|
+Info:       6000 |     1068       4931 |  348   652 |      1374|       0.71       2.57|
+Info:       7000 |     1383       5616 |  315   685 |       853|       1.03       3.60|
+Info:       8000 |     1817       6182 |  434   566 |       553|       1.04       4.64|
+Info:       8734 |     1936       6798 |  119   616 |         0|       0.63       5.27|
+Info: Routing complete.
+Info: Router1 time 5.27s
+Info: Checksum: 0x9c7988ca
+
+Info: Critical path report for clock 'i_clk$SB_IO_IN_$glb_clk' (posedge -> posedge):
+Info: curr total
+Info:  2.1  2.1  Source mem_registers2.0.0.0_RAM.RDATA_0
+Info:  0.6  2.7    Net mem_registers2.0.0.0_RDATA_15[2] budget 0.000000 ns (8,11) -> (9,12)
+Info:                Sink mem_registers2.0.0.0_RDATA_15_SB_LUT4_I3_LC.I3
+Info:  0.3  3.0  Source mem_registers2.0.0.0_RDATA_15_SB_LUT4_I3_LC.O
+Info:  2.0  5.1    Net r_master_write_data_SB_DFFESR_Q_15_D_SB_LUT4_O_I3[1] budget 0.000000 ns (9,12) -> (13,24)
+Info:                Sink mem_registers1.1.0.0_RDATA_SB_LUT4_I1_1_O_SB_LUT4_O_LC.I3
+Info:  0.3  5.4  Source mem_registers1.1.0.0_RDATA_SB_LUT4_I1_1_O_SB_LUT4_O_LC.O
+Info:  2.0  7.4    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_O_SB_LUT4_I2_O_SB_LUT4_O_I3_SB_LUT4_O_I1_SB_LUT4_O_1_I3_SB_LUT4_O_I3_SB_LUT4_I2_I3_SB_LUT4_I3_O_SB_LUT4_O_I2_SB_LUT4_I3_O_SB_LUT4_O_I2[2] budget 0.000000 ns (13,24) -> (11,14)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.I2
+Info:  0.2  7.6  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO$CARRY.COUT
+Info:  0.0  7.6    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,14) -> (11,14)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1  7.8  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0  7.8    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,14) -> (11,14)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1  7.9  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0  7.9    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,14) -> (11,14)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1  8.0  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0  8.0    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,14) -> (11,14)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1  8.1  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0  8.1    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,14) -> (11,14)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1  8.3  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0  8.3    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,14) -> (11,14)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1  8.4  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0  8.4    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,14) -> (11,14)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1  8.5  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.2  8.7    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.190000 ns (11,14) -> (11,15)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1  8.8  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0  8.8    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,15) -> (11,15)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1  9.0  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0  9.0    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,15) -> (11,15)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1  9.1  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0  9.1    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,15) -> (11,15)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1  9.2  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0  9.2    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,15) -> (11,15)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1  9.3  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0  9.3    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,15) -> (11,15)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1  9.5  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0  9.5    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,15) -> (11,15)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1  9.6  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0  9.6    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,15) -> (11,15)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1  9.7  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.2  9.9    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.190000 ns (11,15) -> (11,16)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1 10.0  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0 10.0    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,16) -> (11,16)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1 10.2  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0 10.2    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,16) -> (11,16)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1 10.3  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0 10.3    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,16) -> (11,16)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1 10.4  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0 10.4    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,16) -> (11,16)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1 10.5  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0 10.5    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,16) -> (11,16)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1 10.7  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0 10.7    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,16) -> (11,16)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1 10.8  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0 10.8    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_CI budget 0.000000 ns (11,16) -> (11,16)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1 10.9  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.2 11.1    Net r_master_read_addr_SB_DFFESR_Q_7_D_SB_LUT4_O_I1[3] budget 0.190000 ns (11,16) -> (11,17)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.CIN
+Info:  0.1 11.2  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI_SB_CARRY_CO_CI_SB_LUT4_I3_LC.COUT
+Info:  0.0 11.2    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_CI budget 0.000000 ns (11,17) -> (11,17)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_I1_SB_LUT4_I2_LC.CIN
+Info:  0.1 11.4  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CO_I1_SB_LUT4_I2_LC.COUT
+Info:  0.0 11.4    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3 budget 0.000000 ns (11,17) -> (11,17)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_LC.CIN
+Info:  0.1 11.5  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_LC.COUT
+Info:  0.0 11.5    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO budget 0.000000 ns (11,17) -> (11,17)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:  0.1 11.6  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:  0.0 11.6    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO budget 0.000000 ns (11,17) -> (11,17)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:  0.1 11.7  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:  0.0 11.7    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO budget 0.000000 ns (11,17) -> (11,17)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:  0.1 11.9  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:  0.0 11.9    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO budget 0.000000 ns (11,17) -> (11,17)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:  0.1 12.0  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:  0.0 12.0    Net r_master_read_addr_SB_DFFESR_Q_D_SB_LUT4_O_I1[3] budget 0.000000 ns (11,17) -> (11,17)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.CIN
+Info:  0.1 12.1  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I3_LC.COUT
+Info:  0.5 12.6    Net $nextpnr_ICESTORM_LC_30$I3 budget 0.560000 ns (11,17) -> (11,18)
+Info:                Sink $nextpnr_ICESTORM_LC_30.I3
+Info:  0.3 12.9  Source $nextpnr_ICESTORM_LC_30.O
+Info:  1.6 14.5    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO budget 47.306999 ns (11,18) -> (14,12)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I2_LC.I2
+Info:  0.4 14.9  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I2_LC.O
+Info:  0.6 15.5    Net r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I2_O[3] budget 5.411000 ns (14,12) -> (14,12)
+Info:                Sink r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I2_O_SB_LUT4_I1_LC.I3
+Info:  0.3 15.8  Source r_rcc_SB_LUT4_I3_O_SB_LUT4_O_1_I3_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_CARRY_CI_CO_SB_LUT4_I2_O_SB_LUT4_I1_LC.O
+Info:  1.2 17.0    Net mem_registers1.0.0.0_WDATA_15_SB_LUT4_O_I0[3] budget 5.304000 ns (14,12) -> (9,12)
+Info:                Sink mem_registers1.0.0.0_WDATA_15_SB_LUT4_O_LC.I3
+Info:  0.3 17.4  Source mem_registers1.0.0.0_WDATA_15_SB_LUT4_O_LC.O
+Info:  1.3 18.7    Net mem_registers1.0.0.0_WDATA_15 budget 5.604000 ns (9,12) -> (8,13)
+Info:                Sink mem_registers1.0.0.0_RAM.WDATA_0
+Info:  0.1 18.8  Setup mem_registers1.0.0.0_RAM.WDATA_0
+Info: 8.3 ns logic, 10.4 ns routing
+
+Info: Critical path report for cross-domain path '<async>' -> 'posedge i_clk$SB_IO_IN_$glb_clk':
+Info: curr total
+Info:  0.0  0.0  Source i_master_read_ack$sb_io.D_IN_0
+Info:  3.3  3.3    Net i_master_read_ack$SB_IO_IN budget 11.574000 ns (26,33) -> (15,9)
+Info:                Sink i_inst_read_ack_SB_LUT4_I1_1_LC.I0
+Info:  0.4  3.8  Source i_inst_read_ack_SB_LUT4_I1_1_LC.O
+Info:  2.3  6.1    Net i_inst_read_ack_SB_LUT4_I1_1_O[2] budget 11.574000 ns (15,9) -> (4,17)
+Info:                Sink r_inst_data_SB_DFFSR_Q_1_D_SB_LUT4_O_LC.I3
+Info:  0.3  6.4  Source r_inst_data_SB_DFFSR_Q_1_D_SB_LUT4_O_LC.O
+Info:  0.6  7.0    Net r_inst_data_SB_DFFSR_Q_1_D[1] budget 10.654000 ns (4,17) -> (5,17)
+Info:                Sink r_inst_data_SB_DFFSR_Q_1_D_SB_LUT4_I3_LC.I3
+Info:  0.3  7.3  Source r_inst_data_SB_DFFSR_Q_1_D_SB_LUT4_I3_LC.O
+Info:  1.6  8.9    Net r_inst_data_SB_DFFSR_Q_D_SB_LUT4_I3_O[1] budget 11.314000 ns (5,17) -> (6,11)
+Info:                Sink r_inst_data_SB_DFFSR_Q_4_D_SB_LUT4_I3_O_SB_LUT4_O_1_LC.I1
+Info:  0.4  9.3  Source r_inst_data_SB_DFFSR_Q_4_D_SB_LUT4_I3_O_SB_LUT4_O_1_LC.O
+Info:  0.6  9.9    Net r_inst_data_SB_DFFSR_Q_4_D_SB_LUT4_I3_O[2] budget 7.937000 ns (6,11) -> (6,11)
+Info:                Sink r_inst_data_SB_DFFSR_Q_2_D_SB_LUT4_I3_O_SB_LUT4_O_LC.I3
+Info:  0.3 10.2  Source r_inst_data_SB_DFFSR_Q_2_D_SB_LUT4_I3_O_SB_LUT4_O_LC.O
+Info:  0.6 10.8    Net r_inst_data_SB_DFFSR_Q_2_D_SB_LUT4_I3_O[2] budget 7.937000 ns (6,11) -> (7,11)
+Info:                Sink mem_registers2.1.0.0_RDATA_6_SB_DFFSR_Q_R_SB_LUT4_O_LC.I2
+Info:  0.4 11.2  Source mem_registers2.1.0.0_RDATA_6_SB_DFFSR_Q_R_SB_LUT4_O_LC.O
+Info:  1.3 12.5    Net mem_registers2.1.0.0_RDATA_6_SB_DFFSR_Q_R budget 8.295000 ns (7,11) -> (9,11)
+Info:                Sink mem_registers2.1.0.0_RDATA_6_SB_DFFSR_Q_DFFLC.SR
+Info:  0.1 12.6  Setup mem_registers2.1.0.0_RDATA_6_SB_DFFSR_Q_DFFLC.SR
+Info: 2.3 ns logic, 10.4 ns routing
+
+Info: Critical path report for cross-domain path 'posedge i_clk$SB_IO_IN_$glb_clk' -> '<async>':
+Info: curr total
+Info:  0.5  0.5  Source r_master_read_SB_DFFESR_Q_DFFLC.O
+Info:  3.1  3.7    Net o_master_read$SB_IO_OUT budget 82.792999 ns (15,9) -> (19,33)
+Info:                Sink o_master_read$sb_io.D_OUT_0
+Info: 0.5 ns logic, 3.1 ns routing
+
+Info: Max frequency for clock 'i_clk$SB_IO_IN_$glb_clk': 53.25 MHz (PASS at 12.00 MHz)
+
+Info: Max delay <async>                         -> posedge i_clk$SB_IO_IN_$glb_clk: 12.63 ns
+Info: Max delay posedge i_clk$SB_IO_IN_$glb_clk -> <async>                        : 3.67 ns
+
+Info: Slack histogram:
+Info:  legend: * represents 5 endpoint(s)
+Info:          + represents [1,5) endpoint(s)
+Info: [ 64553,  65436) |***+
+Info: [ 65436,  66319) |*******+
+Info: [ 66319,  67202) |*****+
+Info: [ 67202,  68085) |*****+
+Info: [ 68085,  68968) | 
+Info: [ 68968,  69851) | 
+Info: [ 69851,  70734) |**+
+Info: [ 70734,  71617) |*+
+Info: [ 71617,  72500) |****+
+Info: [ 72500,  73383) |*************+
+Info: [ 73383,  74266) |****************+
+Info: [ 74266,  75149) |******************************************+
+Info: [ 75149,  76032) |*************************************+
+Info: [ 76032,  76915) |**********************+
+Info: [ 76915,  77798) |************************************************************ 
+Info: [ 77798,  78681) |****+
+Info: [ 78681,  79564) |*********************+
+Info: [ 79564,  80447) |****+
+Info: [ 80447,  81330) |************************************************+
+Info: [ 81330,  82213) |***************************+
+202 warnings, 0 errors

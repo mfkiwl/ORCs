@@ -1,0 +1,23 @@
+TOP = FIR_Filter_tb
+SRC = ../source/FIR_Filter.v
+VIP_SRC0 = ../../../Verification_Library/Clock_Generator/clock_generator.v
+TEST_SRC = ../testbench/FIR_Filter_tb.v
+BIN = $(TOP).iver
+
+$(BIN): $(SRC) $(TEST_SRC)
+	iverilog -o $(BIN) -s $(TOP) $(SRC) $(VIP_SRC0) $(TEST_SRC)
+
+# .PHONY: all clean test run
+
+all: clean test run view
+
+test: $(BIN)
+
+run:
+		vvp $(BIN)
+
+view:
+		gtkwave wave.vcd
+
+clean:
+	rm -f *.iver *.vcd
