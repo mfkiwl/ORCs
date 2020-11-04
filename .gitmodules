@@ -19,3 +19,6 @@
 [submodule "tools/yosys"]
 	path = tools/yosys
 	url = https://github.com/YosysHQ/yosys.git
+[submodule "tools/cocotb"]
+	path = tools/cocotb
+	url = https://github.com/cocotb/cocotb
