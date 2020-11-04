@@ -28,3 +28,6 @@
 [submodule "tools/cocotb-coverage"]
 	path = tools/cocotb-coverage
 	url = https://github.com/mciepluc/cocotb-coverage
+[submodule "tools/riscv-dv"]
+	path = tools/riscv-dv
+	url = https://github.com/google/riscv-dv
