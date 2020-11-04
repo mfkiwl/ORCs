@@ -7,3 +7,6 @@
 [submodule "tools/iverilog"]
 	path = tools/iverilog
 	url = https://github.com/steveicarus/iverilog
+[submodule "tools/icestorm"]
+	path = tools/icestorm
+	url = https://github.com/YosysHQ/icestorm.git
