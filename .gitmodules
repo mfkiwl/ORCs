@@ -4,3 +4,6 @@
 [submodule "tools/verilator"]
 	path = tools/verilator
 	url = https://github.com/verilator/verilator
+[submodule "tools/iverilog"]
+	path = tools/iverilog
+	url = https://github.com/steveicarus/iverilog
