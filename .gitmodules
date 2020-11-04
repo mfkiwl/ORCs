@@ -13,3 +13,6 @@
 [submodule "tools/arachne-pnr"]
 	path = tools/arachne-pnr
 	url = https://github.com/cseed/arachne-pnr.git
+[submodule "tools/nextpnr"]
+	path = tools/nextpnr
+	url = https://github.com/YosysHQ/nextpnr
