@@ -25,3 +25,6 @@
 [submodule "tools/uvm-python"]
 	path = tools/uvm-python
 	url = https://github.com/tpoikela/uvm-python
+[submodule "tools/cocotb-coverage"]
+	path = tools/cocotb-coverage
+	url = https://github.com/mciepluc/cocotb-coverage
