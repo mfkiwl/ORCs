@@ -10,3 +10,6 @@
 [submodule "tools/icestorm"]
 	path = tools/icestorm
 	url = https://github.com/YosysHQ/icestorm.git
+[submodule "tools/arachne-pnr"]
+	path = tools/arachne-pnr
+	url = https://github.com/cseed/arachne-pnr.git
