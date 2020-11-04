@@ -22,3 +22,6 @@
 [submodule "tools/cocotb"]
 	path = tools/cocotb
 	url = https://github.com/cocotb/cocotb
+[submodule "tools/uvm-python"]
+	path = tools/uvm-python
+	url = https://github.com/tpoikela/uvm-python
