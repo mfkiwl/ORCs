@@ -16,3 +16,6 @@
 [submodule "tools/nextpnr"]
 	path = tools/nextpnr
 	url = https://github.com/YosysHQ/nextpnr
+[submodule "tools/yosys"]
+	path = tools/yosys
+	url = https://github.com/YosysHQ/yosys.git
