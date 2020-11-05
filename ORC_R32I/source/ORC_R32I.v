@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/04 23:59:56
+// Last modified : 2020/11/05 19:28:46
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a verilog implementation of the riscv32i
@@ -293,7 +293,7 @@ module ORC_R32I (
       mem_registers1[w_dest_pointer] <= 'b0;
       mem_registers2[w_dest_pointer] <= 'b0;
     end
-    else if (r_decoder_valid == 1'b1 && w_dest_pointer !== 4'b0) begin
+    else if (r_decoder_valid == 1'b1 && w_dest_pointer !== 5'b0) begin
       if (r_auipc == 1'b1) begin
         mem_registers1[w_dest_pointer] <= r_program_counter+r_simm;
         mem_registers2[w_dest_pointer] <= r_program_counter+r_simm;
@@ -322,7 +322,7 @@ module ORC_R32I (
         mem_registers2[w_dest_pointer] <= w_rm_data;
       end
     end
-    else if (r_master_read == 1'b1 && i_master_read_ack == 1'b1 && r_dest_pointer !== 4'b0) begin
+    else if (r_master_read == 1'b1 && i_master_read_ack == 1'b1 && r_dest_pointer !== 5'b0) begin
       // Data loaded from memory.
       mem_registers1[r_dest_pointer] <= w_l_data;
       mem_registers2[r_dest_pointer] <= w_l_data;
@@ -338,7 +338,7 @@ module ORC_R32I (
     if (i_reset_sync == 1'b0) begin
       r_master_read      <= 1'b0;
       r_master_read_addr <= 32'b0;
-      r_dest_pointer     <= 4'd1;
+      r_dest_pointer     <= 5'd1;
     end
     else if (w_read_ready == 1'b1) begin
       r_master_read      <= r_lcc;

@@ -106,10 +106,18 @@ Info: [ 79262,  80244) |****************************+
 Info: [ 80244,  81226) |*****************************************+
 Info: [ 81226,  82208) |**************************+
 202 warnings, 0 errors
-icepack BlackIceR32E.asc BlackIceR32E.bin
-icetime -d hx8k -p hx8kboard.pcf -P ct256 -r Timming_Report.txt BlackIceR32E.asc
-// Reading input .pcf file..
-// Reading input .asc file..
-// Reading 8k chipdb file..
-// Creating timing netlist..
+{
+  "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+  "description": "The production budget of the movie that has the highest US Gross in each major genre.",
+  "data": {"url": "data/movies.json"},
+  "mark": "bar",
+  "encoding": {
+    "x": {
+      "aggregate": {"argmax": "US Gross"},
+      "field": "Production Budget",
+      "type": "quantitative"
+    },
+    "y": {"field": "Major Genre", "type": "nominal"}
+  }
+}
 // Timing estimate: 20.28 ns (49.32 MHz)
