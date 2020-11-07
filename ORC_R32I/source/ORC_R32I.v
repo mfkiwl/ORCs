@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/05 19:28:46
+// Last modified : 2020/11/06 22:52:47
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a verilog implementation of the riscv32i
@@ -196,7 +196,7 @@ module ORC_R32I (
       r_next_program_counter2 <= 'b0;
       r_next_program_counter  <= 'b0;
       r_program_counter       <= 'b0;
-      r_program_counter_valid <= 1'b1;
+      r_program_counter_valid <= 1'b0;
     end
     else if (w_program_counter_ready == 1'b1 && w_inst_addr_ready == 1'b1) begin
       r_program_counter       <= r_next_program_counter; // current program counter
