@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/06 22:52:47
+// Last modified : 2020/11/09 01:19:17
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a verilog implementation of the riscv32i
@@ -81,8 +81,8 @@ module ORC_R32I (
   //localparam [7:0] FCC = 7'b00011_11; // FENCE
   //localparam [7:0] CCC = 7'b11100_11; // ECALL, EBREAK, CSR
   // Misc Definitions
-  localparam [31:0] L_ALL_ZERO   = 'b0;
-  localparam [31:0] L_ALL_ONES   = 'b1;
+  localparam [31:0] L_ALL_ZERO   = 32'h0000_0000;
+  localparam [31:0] L_ALL_ONES   = 32'hFFFF_FFFF;
   localparam        L_REG_LENGTH = 32;
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
@@ -219,7 +219,7 @@ module ORC_R32I (
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_inst_data     <= 32'b0;
+      r_inst_data     <= L_ALL_ZERO;
       r_lui           <= 1'b0;
       r_auipc         <= 1'b0;
       r_jal           <= 1'b0;
@@ -229,8 +229,8 @@ module ORC_R32I (
       r_scc           <= 1'b0;
       r_mcc           <= 1'b0;
       r_rcc           <= 1'b0;
-      r_simm          <= 32'b0;
-      r_uimm          <= 32'b0;
+      r_simm          <= L_ALL_ZERO;
+      r_uimm          <= L_ALL_ZERO;
       r_decoder_valid <= 1'b0;
     end
     else if (w_decoder_ready == 1'b1 && i_inst_read_ack ==1'b1) begin
@@ -246,32 +246,36 @@ module ORC_R32I (
       r_scc       <= w_opcode==L_SCC ? 1 : 0;
       r_mcc       <= w_opcode==L_MCC ? 1 : 0;
       r_rcc       <= w_opcode==L_RCC ? 1 : 0;
-      case (w_opcode)
-        L_AUIPC : begin
-          r_simm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-          r_uimm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        end
-        L_SCC : begin
-          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:25], i_inst_read_data[11:7] };
-          r_uimm <= { L_ALL_ZERO[31:12], i_inst_read_data[31:25],i_inst_read_data[11:7] };
-        end
-        L_LUI : begin
-          r_simm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-          r_uimm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        end
-        L_BCC : begin
-          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
-          r_uimm <= { L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
-        end
-        L_JAL : begin
-          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
-          r_uimm <= { L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
-        end
-        default : begin
-          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
-          r_uimm <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
-        end
-      endcase
+      // According to the Verilog-2001 spec, section 9.5:
+      // The case item expressions shall be evaluated and compared in the exact
+      // order in which they are given. During the linear search, if one of the 
+      // case item expressions matches the case expression given in parentheses, 
+      // then the statement associated with that case item shall be executed.
+      // Therefore us if statements for equal priority.
+      if (w_opcode == L_AUIPC) begin
+        r_simm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        r_uimm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+      end
+      if (w_opcode == L_SCC) begin
+        r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:25], i_inst_read_data[11:7] };
+        r_uimm <= { L_ALL_ZERO[31:12], i_inst_read_data[31:25],i_inst_read_data[11:7] };
+      end
+      if (w_opcode == L_LUI) begin
+        r_simm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        r_uimm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+      end
+      if (w_opcode == L_BCC) begin
+        r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
+        r_uimm <= { L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
+      end
+      if (w_opcode == L_JAL) begin
+        r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
+        r_uimm <= { L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
+      end
+      if (w_opcode == L_JALR || w_opcode == L_LCC ||  w_opcode ==L_MCC  ||  w_opcode == L_RCC) begin
+        r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+        r_uimm <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+      end
       //
       r_decoder_valid <= 1'b1;
     end
@@ -379,4 +383,4 @@ module ORC_R32I (
   assign o_master_write_data        = r_master_write_data;
   assign o_master_write_byte_enable = r_master_write_byte_enable;  
 
-endmodule 
+endmodule
