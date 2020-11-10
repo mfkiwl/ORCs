@@ -251,7 +251,7 @@ module ORC_R32I (
       // order in which they are given. During the linear search, if one of the 
       // case item expressions matches the case expression given in parentheses, 
       // then the statement associated with that case item shall be executed.
-      // Therefore us if statements for equal priority.
+      // Therefore using if statements for equal priority.
       if (w_opcode == L_AUIPC) begin
         r_simm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
         r_uimm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
