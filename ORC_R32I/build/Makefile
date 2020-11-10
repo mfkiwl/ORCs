@@ -2,7 +2,7 @@ PROJ = ORC_R32I
 PIN_DEF = hx8kboard
 DEVICE = hx8k
 PACKAGE = ct256
-SYNTHESIZER = nextpnr-ice40
+PLACE_AND_ROUTE = nextpnr-ice40
 
 all: clean blif asc bin rpt
 
@@ -10,7 +10,7 @@ blif:
 	yosys syn_ice40.ys
 
 asc: blif
-	$(SYNTHESIZER) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --asc $(PROJ).asc
+	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --asc $(PROJ).asc --timing-allow-fail --ignore-loops --pre-pack pre_pack.py
 
 bin: asc
 	icepack $(PROJ).asc $(PROJ).bin
