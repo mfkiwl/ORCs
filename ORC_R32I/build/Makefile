@@ -10,13 +10,13 @@ blif:
 	yosys syn_ice40.ys
 
 asc: blif
-	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --asc $(PROJ).asc --timing-allow-fail --ignore-loops --pre-pack pre_pack.py
+	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --asc $(PROJ).asc
 
 bin: asc
 	icepack $(PROJ).asc $(PROJ).bin
 
 rpt: bin
-	icetime -d $(DEVICE) -p $(PIN_DEF).pcf -P $(PACKAGE) -r Timming_Report.txt $(PROJ).asc
+	icetime -d $(DEVICE) -p $(PIN_DEF).pcf -P $(PACKAGE) -t -r Timming_Report.txt -c 12 $(PROJ).asc
 
 prog: $(PROJ).bin
 	iceprog $<
