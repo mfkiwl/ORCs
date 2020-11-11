@@ -87,6 +87,14 @@ module ORC_R32I (
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
+  // Memory Master Interface
+  reg        r_master_read;
+  reg [31:0] r_master_read_addr;
+  reg        r_master_write;
+  reg [31:0] r_master_write_addr;
+  reg [31:0] r_master_write_data;
+  reg [3:0]  r_master_write_byte_enable;
+  reg [4:0]  r_dest_pointer;
   // Decoder Signals
   wire [6:0]  w_opcode = i_inst_read_data[6:0];
   reg  [31:0] r_inst_data;
@@ -124,6 +132,7 @@ module ORC_R32I (
   wire signed [31:0] w_signed_rs2   = mem_registers2[w_source2_pointer];
   wire        [31:0] w_unsigned_rs1 = mem_registers1[w_source1_pointer];
   wire        [31:0] w_unsigned_rs2 = mem_registers2[w_source2_pointer];
+  wire        [31:0] w_master_addr  = (w_unsigned_rs1 + r_simm);
   // L-group of instructions (w_opcode==7'b0000011)
   wire [31:0] w_l_data = w_fct3==0||w_fct3==4 ? 
                            (r_master_read_addr[1:0]==3 ? { w_fct3==0&&i_master_read_data[31] ? L_ALL_ONES[31: 8]:L_ALL_ZERO[31: 8] , i_master_read_data[31:24] } :
@@ -166,15 +175,6 @@ module ORC_R32I (
                 0);
   wire        w_jump_request = (r_jal|r_jalr|w_bmux);
   wire [31:0] w_jump_value   = r_simm + (r_jalr==1'b1 ? w_unsigned_rs1 : r_program_counter);
-  // Memory Master Interface
-  wire [31:0] w_master_addr  = (w_unsigned_rs1 + r_simm);
-  reg         r_master_read;
-  reg  [31:0] r_master_read_addr;
-  reg         r_master_write;
-  reg  [31:0] r_master_write_addr;
-  reg  [31:0] r_master_write_data;
-  reg  [3:0]  r_master_write_byte_enable;
-  reg  [4:0]  r_dest_pointer;
   // Ready signals
   wire w_read_ready            = (!r_master_read & !i_master_read_ack) | i_master_read_ack;
   wire w_write_ready           = (!r_master_write & !i_master_write_ack) | i_master_write_ack;
@@ -193,12 +193,14 @@ module ORC_R32I (
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_next_program_counter2 <= 'b0;
-      r_next_program_counter  <= 'b0;
-      r_program_counter       <= 'b0;
+      r_next_program_counter2 <= L_ALL_ZERO;
+      r_next_program_counter  <= L_ALL_ZERO;
+      r_program_counter       <= L_ALL_ZERO;
       r_program_counter_valid <= 1'b0;
     end
     else if (w_program_counter_ready == 1'b1 && w_inst_addr_ready == 1'b1) begin
+      // When there is a jump request update to the jump value else increment 
+      // count by 4 and update the program counter.
       r_program_counter       <= r_next_program_counter; // current program counter
       r_next_program_counter  <= r_next_program_counter2;
 	    r_next_program_counter2 <= w_jump_request ? w_jump_value : r_next_program_counter2+4;
@@ -233,50 +235,104 @@ module ORC_R32I (
       r_uimm          <= L_ALL_ZERO;
       r_decoder_valid <= 1'b0;
     end
-    else if (w_decoder_ready == 1'b1 && i_inst_read_ack ==1'b1) begin
-      // When the instruction read interface recevied with acknowledgement 
-      // of the read operation an has valid data.
-      r_inst_data <= i_inst_read_data;
-      r_lui       <= w_opcode==L_LUI ? 1 : 0;
-      r_auipc     <= w_opcode==L_AUIPC ? 1 : 0;
-      r_jal       <= w_opcode==L_JAL ? 1 : 0;
-      r_jalr      <= w_opcode==L_JALR ? 1 : 0;
-      r_bcc       <= w_opcode==L_BCC ? 1 : 0;
-      r_lcc       <= w_opcode==L_LCC ? 1 : 0;
-      r_scc       <= w_opcode==L_SCC ? 1 : 0;
-      r_mcc       <= w_opcode==L_MCC ? 1 : 0;
-      r_rcc       <= w_opcode==L_RCC ? 1 : 0;
+    else if (w_decoder_ready == 1'b1 && i_inst_read_ack == 1'b1) begin
       // According to the Verilog-2001 spec, section 9.5:
       // The case item expressions shall be evaluated and compared in the exact
       // order in which they are given. During the linear search, if one of the 
       // case item expressions matches the case expression given in parentheses, 
       // then the statement associated with that case item shall be executed.
-      // Therefore using if statements for equal priority.
+      // Therefore using if statements for equal priority and catching only the
+      // OPCODES that are implemented.
       if (w_opcode == L_AUIPC) begin
-        r_simm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        r_uimm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        r_auipc     <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        r_uimm      <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
       end
+      else begin
+        r_auipc<= 0;
+      end
+        
       if (w_opcode == L_SCC) begin
-        r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:25], i_inst_read_data[11:7] };
-        r_uimm <= { L_ALL_ZERO[31:12], i_inst_read_data[31:25],i_inst_read_data[11:7] };
+        r_scc       <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:25], i_inst_read_data[11:7] };
+        r_uimm      <= { L_ALL_ZERO[31:12], i_inst_read_data[31:25],i_inst_read_data[11:7] };
       end
+      else begin
+        r_scc <= 0;
+      end
+
       if (w_opcode == L_LUI) begin
-        r_simm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        r_uimm <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        r_lui       <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        r_uimm      <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
       end
+      else begin
+        r_lui <= 0;
+      end
+
       if (w_opcode == L_BCC) begin
-        r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
-        r_uimm <= { L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
+        r_bcc       <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
+        r_uimm      <= { L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
       end
+      else begin
+        r_bcc <= 0;
+      end
+
       if (w_opcode == L_JAL) begin
-        r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
-        r_uimm <= { L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
+        r_jal       <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
+        r_uimm      <= { L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
       end
-      if (w_opcode == L_JALR || w_opcode == L_LCC ||  w_opcode ==L_MCC  ||  w_opcode == L_RCC) begin
-        r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
-        r_uimm <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+      else begin
+        r_jal <= 0;
       end
-      //
+
+      if (w_opcode == L_JALR) begin
+        r_jalr      <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+        r_uimm      <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+      end
+      else begin
+        r_jalr <= 0;
+      end
+
+      if ( w_opcode == L_LCC) begin
+        r_lcc       <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+        r_uimm      <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+      end
+      else begin
+        r_lcc <= 0;
+      end
+
+      if (w_opcode ==L_MCC) begin
+        r_mcc       <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+        r_uimm      <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+      end
+      else begin
+        r_mcc <= 0;
+      end
+      
+      if ( w_opcode == L_RCC) begin
+        r_rcc       <= 1;
+        r_inst_data <= i_inst_read_data;
+        r_simm      <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+        r_uimm      <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+      end
+      else begin
+        r_rcc <= 0;
+      end
+      // Assert this data and operation is valid
       r_decoder_valid <= 1'b1;
     end
     else begin // if (w_decoder_ready == 1'b0) begin
@@ -294,10 +350,10 @@ module ORC_R32I (
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      mem_registers1[w_dest_pointer] <= 'b0;
-      mem_registers2[w_dest_pointer] <= 'b0;
+      mem_registers1[w_dest_pointer] <= L_ALL_ZERO;
+      mem_registers2[w_dest_pointer] <= L_ALL_ZERO;
     end
-    else if (r_decoder_valid == 1'b1 && w_dest_pointer !== 5'b0) begin
+    else if (r_decoder_valid == 1'b1 && w_dest_pointer != 5'b0) begin
       if (r_auipc == 1'b1) begin
         mem_registers1[w_dest_pointer] <= r_program_counter+r_simm;
         mem_registers2[w_dest_pointer] <= r_program_counter+r_simm;
@@ -326,7 +382,7 @@ module ORC_R32I (
         mem_registers2[w_dest_pointer] <= w_rm_data;
       end
     end
-    else if (r_master_read == 1'b1 && i_master_read_ack == 1'b1 && r_dest_pointer !== 5'b0) begin
+    else if (r_master_read == 1'b1 && i_master_read_ack == 1'b1 && r_dest_pointer != 5'b0) begin
       // Data loaded from memory.
       mem_registers1[r_dest_pointer] <= w_l_data;
       mem_registers2[r_dest_pointer] <= w_l_data;
@@ -341,7 +397,7 @@ module ORC_R32I (
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b0) begin
       r_master_read      <= 1'b0;
-      r_master_read_addr <= 32'b0;
+      r_master_read_addr <= L_ALL_ZERO;
       r_dest_pointer     <= 5'd1;
     end
     else if (w_read_ready == 1'b1) begin
@@ -361,8 +417,8 @@ module ORC_R32I (
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b0) begin
       r_master_write             <= 1'b0;
-      r_master_write_addr        <= 32'b0;
-      r_master_write_data        <= 32'b0;
+      r_master_write_addr        <= L_ALL_ZERO;
+      r_master_write_data        <= L_ALL_ZERO;
       r_master_write_byte_enable <= 4'b0;
     end
     else if (w_write_ready == 1'b1) begin
