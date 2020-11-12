@@ -33,7 +33,7 @@
 # File name     : memory_intfc_read_slave_config.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:11:12
-# Last modified : 2020/11/09 00:43:40
+# Last modified : 2020/11/11 23:39:24
 # Project Name  : UVM Python Verification Library
 # Module Name   : memory_intfc_read_slave_config
 # Description   : Memory Interface Configuraion object.
@@ -42,6 +42,7 @@
 #
 #################################################################################
 from uvm import *
+from memory_intfc_read_slave_seq import *
 
 class reg_model(UVMReg):
 

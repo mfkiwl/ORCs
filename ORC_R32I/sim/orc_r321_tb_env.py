@@ -33,7 +33,7 @@
 # File name     : orc_r321_tb_env.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/11/09 22:12:14
+# Last modified : 2020/11/11 23:39:03
 # Project Name  : UVM Python Verification Library
 # Module Name   : orc_r321_tb_env
 # Description   : Memory Slave Interface  monitor.
@@ -46,6 +46,7 @@ from uvm.base import *
 from uvm.comps import UVMEnv
 from uvm.macros import uvm_component_utils
 from memory_intfc_read_slave_agent import *
+from mem_model import *
 
 class orc_r321_tb_env(UVMEnv):
     """         
@@ -115,7 +116,7 @@ class orc_r321_tb_env(UVMEnv):
         self.cfg.reg_block.reg_map.set_sequencer( self.inst_agent.sqr, self.inst_agent.reg_adapter);
         self.cfg.reg_block.reg_map.set_auto_predict(on=0)
         self.predictor.map     = self.cfg.reg_block.reg_map  # passive
-        self.predictor.adapter = self.cfg.reg_block.reg_map # passive
+        self.predictor.adapter = self.inst_agent.reg_adapter # passive
         self.inst_agent.ap.connect(self.predictor.bus_in)
 
 uvm_component_utils(orc_r321_tb_env)

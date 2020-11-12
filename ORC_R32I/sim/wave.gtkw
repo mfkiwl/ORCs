@@ -1,0 +1,200 @@
+[*]
+[*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
+[*] Thu Nov 12 12:46:46 2020
+[*]
+[dumpfile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/dump.vcd"
+[dumpfile_mtime] "Thu Nov 12 03:40:25 2020"
+[dumpfile_size] 7914364
+[savefile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/wave.gtkw"
+[timestart] 0
+[size] 1366 721
+[pos] -1 -1
+*-14.883986 67000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] top.
+[sst_width] 207
+[signals_width] 278
+[sst_expanded] 1
+[sst_vpaned_height] 186
+@200
+-localparam
+@22
+top.ORC_R32I.L_ALL_ONES[31:0]
+top.ORC_R32I.L_ALL_ZERO[31:0]
+top.ORC_R32I.L_AUIPC[6:0]
+top.ORC_R32I.L_BCC[6:0]
+top.ORC_R32I.L_JALR[6:0]
+top.ORC_R32I.L_JAL[6:0]
+top.ORC_R32I.L_LCC[6:0]
+top.ORC_R32I.L_LUI[6:0]
+top.ORC_R32I.L_MCC[6:0]
+top.ORC_R32I.L_RCC[6:0]
+top.ORC_R32I.L_REG_LENGTH[31:0]
+top.ORC_R32I.L_SCC[6:0]
+@200
+-Clock and Reset
+@28
+top.ORC_R32I.i_clk
+top.ORC_R32I.i_reset_sync
+@200
+-Instruction Interface
+@22
+top.ORC_R32I.o_inst_read_addr[31:0]
+top.ORC_R32I.i_inst_read_data[31:0]
+@28
+top.ORC_R32I.o_inst_read
+top.ORC_R32I.i_inst_read_ack
+top.ORC_R32I.w_inst_addr_ready
+@200
+-Program Counter
+@22
+top.ORC_R32I.r_next_program_counter2[31:0]
+top.ORC_R32I.r_next_program_counter[31:0]
+top.ORC_R32I.r_program_counter[31:0]
+@28
+top.ORC_R32I.r_program_counter_valid
+top.ORC_R32I.w_program_counter_ready
+@200
+-Decoder Proc
+@28
+top.ORC_R32I.r_auipc
+top.ORC_R32I.r_rcc
+top.ORC_R32I.r_scc
+top.ORC_R32I.r_bcc
+top.ORC_R32I.r_jal
+top.ORC_R32I.r_jalr
+top.ORC_R32I.r_lcc
+top.ORC_R32I.r_lui
+top.ORC_R32I.r_mcc
+@22
+top.ORC_R32I.r_inst_data[31:0]
+top.ORC_R32I.r_simm[31:0]
+top.ORC_R32I.r_uimm[31:0]
+@28
+top.ORC_R32I.r_mem_access
+top.ORC_R32I.w_decoder_ready
+@200
+-GPRegisters Proc
+@22
+top.ORC_R32I.mem_registers1(0)[31:0]
+top.ORC_R32I.mem_registers1(1)[31:0]
+top.ORC_R32I.mem_registers1(2)[31:0]
+top.ORC_R32I.mem_registers1(3)[31:0]
+top.ORC_R32I.mem_registers1(4)[31:0]
+top.ORC_R32I.mem_registers1(5)[31:0]
+top.ORC_R32I.mem_registers1(6)[31:0]
+top.ORC_R32I.mem_registers1(7)[31:0]
+top.ORC_R32I.mem_registers1(8)[31:0]
+top.ORC_R32I.mem_registers1(9)[31:0]
+top.ORC_R32I.mem_registers1(10)[31:0]
+top.ORC_R32I.mem_registers1(11)[31:0]
+top.ORC_R32I.mem_registers1(12)[31:0]
+top.ORC_R32I.mem_registers1(13)[31:0]
+top.ORC_R32I.mem_registers1(14)[31:0]
+top.ORC_R32I.mem_registers1(15)[31:0]
+top.ORC_R32I.mem_registers1(16)[31:0]
+top.ORC_R32I.mem_registers1(17)[31:0]
+top.ORC_R32I.mem_registers1(18)[31:0]
+top.ORC_R32I.mem_registers1(19)[31:0]
+top.ORC_R32I.mem_registers1(20)[31:0]
+top.ORC_R32I.mem_registers1(21)[31:0]
+top.ORC_R32I.mem_registers1(22)[31:0]
+top.ORC_R32I.mem_registers1(23)[31:0]
+top.ORC_R32I.mem_registers1(24)[31:0]
+top.ORC_R32I.mem_registers1(25)[31:0]
+top.ORC_R32I.mem_registers1(26)[31:0]
+top.ORC_R32I.mem_registers1(27)[31:0]
+top.ORC_R32I.mem_registers1(28)[31:0]
+top.ORC_R32I.mem_registers1(29)[31:0]
+top.ORC_R32I.mem_registers1(30)[31:0]
+top.ORC_R32I.mem_registers1(31)[31:0]
+top.ORC_R32I.mem_registers2(0)[31:0]
+top.ORC_R32I.mem_registers2(1)[31:0]
+top.ORC_R32I.mem_registers2(2)[31:0]
+top.ORC_R32I.mem_registers2(3)[31:0]
+top.ORC_R32I.mem_registers2(4)[31:0]
+top.ORC_R32I.mem_registers2(5)[31:0]
+top.ORC_R32I.mem_registers2(6)[31:0]
+top.ORC_R32I.mem_registers2(7)[31:0]
+top.ORC_R32I.mem_registers2(8)[31:0]
+top.ORC_R32I.mem_registers2(9)[31:0]
+top.ORC_R32I.mem_registers2(10)[31:0]
+top.ORC_R32I.mem_registers2(11)[31:0]
+top.ORC_R32I.mem_registers2(12)[31:0]
+top.ORC_R32I.mem_registers2(13)[31:0]
+top.ORC_R32I.mem_registers2(14)[31:0]
+top.ORC_R32I.mem_registers2(15)[31:0]
+top.ORC_R32I.mem_registers2(16)[31:0]
+top.ORC_R32I.mem_registers2(17)[31:0]
+top.ORC_R32I.mem_registers2(18)[31:0]
+top.ORC_R32I.mem_registers2(19)[31:0]
+top.ORC_R32I.mem_registers2(20)[31:0]
+top.ORC_R32I.mem_registers2(21)[31:0]
+top.ORC_R32I.mem_registers2(22)[31:0]
+top.ORC_R32I.mem_registers2(23)[31:0]
+top.ORC_R32I.mem_registers2(24)[31:0]
+top.ORC_R32I.mem_registers2(25)[31:0]
+top.ORC_R32I.mem_registers2(26)[31:0]
+top.ORC_R32I.mem_registers2(27)[31:0]
+top.ORC_R32I.mem_registers2(28)[31:0]
+top.ORC_R32I.mem_registers2(29)[31:0]
+top.ORC_R32I.mem_registers2(30)[31:0]
+top.ORC_R32I.mem_registers2(31)[31:0]
+@200
+-Mem Interface
+@28
+top.ORC_R32I.i_master_read_ack
+@22
+top.ORC_R32I.o_master_read_addr[31:0]
+top.ORC_R32I.i_master_read_data[31:0]
+@28
+top.ORC_R32I.i_master_write_ack
+top.ORC_R32I.o_master_read
+top.ORC_R32I.o_master_write
+@22
+top.ORC_R32I.o_master_write_addr[31:0]
+top.ORC_R32I.o_master_write_byte_enable[3:0]
+top.ORC_R32I.o_master_write_data[31:0]
+top.ORC_R32I.r_dest_pointer[4:0]
+@28
+top.ORC_R32I.r_master_read
+@22
+top.ORC_R32I.r_master_read_addr[31:0]
+@28
+top.ORC_R32I.r_master_write
+@22
+top.ORC_R32I.r_master_write_addr[31:0]
+top.ORC_R32I.r_master_write_byte_enable[3:0]
+top.ORC_R32I.r_master_write_data[31:0]
+@28
+top.ORC_R32I.w_bmux
+top.ORC_R32I.w_jump_request
+@22
+top.ORC_R32I.w_jump_value[31:0]
+@28
+top.ORC_R32I.w_fct3[2:0]
+@22
+top.ORC_R32I.w_fct7[6:0]
+top.ORC_R32I.w_dest_pointer[4:0]
+@28
+top.ORC_R32I.w_is_r_dest_pointer_not_zero
+top.ORC_R32I.w_is_w_dest_pointer_not_zero
+@22
+top.ORC_R32I.w_l_data[31:0]
+top.ORC_R32I.w_master_addr[31:0]
+top.ORC_R32I.w_opcode[6:0]
+@28
+top.ORC_R32I.w_read_ready
+top.ORC_R32I.w_write_ready
+@22
+top.ORC_R32I.w_rm_data[31:0]
+top.ORC_R32I.w_s_data[31:0]
+top.ORC_R32I.w_signed_rs1[31:0]
+top.ORC_R32I.w_signed_rs2[31:0]
+top.ORC_R32I.w_signed_rs2_extended[31:0]
+top.ORC_R32I.w_source1_pointer[4:0]
+top.ORC_R32I.w_source2_pointer[4:0]
+top.ORC_R32I.w_unsigned_rs1[31:0]
+top.ORC_R32I.w_unsigned_rs2[31:0]
+top.ORC_R32I.w_unsigned_rs2_extended[31:0]
+[pattern_trace] 1
+[pattern_trace] 0
