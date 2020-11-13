@@ -1,4 +1,4 @@
-// A version of the dhrystone test bench that isn't using the look-ahead interface
+
 `timescale 1 ns / 1 ps
 
 module testbench;
@@ -59,38 +59,42 @@ module testbench;
 	initial $readmemh("dhry.hex", memory);
 
 	always @(posedge clk) begin
-		// Clear the bus
-    // Instruction interface
-		i_inst_read_data[ 7: 0] <= 'bx;
-		i_inst_read_data[15: 8] <= 'bx;
-		i_inst_read_data[23:16] <= 'bx;
-		i_inst_read_data[31:24] <= 'bx;
-		i_inst_read_ack         <= 0;
-    // Memmory read interface
-		i_master_read_data[ 7: 0] <= 'bx;
-		i_master_read_data[15: 8] <= 'bx;
-		i_master_read_data[23:16] <= 'bx;
-		i_master_read_data[31:24] <= 'bx;
-		i_master_read_ack         <= 0;
-    // Memory Write interface
-    i_master_write_ack <= 0;
-
+      if (!resetn) begin
+		//
+        i_inst_read_data <= 0;
+        i_inst_read_ack <= 0;
+        //
+        i_master_read_data <= 0;
+        i_master_read_ack <= 0;
+		//
+        i_master_write_ack <= 0;
+	  end
+	  else begin
 		if (o_inst_read) begin
 			// Core is fetchin instructions
-			i_inst_read_data[ 7: 0] <= memory[o_master_read_addr + 0];
-			i_inst_read_data[15: 8] <= memory[o_master_read_addr + 1];
-			i_inst_read_data[23:16] <= memory[o_master_read_addr + 2];
-			i_inst_read_data[31:24] <= memory[o_master_read_addr + 3];
+			i_inst_read_data[ 7: 0] <= memory[o_inst_read_addr + 0];
+			i_inst_read_data[15: 8] <= memory[o_inst_read_addr + 1];
+			i_inst_read_data[23:16] <= memory[o_inst_read_addr + 2];
+			i_inst_read_data[31:24] <= memory[o_inst_read_addr + 3];
 		  i_inst_read_ack         <= 1;
+		end
+		else begin
+          // Instruction interface
+          i_inst_read_data <= i_inst_read_data;
+          i_inst_read_ack  <= 0;
 		end
 
 		if (o_master_read) begin
-			// Core is fetchin from memory
-			i_master_read_data[ 7: 0] <= memory[o_inst_read_addr + 0];
-			i_master_read_data[15: 8] <= memory[o_inst_read_addr + 1];
-			i_master_read_data[23:16] <= memory[o_inst_read_addr + 2];
-			i_master_read_data[31:24] <= memory[o_inst_read_addr + 3];
+		  // Core is fetchin from memory
+		  i_master_read_data[ 7: 0] <= memory[o_master_read_addr + 0];
+		  i_master_read_data[15: 8] <= memory[o_master_read_addr + 1];
+		  i_master_read_data[23:16] <= memory[o_master_read_addr + 2];
+		  i_master_read_data[31:24] <= memory[o_master_read_addr + 3];
 		  i_master_read_ack         <= 1;
+		end
+		else begin
+		  i_master_read_data <= i_master_read_data;
+		  i_master_read_ack  <= 0;
 		end
 
 		if (o_master_write) begin
@@ -100,17 +104,23 @@ module testbench;
 		  		$fflush();
 		  	end
 		  	default: begin
-		  		if (o_master_write_byte_enable[0]) 
-					  memory[o_master_write_addr + 0] <= o_master_write_data[ 7: 0];
-		  		if (o_master_write_byte_enable[1]) 
-					  memory[o_master_write_addr + 1] <= o_master_write_data[15: 8];
-		  		if (o_master_write_byte_enable[2]) 
-					  memory[o_master_write_addr + 2] <= o_master_write_data[23:16];
-		  		if (o_master_write_byte_enable[3]) 
-					  memory[o_master_write_addr + 3] <= o_master_write_data[31:24];
+		  	  if (o_master_write_byte_enable[0]) 
+			  	  memory[o_master_write_addr + 0] <= o_master_write_data[ 7: 0];
+		  	  if (o_master_write_byte_enable[1]) 
+			  	  memory[o_master_write_addr + 1] <= o_master_write_data[15: 8];
+		  	  if (o_master_write_byte_enable[2]) 
+			  	  memory[o_master_write_addr + 2] <= o_master_write_data[23:16];
+		  	  if (o_master_write_byte_enable[3]) 
+			  	  memory[o_master_write_addr + 3] <= o_master_write_data[31:24];
+
+			  i_master_write_ack <= 1;
 		  	end
 		  endcase
 		end
+		else begin
+		  i_master_write_ack <= 0;
+		end
+	  end
 	end
 
 	initial begin
@@ -120,7 +130,9 @@ module testbench;
 
 	always @(posedge clk) begin
 		if (resetn) begin
-			$display("Running");
+			$display("Test Bench began running");
+		    repeat (100000) @(posedge clk);
+			$display("Ending Test Bench. Sending finish command");
 			$finish;
 		end
 	end
