@@ -119,6 +119,7 @@ module ORC_R32I (
   // Registers regs
   reg [31:0] mem_registers1 [0:L_REG_LENGTH-1];	// general-purpose 32x32-bit registers
   reg [31:0] mem_registers2 [0:L_REG_LENGTH-1];	// general-purpose 32x32-bit registers
+  reg [4:0]  reset_index = 0;                   // This means the reset needs to be held for at least 32 clocks
   // Instruction Fields wires
   wire [4:0] w_dest_pointer    = r_inst_data[11:7]; // set SP_RESET when i_reset_sync==1
   wire [4:0] w_source1_pointer = r_inst_data[19:15];
@@ -366,12 +367,13 @@ module ORC_R32I (
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      mem_registers1[r_dest_pointer] <= L_ALL_ZERO;
-      mem_registers2[r_dest_pointer] <= L_ALL_ZERO;
-      r_signed_rs1                   <= L_ALL_ZERO;
-      r_signed_rs2                   <= L_ALL_ZERO;
-      r_unsigned_rs1                 <= L_ALL_ZERO;
-      r_unsigned_rs2                 <= L_ALL_ZERO;
+      reset_index                 <= reset_index+1;
+      mem_registers1[reset_index] <= L_ALL_ZERO;
+      mem_registers2[reset_index] <= L_ALL_ZERO;
+      r_signed_rs1                <= L_ALL_ZERO;
+      r_signed_rs2                <= L_ALL_ZERO;
+      r_unsigned_rs1              <= L_ALL_ZERO;
+      r_unsigned_rs2              <= L_ALL_ZERO;
     end
     else begin
       // Load from general registers
