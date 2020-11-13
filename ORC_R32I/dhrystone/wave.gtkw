@@ -1,0 +1,206 @@
+[*]
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Fri Nov 13 17:23:09 2020
+[*]
+[dumpfile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/dhrystone/testbench_nola.vcd"
+[dumpfile_mtime] "Fri Nov 13 17:22:37 2020"
+[dumpfile_size] 4658564
+[savefile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/dhrystone/wave.gtkw"
+[timestart] 164802700
+[size] 1920 1029
+[pos] -1 -1
+*-15.092485 164860000 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[treeopen] testbench.
+[sst_width] 196
+[signals_width] 371
+[sst_expanded] 1
+[sst_vpaned_height] 306
+@200
+-Clocks and Reset
+@28
+testbench.uut.i_clk
+testbench.uut.i_reset_sync
+@200
+-Instruction Interface
+@28
+testbench.uut.o_inst_read
+testbench.uut.i_inst_read_ack
+@22
+testbench.uut.o_inst_read_addr[31:0]
+@23
+testbench.uut.i_inst_read_data[31:0]
+@200
+-Memory Master Read interface
+@28
+testbench.uut.o_master_read
+testbench.uut.i_master_read_ack
+@22
+testbench.uut.o_master_read_addr[31:0]
+testbench.uut.i_master_read_data[31:0]
+@200
+-Memory Master Write interface
+@28
+testbench.uut.o_master_write
+testbench.uut.i_master_write_ack
+@22
+testbench.uut.o_master_write_addr[31:0]
+testbench.uut.o_master_write_data[31:0]
+testbench.uut.o_master_write_byte_enable[3:0]
+@200
+-Decode Proc
+@22
+testbench.uut.r_inst_data[31:0]
+@28
+testbench.uut.r_mcc
+testbench.uut.r_rcc
+testbench.uut.r_scc
+testbench.uut.r_auipc
+testbench.uut.r_bcc
+testbench.uut.r_jal
+testbench.uut.r_jalr
+testbench.uut.r_lcc
+testbench.uut.r_lui
+@22
+testbench.uut.r_simm[31:0]
+testbench.uut.r_uimm[31:0]
+@28
+testbench.uut.r_mem_access
+@200
+-Program Counter
+@c00022
+testbench.uut.r_next_program_counter2[31:0]
+@28
+(0)testbench.uut.r_next_program_counter2[31:0]
+(1)testbench.uut.r_next_program_counter2[31:0]
+(2)testbench.uut.r_next_program_counter2[31:0]
+(3)testbench.uut.r_next_program_counter2[31:0]
+(4)testbench.uut.r_next_program_counter2[31:0]
+(5)testbench.uut.r_next_program_counter2[31:0]
+(6)testbench.uut.r_next_program_counter2[31:0]
+(7)testbench.uut.r_next_program_counter2[31:0]
+(8)testbench.uut.r_next_program_counter2[31:0]
+(9)testbench.uut.r_next_program_counter2[31:0]
+(10)testbench.uut.r_next_program_counter2[31:0]
+(11)testbench.uut.r_next_program_counter2[31:0]
+(12)testbench.uut.r_next_program_counter2[31:0]
+(13)testbench.uut.r_next_program_counter2[31:0]
+(14)testbench.uut.r_next_program_counter2[31:0]
+(15)testbench.uut.r_next_program_counter2[31:0]
+(16)testbench.uut.r_next_program_counter2[31:0]
+(17)testbench.uut.r_next_program_counter2[31:0]
+(18)testbench.uut.r_next_program_counter2[31:0]
+(19)testbench.uut.r_next_program_counter2[31:0]
+(20)testbench.uut.r_next_program_counter2[31:0]
+(21)testbench.uut.r_next_program_counter2[31:0]
+(22)testbench.uut.r_next_program_counter2[31:0]
+(23)testbench.uut.r_next_program_counter2[31:0]
+(24)testbench.uut.r_next_program_counter2[31:0]
+(25)testbench.uut.r_next_program_counter2[31:0]
+(26)testbench.uut.r_next_program_counter2[31:0]
+(27)testbench.uut.r_next_program_counter2[31:0]
+(28)testbench.uut.r_next_program_counter2[31:0]
+(29)testbench.uut.r_next_program_counter2[31:0]
+(30)testbench.uut.r_next_program_counter2[31:0]
+(31)testbench.uut.r_next_program_counter2[31:0]
+@1401200
+-group_end
+@22
+testbench.uut.r_next_program_counter[31:0]
+testbench.uut.r_program_counter[31:0]
+@28
+testbench.uut.r_program_counter_valid
+@200
+-General Purpose Reg Proc
+@22
+testbench.uut.r_signed_rs1[31:0]
+testbench.uut.r_signed_rs2[31:0]
+@c00022
+testbench.uut.r_unsigned_rs1[31:0]
+@28
+(0)testbench.uut.r_unsigned_rs1[31:0]
+(1)testbench.uut.r_unsigned_rs1[31:0]
+(2)testbench.uut.r_unsigned_rs1[31:0]
+(3)testbench.uut.r_unsigned_rs1[31:0]
+(4)testbench.uut.r_unsigned_rs1[31:0]
+(5)testbench.uut.r_unsigned_rs1[31:0]
+(6)testbench.uut.r_unsigned_rs1[31:0]
+(7)testbench.uut.r_unsigned_rs1[31:0]
+(8)testbench.uut.r_unsigned_rs1[31:0]
+(9)testbench.uut.r_unsigned_rs1[31:0]
+(10)testbench.uut.r_unsigned_rs1[31:0]
+(11)testbench.uut.r_unsigned_rs1[31:0]
+(12)testbench.uut.r_unsigned_rs1[31:0]
+(13)testbench.uut.r_unsigned_rs1[31:0]
+(14)testbench.uut.r_unsigned_rs1[31:0]
+(15)testbench.uut.r_unsigned_rs1[31:0]
+(16)testbench.uut.r_unsigned_rs1[31:0]
+(17)testbench.uut.r_unsigned_rs1[31:0]
+(18)testbench.uut.r_unsigned_rs1[31:0]
+(19)testbench.uut.r_unsigned_rs1[31:0]
+(20)testbench.uut.r_unsigned_rs1[31:0]
+(21)testbench.uut.r_unsigned_rs1[31:0]
+(22)testbench.uut.r_unsigned_rs1[31:0]
+(23)testbench.uut.r_unsigned_rs1[31:0]
+(24)testbench.uut.r_unsigned_rs1[31:0]
+(25)testbench.uut.r_unsigned_rs1[31:0]
+(26)testbench.uut.r_unsigned_rs1[31:0]
+(27)testbench.uut.r_unsigned_rs1[31:0]
+(28)testbench.uut.r_unsigned_rs1[31:0]
+(29)testbench.uut.r_unsigned_rs1[31:0]
+(30)testbench.uut.r_unsigned_rs1[31:0]
+(31)testbench.uut.r_unsigned_rs1[31:0]
+@1401200
+-group_end
+@22
+testbench.uut.r_unsigned_rs2[31:0]
+testbench.uut.r_signed_rs2_extended[31:0]
+testbench.uut.r_unsigned_rs2_extended[31:0]
+@200
+-Memory Read Proc
+@22
+testbench.uut.r_dest_pointer[4:0]
+@28
+testbench.uut.r_master_read
+@22
+testbench.uut.r_master_read_addr[31:0]
+@200
+-Memory Write Proc
+@28
+testbench.uut.r_master_write
+@22
+testbench.uut.r_master_write_addr[31:0]
+testbench.uut.r_master_write_byte_enable[3:0]
+testbench.uut.r_master_write_data[31:0]
+@200
+-Wires
+@28
+testbench.uut.w_bmux
+testbench.uut.w_decoder_ready
+@22
+testbench.uut.w_dest_pointer[4:0]
+@28
+testbench.uut.w_fct3[2:0]
+@22
+testbench.uut.w_fct7[6:0]
+@28
+testbench.uut.w_inst_addr_ready
+testbench.uut.w_is_r_dest_pointer_not_zero
+testbench.uut.w_is_w_dest_pointer_not_zero
+testbench.uut.w_jump_request
+@22
+testbench.uut.w_jump_value[31:0]
+testbench.uut.w_l_data[31:0]
+testbench.uut.w_master_addr[31:0]
+testbench.uut.w_opcode[6:0]
+@28
+testbench.uut.w_program_counter_ready
+testbench.uut.w_read_ready
+@22
+testbench.uut.w_rm_data[31:0]
+testbench.uut.w_s_data[31:0]
+testbench.uut.w_source1_pointer[4:0]
+testbench.uut.w_source2_pointer[4:0]
+@28
+testbench.uut.w_write_ready
+[pattern_trace] 1
+[pattern_trace] 0
