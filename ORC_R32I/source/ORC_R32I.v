@@ -112,7 +112,7 @@ module ORC_R32I (
   reg         r_mem_access;
   //, XFCC, XCCC;
   // Program Counter regs
-  reg [31:0] r_next_program_counter2; // 32-bit program counter t+2
+  //reg [31:0] r_next_program_counter2; // 32-bit program counter t+2
   reg [31:0] r_next_program_counter;  // 32-bit program counter t+1
   reg [31:0] r_program_counter;		    // 32-bit program counter t+0
   reg        r_program_counter_valid;
@@ -197,7 +197,7 @@ module ORC_R32I (
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_next_program_counter2 <= L_ALL_ZERO;
+      //r_next_program_counter2 <= L_ALL_ZERO;
       r_next_program_counter  <= L_ALL_ZERO;
       r_program_counter       <= L_ALL_ZERO;
       r_program_counter_valid <= 1'b0;
@@ -206,8 +206,8 @@ module ORC_R32I (
       // When there is a jump request update to the jump value else increment 
       // count by 4 and update the program counter.
       r_program_counter       <= r_next_program_counter; // current program counter
-      r_next_program_counter  <= r_next_program_counter2;
-	    r_next_program_counter2 <= w_jump_request ? w_jump_value : r_next_program_counter2+4;
+      r_next_program_counter  <=  w_jump_request ? w_jump_value : r_next_program_counter+4;
+	    //r_next_program_counter2 <= w_jump_request ? w_jump_value : r_next_program_counter2+4;
       r_program_counter_valid <= 1'b1;
     end
     else if (w_inst_addr_ready == 1'b1) begin
@@ -216,7 +216,7 @@ module ORC_R32I (
       r_program_counter_valid <= 1'b0;
     end
   end
-  assign o_inst_read_addr = r_next_program_counter2;
+  assign o_inst_read_addr = r_next_program_counter;
   assign o_inst_read      = r_program_counter_valid;
 
   ///////////////////////////////////////////////////////////////////////////////
