@@ -10,7 +10,7 @@ blif:
 	yosys syn_ice40.ys
 
 asc: blif
-	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --seed 1 --asc $(PROJ).asc
+	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --seed 0 --asc $(PROJ).asc
 
 bin: asc
 	icepack $(PROJ).asc $(PROJ).bin
