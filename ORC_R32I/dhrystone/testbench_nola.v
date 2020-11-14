@@ -34,25 +34,25 @@ module testbench;
 
 	// DUT
 	ORC_R32I uut (
-		//
-		.i_clk(clk),
-		.i_reset_sync(!resetn),
-    // Instruction Data Interface
-    .o_inst_read(o_inst_read),           // read enable
-    .i_inst_read_ack(i_inst_read_ack),   // acknowledge 
-    .o_inst_read_addr(o_inst_read_addr), // address
-    .i_inst_read_data(i_inst_read_data), // data
-    // Master Read Interface
-    .o_master_read(o_master_read),           // read enable
-    .i_master_read_ack(i_master_read_ack),   // acknowledge 
-    .o_master_read_addr(o_master_read_addr), // address
-    .i_master_read_data(i_master_read_data), // data
-    // Master Write Interface
-    .o_master_write(o_master_write),                        // write enable
-    .i_master_write_ack(i_master_write_ack),                // acknowledge 
-    .o_master_write_addr(o_master_write_addr),              // address
-    .o_master_write_data(o_master_write_data),              // data
-    .o_master_write_byte_enable(o_master_write_byte_enable) // byte enable
+	  //
+	  .i_clk(clk),
+	  .i_reset_sync(!resetn),
+      // Instruction Data Interface
+      .o_inst_read(o_inst_read),           // read enable
+      .i_inst_read_ack(i_inst_read_ack),   // acknowledge 
+      .o_inst_read_addr(o_inst_read_addr), // address
+      .i_inst_read_data(i_inst_read_data), // data
+      // Master Read Interface
+      .o_master_read(o_master_read),           // read enable
+      .i_master_read_ack(i_master_read_ack),   // acknowledge 
+      .o_master_read_addr(o_master_read_addr), // address
+      .i_master_read_data(i_master_read_data), // data
+      // Master Write Interface
+      .o_master_write(o_master_write),                        // write enable
+      .i_master_write_ack(i_master_write_ack),                // acknowledge 
+      .o_master_write_addr(o_master_write_addr),              // address
+      .o_master_write_data(o_master_write_data),              // data
+      .o_master_write_byte_enable(o_master_write_byte_enable) // byte enable
 	);
 
 	reg [7:0] memory [0:256*1024-1];
@@ -113,9 +113,10 @@ module testbench;
 		  	  if (o_master_write_byte_enable[3]) 
 			  	  memory[o_master_write_addr + 3] <= o_master_write_data[31:24];
 
-			  i_master_write_ack <= 1;
 		  	end
 		  endcase
+		  //
+		  i_master_write_ack <= 1;
 		end
 		else begin
 		  i_master_write_ack <= 0;
