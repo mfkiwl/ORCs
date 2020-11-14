@@ -60,4 +60,5 @@ nextpnr-ice40 flags : `--pcf-allow-unconstrained --timing-allow-fail --ignore-lo
 ## IceTime timing Analysis
 
 Total number of logic levels: 12
+
 Total path delay: 16.63 ns (60.13 MHz)
