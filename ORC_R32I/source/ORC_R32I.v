@@ -175,7 +175,7 @@ module ORC_R32I (
                 w_fct3==1 ? r_unsigned_rs1!=r_unsigned_rs2 : // bne
                 0);
   wire        w_jump_request = (r_jal|r_jalr|w_bmux);
-  wire [31:0] w_jump_value   = r_simm + (r_jalr==1'b1 ? r_unsigned_rs1 : r_program_counter);
+  wire [31:0] w_jump_value   = (r_jalr==1'b1 ? r_simm + r_unsigned_rs1 : r_simm + r_program_counter);
   // Mem Proccess wires
   wire w_is_r_destination_index_not_zero = |r_destination_index;
   wire w_is_w_destination_index_not_zero = |r_inst_data[11:7];
@@ -183,7 +183,7 @@ module ORC_R32I (
   wire w_read_ready            = (!r_master_read & !i_master_read_ack) | i_master_read_ack;
   wire w_write_ready           = (!r_master_write & !i_master_write_ack) | i_master_write_ack;
   wire w_inst_addr_ready       = (!r_program_counter_valid & !i_inst_read_ack) | i_inst_read_ack;
-  wire w_decoder_ready         = r_lcc ? w_read_ready : 1; // !w_jump_request & w_read_ready;
+  wire w_decoder_ready         = !w_jump_request & w_read_ready;
   wire w_program_counter_ready = (w_decoder_ready & i_inst_read_ack) | !r_program_counter_valid;
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -247,10 +247,29 @@ module ORC_R32I (
       // then the statement associated with that case item shall be executed.
       // Therefore using if statements for equal priority and catching only the
       // OPCODES that are implemented.
+
+      if (w_opcode == L_LUI) begin
+        // Load Upper Immediate.
+        // Used to build 32-bit constants and uses the U-type format. Places the
+        // 32-bit U-immediate value into the destination register rd, filling in
+        // the lowest 12 bits with zeros.
+        r_lui        <= 1'b1;
+        r_inst_data  <= i_inst_read_data;
+        r_uimm       <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        r_mem_access <= 1'b1;
+      end
+      else begin
+        r_lui <= 1'b0;
+      end
+
       if (w_opcode == L_AUIPC) begin
+        // Add Upper Immediate to Program Counter.
+        // Is used to build pc-relative addresses and uses the U-type format. 
+        // AUIPC forms a 32-bit offset from the U-immediate, filling in the 
+        // lowest 12 bits with zeros, adds this offset to the address of the 
+        // AUIPC instruction, then places the result in register rd.
         r_auipc      <= 1'b1;
         r_inst_data  <= i_inst_read_data;
-        r_simm       <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
         r_uimm       <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
         r_mem_access <= 1'b1;
       end
@@ -269,16 +288,6 @@ module ORC_R32I (
         r_scc <= 1'b0;
       end
 
-      if (w_opcode == L_LUI) begin
-        r_lui        <= 1'b1;
-        r_inst_data  <= i_inst_read_data;
-        r_simm       <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        r_uimm       <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        r_mem_access <= 1'b1;
-      end
-      else begin
-        r_lui <= 1'b0;
-      end
 
       if (w_opcode == L_BCC) begin
         r_bcc        <= 1'b1;
@@ -292,10 +301,14 @@ module ORC_R32I (
       end
 
       if (w_opcode == L_JAL) begin
+        // Jump And Link Operation.
+        // The offset is sign-extended and added to the address of the jump 
+        // instruction to form the jump target address. JAL stores the address of
+        // the instruction following the jump (r_next_program_counter) into 
+        // register rd.
         r_jal        <= 1'b1;
         r_inst_data  <= i_inst_read_data;
         r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
-        r_uimm       <= { L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
         r_mem_access <= 1'b1;
       end
       else begin
@@ -303,10 +316,15 @@ module ORC_R32I (
       end
 
       if (w_opcode == L_JALR) begin
+        //  Jump And Link Register(indirect jump instruction).
+        // The target address is obtained by adding the sign-extended 12-bit
+        // I-immediate to the register rs1, then setting the least-significant bit of
+        // the result to zero. The address of the instruction following the jump
+        // (r_next_program_counter) is written to register rd. Register x0 can be
+        // used as the destination if the result is not required.
         r_jalr       <= 1'b1;
         r_inst_data  <= i_inst_read_data;
         r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
-        r_uimm       <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
         r_mem_access <= 1'b1;
       end
       else begin
@@ -350,13 +368,13 @@ module ORC_R32I (
       // If Data not valid or if decoder not ready
       r_auipc      <= 1'b0;
       r_lui        <= 1'b0;
-      r_lcc        <= 1'b0;
       r_mcc        <= 1'b0;
       r_rcc        <= 1'b0;
+      r_lcc        <= 1'b0;
+      r_scc        <= 1'b0;
       r_jal        <= 1'b0;
       r_jalr       <= 1'b0;
       r_bcc        <= 1'b0;
-      r_scc        <= 1'b0;
       r_mem_access <= 1'b0;
     end
   end
@@ -383,27 +401,27 @@ module ORC_R32I (
       general_registers2[reset_index] <= L_ALL_ZERO;
     end
     else begin
-      // Load from general registers
-      // Priority to the current OPCODE
       if (w_is_w_destination_index_not_zero == 1'b1 && r_mem_access == 1'b1) begin
+      // Store into general registers. 
+      // Independent IF statements for equal priority
+        if (r_lui == 1'b1) begin
+          // Load Upper Immediate.
+          general_registers1[w_destination_index] <= r_uimm;
+          general_registers2[w_destination_index] <= r_uimm;
+        end
         if (r_auipc == 1'b1) begin
-          general_registers1[w_destination_index] <= r_program_counter+r_simm;
-          general_registers2[w_destination_index] <= r_program_counter+r_simm;
+          general_registers1[w_destination_index] <= r_program_counter+r_uimm;
+          general_registers2[w_destination_index] <= r_program_counter+r_uimm;
         end
         if (r_jal == 1'b1) begin
-          // Jump
+          // Jump And Link Operation.
           general_registers1[w_destination_index] <= r_next_program_counter;
           general_registers2[w_destination_index] <= r_next_program_counter;
         end
         if (r_jalr == 1'b1) begin
-          // Jump
+          //  Jump And Link Register(indirect jump instruction).
           general_registers1[w_destination_index] <= r_next_program_counter;
           general_registers2[w_destination_index] <= r_next_program_counter;
-        end
-        if (r_lui == 1'b1) begin
-          // Load
-          general_registers1[w_destination_index] <= r_simm;
-          general_registers2[w_destination_index] <= r_simm;
         end
         if (r_mcc == 1'b1) begin
           general_registers1[w_destination_index] <= w_rm_data;
