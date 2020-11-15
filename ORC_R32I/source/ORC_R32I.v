@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/09 01:19:17
+// Last modified : 2020/11/15 01:20:19
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a verilog implementation of the riscv32i
@@ -94,7 +94,7 @@ module ORC_R32I (
   reg [31:0] r_master_write_addr;
   reg [31:0] r_master_write_data;
   reg [3:0]  r_master_write_byte_enable;
-  reg [4:0]  r_dest_pointer;
+  reg [4:0]  r_destination_index;
   // Decoder Signals
   wire [6:0]  w_opcode = i_inst_read_data[6:0];
   reg  [31:0] r_inst_data;
@@ -117,23 +117,23 @@ module ORC_R32I (
   reg [31:0] r_program_counter;		    // 32-bit program counter t+0
   reg        r_program_counter_valid;
   // Registers regs
-  reg [31:0] mem_registers1 [0:L_REG_LENGTH-1];	// general-purpose 32x32-bit registers
-  reg [31:0] mem_registers2 [0:L_REG_LENGTH-1];	// general-purpose 32x32-bit registers
-  reg [4:0]  reset_index = 0;                   // This means the reset needs to be held for at least 32 clocks
+  reg [31:0] general_registers1 [0:L_REG_LENGTH-1];	// general-purpose 32x32-bit registers
+  reg [31:0] general_registers2 [0:L_REG_LENGTH-1];	// general-purpose 32x32-bit registers
+  reg [4:0]  reset_index = 0;                       // This means the reset needs to be held for at least 32 clocks
   // Instruction Fields wires
-  wire [4:0] w_dest_pointer    = r_inst_data[11:7]; // set SP_RESET when i_reset_sync==1
-  wire [4:0] w_source1_pointer = r_inst_data[19:15];
-  wire [4:0] w_source2_pointer = r_inst_data[24:20];
-  wire [2:0] w_fct3            = r_inst_data[14:12];
-  wire [6:0] w_fct7            = r_inst_data[31:25];
+  wire [4:0] w_destination_index = r_inst_data[11:7]; //
+  wire [4:0] w_source1_pointer   = i_inst_read_data[19:15];
+  wire [4:0] w_source2_pointer   = i_inst_read_data[24:20];
+  wire [2:0] w_fct3              = r_inst_data[14:12];
+  wire [6:0] w_fct7              = r_inst_data[31:25];
   //wire    FCC = FLUSH ? 0 : XFCC; // w_opcode==7'b0001111; //w_fct3
   //wire    CCC = FLUSH ? 0 : XCCC; // w_opcode==7'b1110011; //w_fct3
   // source-1 and source-1 register selection
-  reg signed [31:0] r_signed_rs1;  //= mem_registers1[w_source1_pointer];
-  reg signed [31:0] r_signed_rs2;  //= mem_registers2[w_source2_pointer];
-  reg        [31:0] r_unsigned_rs1;//= mem_registers1[w_source1_pointer];
-  reg        [31:0] r_unsigned_rs2;//= mem_registers2[w_source2_pointer];
-  wire       [31:0] w_master_addr  = (r_unsigned_rs1 + r_simm);
+  reg         [31:0] r_unsigned_rs1;
+  reg         [31:0] r_unsigned_rs2;
+  wire signed [31:0] r_signed_rs1 = r_unsigned_rs1;
+  wire signed [31:0] r_signed_rs2 = r_unsigned_rs2;
+  wire        [31:0] w_master_addr  = (r_unsigned_rs1 + r_simm);
   // L-group of instructions (w_opcode==7'b0000011)
   wire [31:0] w_l_data = w_fct3==0||w_fct3==4 ? 
                            (r_master_read_addr[1:0]==3 ? { w_fct3==0&&i_master_read_data[31] ? L_ALL_ONES[31: 8]:L_ALL_ZERO[31: 8] , i_master_read_data[31:24] } :
@@ -177,8 +177,8 @@ module ORC_R32I (
   wire        w_jump_request = (r_jal|r_jalr|w_bmux);
   wire [31:0] w_jump_value   = r_simm + (r_jalr==1'b1 ? r_unsigned_rs1 : r_program_counter);
   // Mem Proccess wires
-  wire w_is_r_dest_pointer_not_zero = |r_dest_pointer;
-  wire w_is_w_dest_pointer_not_zero = |r_inst_data[11:7];
+  wire w_is_r_destination_index_not_zero = |r_destination_index;
+  wire w_is_w_destination_index_not_zero = |r_inst_data[11:7];
   // Ready signals
   wire w_read_ready            = (!r_master_read & !i_master_read_ack) | i_master_read_ack;
   wire w_write_ready           = (!r_master_write & !i_master_write_ack) | i_master_write_ack;
@@ -362,59 +362,62 @@ module ORC_R32I (
   end
 
   ///////////////////////////////////////////////////////////////////////////////
-  // Process     : General Purpose Registers Process
+  // Process     : General Purpose Registers Read Process
+  // Description : Updates the contents of the general purpose registers.
+  ///////////////////////////////////////////////////////////////////////////////
+  always@(posedge i_clk) begin
+    if (r_program_counter_valid == 1'b1 && i_inst_read_ack == 1'b1) begin
+      r_unsigned_rs1 <= general_registers1[w_source1_pointer];
+      r_unsigned_rs2 <= general_registers2[w_source2_pointer];
+    end
+  end
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // Process     : General Purpose Registers Write Process
   // Description : Updates the contents of the general purpose registers.
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      reset_index                 <= reset_index+1;
-      mem_registers1[reset_index] <= L_ALL_ZERO;
-      mem_registers2[reset_index] <= L_ALL_ZERO;
-      r_signed_rs1                <= L_ALL_ZERO;
-      r_signed_rs2                <= L_ALL_ZERO;
-      r_unsigned_rs1              <= L_ALL_ZERO;
-      r_unsigned_rs2              <= L_ALL_ZERO;
+      reset_index                     <= reset_index+1;
+      general_registers1[reset_index] <= L_ALL_ZERO;
+      general_registers2[reset_index] <= L_ALL_ZERO;
     end
     else begin
       // Load from general registers
-      r_signed_rs1                   <= mem_registers1[w_source1_pointer];
-      r_signed_rs2                   <= mem_registers2[w_source2_pointer];
-      r_unsigned_rs1                 <= mem_registers1[w_source1_pointer];
-      r_unsigned_rs2                 <= mem_registers2[w_source2_pointer];
       // Priority to the current OPCODE
-      if (w_is_w_dest_pointer_not_zero == 1'b1 && r_mem_access == 1'b1) begin
+      if (w_is_w_destination_index_not_zero == 1'b1 && r_mem_access == 1'b1) begin
         if (r_auipc == 1'b1) begin
-          mem_registers1[w_dest_pointer] <= r_program_counter+r_simm;
-          mem_registers2[w_dest_pointer] <= r_program_counter+r_simm;
+          general_registers1[w_destination_index] <= r_program_counter+r_simm;
+          general_registers2[w_destination_index] <= r_program_counter+r_simm;
         end
         if (r_jal == 1'b1) begin
           // Jump
-          mem_registers1[w_dest_pointer] <= r_next_program_counter;
-          mem_registers2[w_dest_pointer] <= r_next_program_counter;
+          general_registers1[w_destination_index] <= r_next_program_counter;
+          general_registers2[w_destination_index] <= r_next_program_counter;
         end
         if (r_jalr == 1'b1) begin
           // Jump
-          mem_registers1[w_dest_pointer] <= r_next_program_counter;
-          mem_registers2[w_dest_pointer] <= r_next_program_counter;
+          general_registers1[w_destination_index] <= r_next_program_counter;
+          general_registers2[w_destination_index] <= r_next_program_counter;
         end
         if (r_lui == 1'b1) begin
           // Load
-          mem_registers1[w_dest_pointer] <= r_simm;
-          mem_registers2[w_dest_pointer] <= r_simm;
+          general_registers1[w_destination_index] <= r_simm;
+          general_registers2[w_destination_index] <= r_simm;
         end
         if (r_mcc == 1'b1) begin
-          mem_registers1[w_dest_pointer] <= w_rm_data;
-          mem_registers2[w_dest_pointer] <= w_rm_data;
+          general_registers1[w_destination_index] <= w_rm_data;
+          general_registers2[w_destination_index] <= w_rm_data;
         end
         if (r_rcc == 1'b1) begin
-          mem_registers1[w_dest_pointer] <= w_rm_data;
-          mem_registers2[w_dest_pointer] <= w_rm_data;
+          general_registers1[w_destination_index] <= w_rm_data;
+          general_registers2[w_destination_index] <= w_rm_data;
         end
       end
-      else if (r_master_read == 1'b1 && i_master_read_ack == 1'b1 && w_is_r_dest_pointer_not_zero == 1'b1 && r_mem_access == 1'b0) begin
+      else if (r_master_read == 1'b1 && i_master_read_ack == 1'b1 && w_is_r_destination_index_not_zero == 1'b1 && r_mem_access == 1'b0) begin
         // Data loaded from memory.
-        mem_registers1[r_dest_pointer] <= w_l_data;
-        mem_registers2[r_dest_pointer] <= w_l_data;
+        general_registers1[r_destination_index] <= w_l_data;
+        general_registers2[r_destination_index] <= w_l_data;
       end
     end
   end
@@ -426,14 +429,14 @@ module ORC_R32I (
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_master_read      <= 1'b0;
-      r_master_read_addr <= L_ALL_ZERO;
-      r_dest_pointer     <= 5'h0;
+      r_master_read       <= 1'b0;
+      r_master_read_addr  <= L_ALL_ZERO;
+      r_destination_index <= 5'h0;
     end
     else if (w_read_ready == 1'b1) begin
-      r_master_read      <= r_lcc;
-      r_master_read_addr <= w_master_addr;
-      r_dest_pointer     <= w_dest_pointer;
+      r_master_read       <= r_lcc;
+      r_master_read_addr  <= w_master_addr;
+      r_destination_index <= w_destination_index;
     end
   end
   assign o_master_read_addr = r_master_read_addr;
