@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/17 00:07:27
+// Last modified : 2020/11/17 00:36:59
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a verilog implementation of the riscv32i
@@ -178,7 +178,7 @@ module ORC_R32I (
   // Ready signals
   wire w_read_ready            = !r_master_read | i_master_read_ack;
   wire w_write_ready           = !r_master_write  | i_master_write_ack;
-  wire w_decoder_ready         = w_read_ready & w_write_ready & !w_jump_request;
+  wire w_decoder_ready         = w_read_ready & w_write_ready;// & !w_jump_request;
   wire w_program_counter_ready = (w_decoder_ready & r_program_counter_valid) | !r_program_counter_valid;
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -201,7 +201,7 @@ module ORC_R32I (
         // When there is a jump request update to the jump value else increment 
         // count by 4 and update the program counter.
         r_program_counter       <= r_next_program_counter; // current program counter
-        r_next_program_counter  <=  w_jump_request ? w_jump_value : r_next_program_counter+4;
+        r_next_program_counter  <= w_jump_request ? w_jump_value : r_next_program_counter+4;
         r_program_counter_valid <= 1'b1;
       end
       if (w_program_counter_ready == 1'b1 && i_inst_read_ack == 1'b0) begin
@@ -209,7 +209,7 @@ module ORC_R32I (
         // address but the program counter is yet to be updated.
         r_program_counter_valid <= 1'b1;
       end
-      if (w_program_counter_ready == 1'b0 && i_inst_read_ack == 1'b0) begin
+      if (w_program_counter_ready == 1'b0) begin
         // When the interface instruction read interface is ready for the next
         // address but the program counter is yet to be updated.
         r_program_counter_valid <= 1'b0;
