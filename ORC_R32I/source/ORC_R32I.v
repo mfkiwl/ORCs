@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/15 23:41:38
+// Last modified : 2020/11/17 00:07:27
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a verilog implementation of the riscv32i
@@ -68,15 +68,15 @@ module ORC_R32I (
   // Internal Parameter Declarations
   ///////////////////////////////////////////////////////////////////////////////
   // OpCodes 
-  localparam [6:0] L_RII   = 7'b0010011; // xxxi  imm[11:0],[19:15],funct[14:12],rd[11:7]
-  localparam [6:0] L_RRO   = 7'b0110011; // xxx   funct[6:0],rs2[24:20],rs1[19:15],funct[14:12],rd[11:7]
-  localparam [6:0] L_LUI   = 7'b0110111; // lui   imm[31:12], rd[11:7]
-  localparam [6:0] L_AUIPC = 7'b0010111; // auipc imm[31:12], rd[11:7]
-  localparam [6:0] L_JAL   = 7'b1101111; // jal   imm[20|10:1|11|19:12],rd[11:7]
-  localparam [6:0] L_JALR  = 7'b1100111; // jalr  imm[11:0], rs1[19:15],000,rd[11:7]
-  localparam [6:0] L_BCC   = 7'b1100011; // bcc   imm[12|10:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:1|11]
-  localparam [6:0] L_LCC   = 7'b0000011; // lxx   imm[11:0],rs1[19:15],funct[14:12],rd[11:7]
-  localparam [6:0] L_SCC   = 7'b0100011; // sxx   imm[11:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:0]
+  localparam [6:0] L_RII   = 7'b0010011; // imm[11:0],[19:15],funct[14:12],rd[11:7]
+  localparam [6:0] L_RRO   = 7'b0110011; // funct[6:0],rs2[24:20],rs1[19:15],funct[14:12],rd[11:7]
+  localparam [6:0] L_LUI   = 7'b0110111; // imm[31:12], rd[11:7]
+  localparam [6:0] L_AUIPC = 7'b0010111; // imm[31:12], rd[11:7]
+  localparam [6:0] L_JAL   = 7'b1101111; // imm[20|10:1|11|19:12],rd[11:7]
+  localparam [6:0] L_JALR  = 7'b1100111; // imm[11:0], rs1[19:15],000,rd[11:7]
+  localparam [6:0] L_BCC   = 7'b1100011; // imm[12|10:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:1|11]
+  localparam [6:0] L_LCC   = 7'b0000011; // imm[11:0],rs1[19:15],funct[14:12],rd[11:7]
+  localparam [6:0] L_SCC   = 7'b0100011; // imm[11:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:0]
   // OpCodes not implemented
   localparam [6:0] L_FENCE = 7'b0001111; // FENCE
   localparam [6:0] L_SYS   = 7'b1110011; // System OPCODES: ECALL, EBREAK, CSR
@@ -109,28 +109,24 @@ module ORC_R32I (
   reg         r_scc;
   reg         r_rii;
   reg         r_rro;
+  reg         r_reg_access;
   reg         r_fence;
   reg         r_sys;
-  reg         r_mem_access;
-  //, XFCC, XCCC;
   // Program Counter regs
-  //reg [31:0] r_next_program_counter2; // 32-bit program counter t+2
   reg [31:0] r_next_program_counter;  // 32-bit program counter t+1
   reg [31:0] r_program_counter;		    // 32-bit program counter t+0
   reg        r_program_counter_valid;
-  // Registers regs
-  reg [31:0] general_registers1 [0:L_REG_LENGTH-1];	// general-purpose 32x32-bit registers
-  reg [31:0] general_registers2 [0:L_REG_LENGTH-1];	// general-purpose 32x32-bit registers
+  // General Purpose Registers. Duplicated to index source 1 & 2 at same time.
+  reg [31:0] general_registers1 [0:L_REG_LENGTH-1];	// 32x32-bit registers
+  reg [31:0] general_registers2 [0:L_REG_LENGTH-1];	// 32x32-bit registers
   reg [4:0]  reset_index = 0;                       // This means the reset needs to be held for at least 32 clocks
   // Instruction Fields wires
-  wire [4:0] w_destination_index = r_inst_data[11:7]; //
+  wire [4:0] w_destination_index = r_inst_data[11:7];
   wire [4:0] w_source1_pointer   = i_inst_read_data[19:15];
   wire [4:0] w_source2_pointer   = i_inst_read_data[24:20];
   wire [2:0] w_fct3              = r_inst_data[14:12];
   wire [6:0] w_fct7              = r_inst_data[31:25];
-  //wire    FCC = FLUSH ? 0 : XFCC; // w_opcode==7'b0001111; //w_fct3
-  //wire    CCC = FLUSH ? 0 : XCCC; // w_opcode==7'b1110011; //w_fct3
-  // source-1 and source-1 register selection
+  // source-1 and source-2 register selection
   reg         [31:0] r_unsigned_rs1;
   reg         [31:0] r_unsigned_rs2;
   wire signed [31:0] r_signed_rs1 = r_unsigned_rs1;
@@ -138,23 +134,21 @@ module ORC_R32I (
   wire        [31:0] w_master_addr  = (r_unsigned_rs1 + r_simm);
   // L-group of instructions (w_opcode==7'b0000011)
   wire [31:0] w_l_data = w_fct3==0||w_fct3==4 ? 
-                           (r_master_read_addr[1:0]==3 ? { w_fct3==0&&i_master_read_data[31] ? L_ALL_ONES[31: 8]:L_ALL_ZERO[31: 8] , i_master_read_data[31:24] } :
-                            r_master_read_addr[1:0]==2 ? { w_fct3==0&&i_master_read_data[23] ? L_ALL_ONES[31: 8]:L_ALL_ZERO[31: 8] , i_master_read_data[23:16] } :
-                            r_master_read_addr[1:0]==1 ? { w_fct3==0&&i_master_read_data[15] ? L_ALL_ONES[31: 8]:L_ALL_ZERO[31: 8] , i_master_read_data[15: 8] } :
-                              {w_fct3==0&&i_master_read_data[ 7] ? L_ALL_ONES[31: 8]:L_ALL_ZERO[31: 8] , i_master_read_data[ 7: 0]}):
+                           (r_master_read_addr[1:0]==3 ? { w_fct3==0&&i_master_read_data[31] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8] , i_master_read_data[31:24] } :
+                            r_master_read_addr[1:0]==2 ? { w_fct3==0&&i_master_read_data[23] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8] , i_master_read_data[23:16] } :
+                            r_master_read_addr[1:0]==1 ? { w_fct3==0&&i_master_read_data[15] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8] , i_master_read_data[15:8] } :
+                              {w_fct3==0&&i_master_read_data[7] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8] , i_master_read_data[7: 0]}):
                          w_fct3==1||w_fct3==5 ? ( r_master_read_addr[1]==1   ? { w_fct3==1&&i_master_read_data[31] ? L_ALL_ONES[31:16]:L_ALL_ZERO[31:16] , i_master_read_data[31:16] } :
-                           {w_fct3==1&&i_master_read_data[15] ? L_ALL_ONES[31:16]:L_ALL_ZERO[31:16] , i_master_read_data[15: 0]}) :
+                           {w_fct3==1&&i_master_read_data[15] ? L_ALL_ONES[31:16]:L_ALL_ZERO[31:16] , i_master_read_data[15:0]}) :
                            i_master_read_data;
   // S-group of instructions (w_opcode==7'b0100011)
   wire [31:0] w_s_data = w_fct3==0 ? ( w_master_addr[1:0]==3 ? { r_unsigned_rs2[ 7: 0], L_ALL_ZERO [23:0] } : 
-                                       w_master_addr[1:0]==2 ? { L_ALL_ZERO [31:24], r_unsigned_rs2[ 7:0], L_ALL_ZERO[15:0] } : 
-                                       w_master_addr[1:0]==1 ? { L_ALL_ZERO [31:16], r_unsigned_rs2[ 7:0], L_ALL_ZERO[7:0] } :
-                                                  { L_ALL_ZERO [31: 8], r_unsigned_rs2[ 7:0] } ) :
+                                       w_master_addr[1:0]==2 ? { L_ALL_ZERO [31:24], r_unsigned_rs2[7:0], L_ALL_ZERO[15:0] } : 
+                                       w_master_addr[1:0]==1 ? { L_ALL_ZERO [31:16], r_unsigned_rs2[7:0], L_ALL_ZERO[7:0] } :
+                                                  { L_ALL_ZERO [31: 8], r_unsigned_rs2[7:0] } ) :
                          w_fct3==1 ? ( w_master_addr[1]  ==1 ? { r_unsigned_rs2[15: 0], L_ALL_ZERO [15:0] } :
                                                   { L_ALL_ZERO [31:16], r_unsigned_rs2[15:0] } ) :
                                   r_unsigned_rs2;
-  // C-group not implemented yet!
-  //wire [31:0] CDATA = 0;	// status register istructions not implemented yet
   // RM-group of instructions (OPCODEs==7'b0010011/7'b0110011), merged! src=immediate(M)/register(R)
   wire signed [31:0] r_signed_rs2_extended   = r_rii ? r_simm : r_signed_rs2;
   wire        [31:0] r_unsigned_rs2_extended = r_rii ? r_uimm : r_unsigned_rs2;
@@ -245,7 +239,7 @@ module ORC_R32I (
       r_sys        <= 1'b0;
       r_simm       <= L_ALL_ZERO;
       r_uimm       <= L_ALL_ZERO;
-      r_mem_access <= 1'b0;
+      r_reg_access <= 1'b0;
     end
     else if (w_decoder_ready == 1'b1 && i_inst_read_ack == 1'b1) begin
       // According to the Verilog-2001 spec, section 9.5:
@@ -256,17 +250,15 @@ module ORC_R32I (
       // Therefore using if statements for equal priority and catching only the
       // OPCODES that are implemented.
       
-
-      r_mem_access <= 1'b0;
-
       if (w_opcode == L_RII) begin
         // Register-Immediate Instructions.
         // Performs ADDI, SLTI, ANDI, ORI, XORI, SLLI, SRLI, SRAI (I=immediate).
         r_rii        <= 1'b1;
         r_inst_data  <= i_inst_read_data;
-        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+                          i_inst_read_data[31:20] };
         r_uimm       <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
-        r_mem_access <= 1'b1;
+        r_reg_access <= 1'b1;
       end
       else begin
         r_rii <= 1'b0;
@@ -277,7 +269,7 @@ module ORC_R32I (
         // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
         r_rro        <= 1'b1;
         r_inst_data  <= i_inst_read_data;
-        r_mem_access <= 1'b1;
+        r_reg_access <= 1'b1;
       end
       else begin
         r_rro <= 1'b0;
@@ -291,7 +283,7 @@ module ORC_R32I (
         r_lui        <= 1'b1;
         r_inst_data  <= i_inst_read_data;
         r_uimm       <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        r_mem_access <= 1'b1;
+        r_reg_access <= 1'b1;
       end
       else begin
         r_lui <= 1'b0;
@@ -306,7 +298,7 @@ module ORC_R32I (
         r_auipc      <= 1'b1;
         r_inst_data  <= i_inst_read_data;
         r_uimm       <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        r_mem_access <= 1'b1;
+        r_reg_access <= 1'b1;
       end
       else begin
         r_auipc <= 1'b0;
@@ -320,8 +312,10 @@ module ORC_R32I (
         // register rd.
         r_jal        <= 1'b1;
         r_inst_data  <= i_inst_read_data;
-        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21], i_inst_read_data[31], i_inst_read_data[19:12], i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
-        r_mem_access <= 1'b1;
+        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21],
+                          i_inst_read_data[31], i_inst_read_data[19:12],
+                          i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
+        r_reg_access <= 1'b1;
       end
       else begin
         r_jal <= 1'b0;
@@ -336,8 +330,9 @@ module ORC_R32I (
         // used as the destination if the result is not required.
         r_jalr       <= 1'b1;
         r_inst_data  <= i_inst_read_data;
-        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
-        r_mem_access <= 1'b1;
+        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12],
+                          i_inst_read_data[31:20] };
+        r_reg_access <= 1'b1;
       end
       else begin
         r_jalr <= 1'b0;
@@ -351,9 +346,12 @@ module ORC_R32I (
         // two registers.
         r_bcc        <= 1'b1;
         r_inst_data  <= i_inst_read_data;
-        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
-        r_uimm       <= { L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
-        r_mem_access <= 1'b0;
+        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], 
+                          i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],
+                          i_inst_read_data[11:8],L_ALL_ZERO[0] };
+        r_uimm       <= { L_ALL_ZERO[31:13], i_inst_read_data[31],i_inst_read_data[7],
+                          i_inst_read_data[30:25],i_inst_read_data[11:8],L_ALL_ZERO[0] };
+        r_reg_access <= 1'b0;
       end
       else begin
         r_bcc <= 1'b0;
@@ -366,8 +364,9 @@ module ORC_R32I (
         // register rd.
         r_lcc        <= 1'b1;
         r_inst_data  <= i_inst_read_data;
-        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
-        r_mem_access <= 1'b0;
+        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+                          i_inst_read_data[31:20] };
+        r_reg_access <= 1'b0;
       end
       else begin
         r_lcc <= 1'b0;
@@ -380,26 +379,32 @@ module ORC_R32I (
         // memory.
         r_scc        <= 1'b1;
         r_inst_data  <= i_inst_read_data;
-        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:25], i_inst_read_data[11:7] };
-        r_mem_access <= 1'b0;
+        r_simm       <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+                          i_inst_read_data[31:25], i_inst_read_data[11:7] };
+        r_reg_access <= 1'b0;
       end
       else begin
         r_scc <= 1'b0;
       end
 
       if (w_opcode == L_FENCE) begin
-        // FENCE
+        // FENCE.
+        // Used to order device I/O and memory accesses as viewed by other 
+        // RISC-V harts and external devices or coprocessors.
         r_fence      <= 1'b1;
-        r_mem_access <= 1'b0;
+        r_reg_access <= 1'b0;
       end
       else begin
         r_fence <= 1'b0;
       end
 
       if (w_opcode == L_SYS) begin
-        // ECALL, EBREAK
+        // ECALL and EBREAK
+        // Instructions are used to access system functionality that might 
+        // require privileged access and are encoded using the I-type instruction
+        // format.
         r_sys        <= 1'b1;
-        r_mem_access <= 1'b0;
+        r_reg_access <= 1'b1;
       end
       else begin
         r_sys <= 1'b0;
@@ -416,7 +421,7 @@ module ORC_R32I (
       r_jal        <= 1'b0;
       r_jalr       <= 1'b0;
       r_bcc        <= 1'b0;
-      r_mem_access <= 1'b0;
+      r_reg_access <= 1'b0;
       r_sys        <= 1'b0;
       r_fence      <= 1'b0;
     end
@@ -444,7 +449,7 @@ module ORC_R32I (
       general_registers2[reset_index] <= L_ALL_ZERO;
     end
     else begin
-      if (w_is_w_destination_index_not_zero == 1'b1 && r_mem_access == 1'b1) begin
+      if (w_is_w_destination_index_not_zero == 1'b1 && r_reg_access == 1'b1) begin
       // Store into general registers. 
       // Independent IF statements for equal priority
         if (r_lui == 1'b1) begin
@@ -475,7 +480,8 @@ module ORC_R32I (
           general_registers2[w_destination_index] <= w_rm_data;
         end
       end
-      else if (r_master_read == 1'b1 && i_master_read_ack == 1'b1 && w_is_r_destination_index_not_zero == 1'b1 && r_mem_access == 1'b0) begin
+      else if (r_master_read == 1'b1 && i_master_read_ack == 1'b1 && 
+        w_is_r_destination_index_not_zero == 1'b1 && r_reg_access == 1'b0) begin
         // Data loaded from memory.
         general_registers1[r_destination_index] <= w_l_data;
         general_registers2[r_destination_index] <= w_l_data;
@@ -519,13 +525,15 @@ module ORC_R32I (
       r_master_write             <= r_scc;
       r_master_write_addr        <= w_master_addr;
       r_master_write_data        <= w_s_data;
-      r_master_write_byte_enable <= w_fct3==0||w_fct3==4 ? ( w_master_addr[1:0]==3 ? 4'b1000 : 
-                                                             w_master_addr[1:0]==2 ? 4'b0100 : 
-                                                             w_master_addr[1:0]==1 ? 4'b0010 : 
-                                                                                     4'b0001 ) :
-                                    w_fct3==1||w_fct3==5 ? ( w_master_addr[1] == 1 ? 4'b1100 :
-                                                                                     4'b0011 ) : 
-                                                                                     4'b1111;
+      r_master_write_byte_enable <= w_fct3==0||w_fct3==4 ? ( 
+                                      w_master_addr[1:0]==3 ? 4'b1000 : 
+                                      w_master_addr[1:0]==2 ? 4'b0100 : 
+                                      w_master_addr[1:0]==1 ? 4'b0010 : 
+                                                              4'b0001 ) :
+                                    w_fct3==1||w_fct3==5 ? ( 
+                                      w_master_addr[1] == 1 ? 4'b1100 :
+                                                              4'b0011 ) :
+                                                              4'b1111;
     end
   end
   assign o_master_write             = r_master_write;
