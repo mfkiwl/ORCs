@@ -78,8 +78,8 @@ module ORC_R32I (
   localparam [6:0] L_LCC   = 7'b0000011; // lxx   imm[11:0],rs1[19:15],funct[14:12],rd[11:7]
   localparam [6:0] L_SCC   = 7'b0100011; // sxx   imm[11:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:0]
   // OpCodes not implemented
-  //localparam [7:0] FCC = 7'b00011_11; // FENCE
-  //localparam [7:0] CCC = 7'b11100_11; // ECALL, EBREAK, CSR
+  localparam [6:0] L_FENCE = 7'b0001111; // FENCE
+  localparam [6:0] L_SYS   = 7'b1110011; // System OPCODES: ECALL, EBREAK, CSR
   // Misc Definitions
   localparam [31:0] L_ALL_ZERO   = 32'h0000_0000;
   localparam [31:0] L_ALL_ONES   = 32'hFFFF_FFFF;
@@ -109,6 +109,8 @@ module ORC_R32I (
   reg         r_scc;
   reg         r_rii;
   reg         r_rro;
+  reg         r_fence;
+  reg         r_sys;
   reg         r_mem_access;
   //, XFCC, XCCC;
   // Program Counter regs
@@ -180,11 +182,9 @@ module ORC_R32I (
   wire w_is_r_destination_index_not_zero = |r_destination_index;
   wire w_is_w_destination_index_not_zero = |r_inst_data[11:7];
   // Ready signals
-  wire w_read_ready            = (!r_master_read & !i_master_read_ack) | i_master_read_ack;
-  wire w_write_ready           = (!r_master_write & !i_master_write_ack) | i_master_write_ack;
-  //wire w_inst_addr_ready       = (!r_program_counter_valid & !i_inst_read_ack) | i_inst_read_ack;
-  wire w_inst_addr_ready       = (w_program_counter_ready & i_inst_read_ack) | !i_inst_read_ack;
-  wire w_decoder_ready         = w_read_ready & !w_jump_request;
+  wire w_read_ready            = !r_master_read | i_master_read_ack;
+  wire w_write_ready           = !r_master_write  | i_master_write_ack;
+  wire w_decoder_ready         = w_read_ready & w_write_ready & !w_jump_request;
   wire w_program_counter_ready = (w_decoder_ready & r_program_counter_valid) | !r_program_counter_valid;
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -241,6 +241,8 @@ module ORC_R32I (
       r_scc        <= 1'b0;
       r_rii        <= 1'b0;
       r_rro        <= 1'b0;
+      r_fence      <= 1'b0;
+      r_sys        <= 1'b0;
       r_simm       <= L_ALL_ZERO;
       r_uimm       <= L_ALL_ZERO;
       r_mem_access <= 1'b0;
@@ -253,6 +255,9 @@ module ORC_R32I (
       // then the statement associated with that case item shall be executed.
       // Therefore using if statements for equal priority and catching only the
       // OPCODES that are implemented.
+      
+
+      r_mem_access <= 1'b0;
 
       if (w_opcode == L_RII) begin
         // Register-Immediate Instructions.
@@ -381,6 +386,24 @@ module ORC_R32I (
       else begin
         r_scc <= 1'b0;
       end
+
+      if (w_opcode == L_FENCE) begin
+        // FENCE
+        r_fence      <= 1'b1;
+        r_mem_access <= 1'b0;
+      end
+      else begin
+        r_fence <= 1'b0;
+      end
+
+      if (w_opcode == L_SYS) begin
+        // ECALL, EBREAK
+        r_sys        <= 1'b1;
+        r_mem_access <= 1'b0;
+      end
+      else begin
+        r_sys <= 1'b0;
+      end
     end
     else begin
       // If Data not valid or if decoder not ready
@@ -394,6 +417,8 @@ module ORC_R32I (
       r_jalr       <= 1'b0;
       r_bcc        <= 1'b0;
       r_mem_access <= 1'b0;
+      r_sys        <= 1'b0;
+      r_fence      <= 1'b0;
     end
   end
 
