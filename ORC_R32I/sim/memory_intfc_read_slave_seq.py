@@ -33,7 +33,7 @@
 # File name     : memory_intfc_read_slave_seq.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/09 22:35:41
+# Last modified : 2020/11/20 01:23:17
 # Project Name  : UVM Python Verification Library
 # Module Name   : memory_intfc_read_slave_seq
 # Description   : Memory Slave Interface Sequence Item.
@@ -49,8 +49,16 @@ class memory_intfc_read_slave_seq(UVMSequenceItem):
 
     def __init__(self, name="memory_intfc_read_slave_seq"):
         super().__init__(name)
-        self.addr = 0  # bit
-        self.data = 0  # logic
+        self.addr   = 0  # Program Counter
+        self.data   = 0  # the instruction
+        self.opcode = "LUI"
+        self.rs1    = 0
+        self.rs2    = 0
+        self.simm   = 0
+        self.uimm   = 0
+        self.rd     = 0
+        self.fct3   = 0
+        self.fct7   = 0
         self.byte_enable = 0  # logic
         self.kind = memory_intfc_read_slave_seq.READ  # kind_e
 
@@ -66,23 +74,23 @@ class memory_intfc_read_slave_seq(UVMSequenceItem):
 
 
     def do_clone(self):
-        new_obj = ubus_transfer()
+        new_obj = memory_intfc_read_slave_seq()
         new_obj.copy(self)
         return new_obj
 
 
-    def convert2string(self):
-        res = "ID: " + str(self.m_transaction_id)
-        res += ", addr: " + str(self.addr) + ", kind: READ"
-        res += ", byte_enable: " + str(self.byte_enable) + ", wait_state: " + str(self.wait_state)
-        res += "\ndata: " + str(self.data)
-        return res
+    #def convert2string(self):
+    #    res = "ID: " + str(self.m_transaction_id)
+    #    res += ", addr: " + str(self.addr) + ", kind: READ"
+    #    res += ", byte_enable: " + str(self.byte_enable)
+    #    res += "\ndata: " + str(self.data)
+    #    return res
 
 
     def convert2string(self):
-        kind = "READ"
-        return sv.sformatf("kind=%s addr=%0h data=%0h byte_enable=%0h",
-                kind, self.addr, self.data, self.byte_enable)
+        kind = "FETCH"
+        return sv.sformatf("\n ======================================= \n            Type  : %s \n  Program Counter : 0h%0h \n      Instruction : 0h%0h \n           OPCODE : %s\n              rs1 : 0d%0d \n              rs2 : 0d%0d \n               rd : 0d%0d \n ======================================= \n ",
+                kind, self.addr, self.data, self.opcode, self.rs1, self.rs2, self.rd)
 
     #endclass: memory_intfc_read_slave_seq
 uvm_object_utils(memory_intfc_read_slave_seq)

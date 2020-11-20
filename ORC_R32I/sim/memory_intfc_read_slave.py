@@ -33,7 +33,7 @@
 # File name     : memory_intfc_read_slave.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/09 22:54:51
+# Last modified : 2020/11/20 01:17:02
 # Project Name  : UVM Python Verification Library
 # Module Name   : memory_intfc_read_slave
 # Description   : Memory Slave Interface driver.
@@ -72,6 +72,7 @@ class memory_intfc_read_slave(UVMDriver):
         #self.vif = memory_intfc_read_slave_if.type_id.create("vif", self)
         self.trig = Event("trans_exec")  # event
         self.tag = "memory_intfc_read_slave_" + name
+        self.data = 0
 
 
     def build_phase(self, phase):
@@ -114,10 +115,13 @@ class memory_intfc_read_slave(UVMDriver):
               #uvm_do_callbacks(memory_intfc_read_slave,memory_intfc_read_slave_cbs,trans_received(self,tr))
               #data = []
               #byte_enable =[]
-              await self.read(self.vif.o_inst_read_addr, tr.data)
+              self.data = 74135 # 32'h0001_2197 (AUIPC)
+              await self.read(self.vif.o_inst_read_addr, self.data)
               #await self.read(tr.addr, data, byte_enable)
               tr.addr = self.vif.o_inst_read_addr
+              tr.addr = self.vif.o_inst_read_addr
               #tr.byte_enable = byte_enable[0]
+              tr.convert2string
               await self.trans_executed(tr)
               #uvm_do_callbacks(memory_intfc_read_slave,memory_intfc_read_slave_cbs,trans_executed(self,tr))
               self.seq_item_port.item_done()
@@ -132,10 +136,6 @@ class memory_intfc_read_slave(UVMDriver):
     #    uvm_info(self.tag, "======================================= ", UVM_MEDIUM)
 
     async def read(self, addr, data):
-        uvm_info(self.tag, " ================================================= ", UVM_MEDIUM)
-        uvm_info(self.tag, "  Reading to address : 0b" + str(addr),        UVM_MEDIUM)
-        uvm_info(self.tag, "                data : 0b" + str(data),        UVM_MEDIUM)
-        uvm_info(self.tag, " ================================================= ", UVM_MEDIUM)
         self.vif.i_inst_read_data <= data
         #self.vif.i_inst_read_byte_enable <= byte_enable
         self.vif.i_inst_read_ack  <= 1
@@ -151,7 +151,7 @@ class memory_intfc_read_slave(UVMDriver):
 
     
     async def trans_executed(self, tr):
-        uvm_info(self.tag, "Finished Memory Interface read to address : " + str(tr.addr), UVM_MEDIUM)
+        uvm_info(self.tag, "Finished Memory Interface read to address : " + str(tr.addr.value), UVM_MEDIUM)
         await Timer(0, "NS")
 
 
