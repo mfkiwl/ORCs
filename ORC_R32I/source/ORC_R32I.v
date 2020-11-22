@@ -45,7 +45,7 @@
 //   for synthesis and building example use the scripts in the build directory. 
 /////////////////////////////////////////////////////////////////////////////////
 module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
-  input i_clk,          // clock
+  input i_clk,        // clock
   input i_reset_sync, // reset
   // Instruction Data Interface
   output        o_inst_read,      // read enable
@@ -108,7 +108,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
   reg         r_rro;
   reg         r_fence;
   reg         r_sys;
-  // General Purpose Registers. Duplicated to index source 1 & 2 at same time.
+  // General Purpose Registers. BRAM array duplicated to index source 1 & 2 at same time.
   reg [31:0] general_registers1 [0:L_REG_LENGTH-1];	// 32x32-bit registers
   reg [31:0] general_registers2 [0:L_REG_LENGTH-1];	// 32x32-bit registers
   reg [4:0]  reset_index = 0;                       // This means the reset needs to be held for at least 32 clocks
@@ -161,7 +161,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
                                                w_fct7[5] ? $signed(w_signed_rs1>>>w_unsigned_rs2_extended[4:0]) :                    
                                                   r_unsigned_rs1>>w_unsigned_rs2_extended[4:0];
   // Jump/Branch-group of instructions (w_opcode==7'b1100011)
-  wire           w_jal = (w_opcode == L_JAL   && r_instruction_valid == 1'b1) ? 1:0;
+  wire        w_jal    = (w_opcode == L_JAL   && r_instruction_valid == 1'b1) ? 1:0;
   wire [31:0] w_j_simm = { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21],
                            i_inst_read_data[31], i_inst_read_data[19:12],
                            i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
@@ -226,7 +226,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
           r_program_counter_valid <= 1'b1;
         end
         r_next_pc_decode <= r_next_pc_fetch;
-        r_pc             <= r_next_pc_decode; // current program counter
+        r_pc             <= r_next_pc_decode;
       end
       if (w_program_counter_ready == 1'b1 && w_instruction_valid == 1'b0) begin
         // When the interface instruction read interface is ready for the next
@@ -251,17 +251,17 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_inst_data  = L_ALL_ZERO;
-      r_jalr       = 1'b0;
-      r_bcc        = 1'b0;
-      r_lcc        = 1'b0;
-      r_scc        = 1'b0;
-      r_rii        = 1'b0;
-      r_rro        = 1'b0;
-      r_fence      = 1'b0;
-      r_sys        = 1'b0;
-      r_simm       = L_ALL_ZERO;
-      r_uimm       = L_ALL_ZERO;
+      r_inst_data = L_ALL_ZERO;
+      r_jalr      = 1'b0;
+      r_bcc       = 1'b0;
+      r_lcc       = 1'b0;
+      r_scc       = 1'b0;
+      r_rii       = 1'b0;
+      r_rro       = 1'b0;
+      r_fence     = 1'b0;
+      r_sys       = 1'b0;
+      r_simm      = L_ALL_ZERO;
+      r_uimm      = L_ALL_ZERO;
     end
     else if (w_decoder_ready == 1'b1 && r_instruction_valid == 1'b1) begin
       // 
@@ -372,12 +372,18 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
     else begin
       // If Data not valid or if decoder not ready
       r_rro   = 1'b0;
-      r_lcc   = 1'b0;
-      r_scc   = 1'b0;
       r_jalr  = 1'b0;
       r_bcc   = 1'b0;
       r_sys   = 1'b0;
       r_fence = 1'b0;
+      if (w_read_ready == 1'b1) begin
+        // Clear external reads signals
+        r_lcc = 1'b0;
+      end
+      if (w_write_ready == 1'b1) begin
+        // Clear external write signals
+        r_scc = 1'b0;
+      end
     end
   end
 
@@ -392,8 +398,9 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
     end
   end
 
-  // wire w_lui   = (w_opcode == L_LUI   && r_instruction_valid == 1'b1) ? 1:0;
-  // wire w_auipc = (w_opcode == L_AUIPC && r_instruction_valid == 1'b1) ? 1:0;
+  // Used for testbench and debugging
+  wire w_lui   = (w_opcode == L_LUI   && r_instruction_valid == 1'b1) ? 1:0;
+  wire w_auipc = (w_opcode == L_AUIPC && r_instruction_valid == 1'b1) ? 1:0;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
@@ -412,17 +419,19 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
         general_registers2[r_destination_index] <= w_l_data;
       end
       else if (w_decoder_valid == 1'b1 && w_instruction_valid == 1'b1) begin
-      // Store into general registers data that required date from rs1 or rs2.
+        // Store into general registers data that required date from rs1 or rs2.
         if (r_jalr == 1'b1) begin
           //  Jump And Link Register(indirect jump instruction).
           general_registers1[w_destination_index] <= r_next_pc_decode;
           general_registers2[w_destination_index] <= r_next_pc_decode;
         end
         if (r_rii == 1'b1) begin
+          // Stores the Register-Immidiate instruction result in the general register
           general_registers1[w_destination_index] <= w_rm_data;
           general_registers2[w_destination_index] <= w_rm_data;
         end
         if (r_rro == 1'b1) begin
+          // Store the Register-Resgister operation result in the general registers
           general_registers1[w_destination_index] <= w_rm_data;
           general_registers2[w_destination_index] <= w_rm_data;
         end
@@ -477,7 +486,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
       r_destination_index <= w_destination_index;
     end
   end
-  assign o_master_read_addr = r_master_read_addr;
+  assign o_master_read_addr = w_master_addr;
   assign o_master_read      = r_master_read;
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -493,6 +502,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
       r_master_write_byte_enable <= 4'h0;
     end
     else if (w_write_ready == 1'b1) begin
+      // Store (write) data in external memory or device.
       r_master_write             <= r_scc;
       r_master_write_addr        <= w_master_addr;
       r_master_write_data        <= w_s_data;
