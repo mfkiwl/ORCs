@@ -30,13 +30,13 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 #################################################################################
-# File name     : memory_intfc_read_slave.py
+# File name     : hbi_driver.py
 # Author        : Jose R Garcia
-# Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/20 01:17:02
-# Project Name  : UVM Python Verification Library
-# Module Name   : memory_intfc_read_slave
-# Description   : Memory Slave Interface driver.
+# Created       : 2020/11/22 12:45:43
+# Last modified : 2020/11/22 12:49:21
+# Project Name  : UVM-Python Verification Library
+# Module Name   : hbi_driver
+# Description   : Handshake Bus Interface Driver.
 #
 # Additional Comments:
 #
@@ -44,11 +44,11 @@
 import cocotb
 from cocotb.triggers import *
 from uvm import *
-from memory_intfc_read_slave_seq import *
-from memory_intfc_read_slave_if import *
+from hbi_seq import *
+from hbi_if import *
 
 
-class memory_intfc_read_slave(UVMDriver):
+class hbi_driver(UVMDriver):
     """         
        Class: Memory Interface Read Slave Driver
         
@@ -68,10 +68,9 @@ class memory_intfc_read_slave(UVMDriver):
              parent: NONE
         """
         self.seq_item_port
-        self.vif = memory_intfc_read_slave_if
-        #self.vif = memory_intfc_read_slave_if.type_id.create("vif", self)
+        self.vif = hbi_if
         self.trig = Event("trans_exec")  # event
-        self.tag = "memory_intfc_read_slave_" + name
+        self.tag = "hbi_" + name
         self.data = 0
 
 
@@ -85,7 +84,7 @@ class memory_intfc_read_slave(UVMDriver):
            Args:
              phase: build_phase
         """
-        #self.vif = memory_intfc_read_slave_if.type_id.create("vif", self)
+
     
     async def run_phase(self, phase):
         """         
@@ -97,15 +96,17 @@ class memory_intfc_read_slave(UVMDriver):
            Args:
              phase: run_phase
         """
-        uvm_info("memory_intfc_read_slave", "memory_intfc_read_slave run_phase started", UVM_MEDIUM)
+        uvm_info("hbi_driver", "hbi_driver run_phase started", UVM_MEDIUM)
         # Initiate Read signals at their reset values.
-        self.vif.i_inst_read_ack <= 0
+        self.vif.i_inst_read_ack  <= 0
         self.vif.i_inst_read_data <= 0
 
         while True:
             
-            await self.drive_delay() # Wait for the clock's rising edge
-            if (self.vif.i_reset_sync == 0 and self.vif.o_inst_read == 1):
+            await self.clock_delay() # Wait for the clock's rising edge
+
+            if (self.vif.i_reset_sync == 0 and self.vif.o_read == 1):
+              # If out of reset and read request seen get next sequence item.
               tr = []
               await self.seq_item_port.get_next_item(tr)
               tr = tr[0]
@@ -129,7 +130,7 @@ class memory_intfc_read_slave(UVMDriver):
         self.vif.i_inst_read_ack  <= 1
 
    
-    async def drive_delay(self):
+    async def clock_delay(self):
         await RisingEdge(self.vif.i_clk)
         await Timer(1, "NS")
 
@@ -145,4 +146,4 @@ class memory_intfc_read_slave(UVMDriver):
         await Timer(0, "NS")
 
 
-uvm_component_utils(memory_intfc_read_slave)
+uvm_component_utils(hbi_driver)

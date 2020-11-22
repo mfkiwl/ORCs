@@ -30,50 +30,51 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 #################################################################################
-# File name     : tb_env_config.py
+# File name     : hbi_if.py
 # Author        : Jose R Garcia
-# Created       : 2020/11/05 20:08:35
-# Last modified : 2020/11/22 12:41:18
+# Created       : 2020/11/22 10:20:00
+# Last modified : 2020/11/22 10:22:36
 # Project Name  : UVM Python Verification Library
-# Module Name   : tb_env_config
-# Description   : Test Bench Configurations
+# Module Name   : hbi_if
+# Description   : Handshake Bus virtual interface
 #
 # Additional Comments:
 #
 #################################################################################
 import cocotb
 from cocotb.triggers import *
-from uvm.tlm1 import *
-from uvm.macros import *
-from memory_intfc_read_slave_agent import *
-from memory_intfc_read_slave_config import *
-from memory_intfc_read_slave_seq import *
+from uvm.base.sv import sv_if
 
-from mem_model import *
-
-class tb_env_config(UVMEnv):
+class hbi_if(sv_if):
     """         
-       Class: Memory Interface Read Slave Monitor
+       Class: Memory Interface Read Slave Interface
         
-       Definition: Contains functions, tasks and methods of this agent's monitor.
+       Definition: Contains functions, tasks and methods of this agent's virtual 
+                   interface.
     """
 
-    def __init__(self, name, parent=None):
-        super().__init__(name, parent)
+
+    def __init__(self, dut, bus_map=None):
         """         
            Function: new
           
-           Definition: Read slave agent constructor.
+           Definition: Read slave interface constructor.
 
            Args:
-             name: This agents name.
-             parent: NONE
+             dut: The dut it connects to. Passed in by cocotb top.
+             bus_map: Naming of the bus signals.
         """
-        self.inst_agent_cfg = memory_intfc_read_slave_config.type_id.create("inst_agent_cfg", self)
-        self.reg_block = reg_block.type_id.create("reg_block", self)
-        self.reg_block = reg_block.build  # passive
-        self.has_scoreboard = 0           # scoreboard on/off
-        self.tag = "TB_ENV_CONFIG"
+        if bus_map is None:
+            #  If NONE then create the default.
+            bus_map = {"i_clk"       : "i_clk", 
+                       "i_reset_sync": "i_reset_sync",
+                       "o_read"      : "o_read", 
+                       "i_read_ack"  : "i_read_ack",
+                       "o_read_addr" : "o_read_addr", 
+                       "i_read_data" : "i_read_data"}
+        super().__init__(dut, "",bus_map)
+        #self.rst = dut.i_reset_sync
 
-
-uvm_component_utils(tb_env_config)
+    
+    async def start(self):
+        await Timer(0)

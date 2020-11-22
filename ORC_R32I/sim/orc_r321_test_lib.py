@@ -1,3 +1,46 @@
+#################################################################################
+# BSD 3-Clause License
+# 
+# Copyright (c) 2020, Jose R. Garcia
+# All rights reserved.
+# 
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions are met:
+# 
+# 1. Redistributions of source code must retain the above copyright notice, this
+#    list of conditions and the following disclaimer.
+# 
+# 2. Redistributions in binary form must reproduce the above copyright notice,
+#    this list of conditions and the following disclaimer in the documentation
+#    and/or other materials provided with the distribution.
+# 
+# 3. Neither the name of the copyright holder nor the names of its
+#    contributors may be used to endorse or promote products derived from
+#    this software without specific prior written permission.
+# 
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+# AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+# DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE
+# FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL
+# DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
+# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER
+# CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY,
+# OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
+# OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+#
+#################################################################################
+# File name     : orc_r32i_test_lib.py
+# Author        : Jose R Garcia
+# Created       : 2020/11/05 19:26:21
+# Last modified : 2020/11/20 01:23:17
+# Project Name  : ORCs
+# Module Name   : orc_r32i_test_lib
+# Description   : ORC_R32I Test Library
+#
+# Additional Comments:
+#   Contains the test base and tests.
+#################################################################################
 import cocotb
 from cocotb.triggers import Timer
 
@@ -10,7 +53,11 @@ from orc_r321_tb_env import *
 from mem_model import *
 
 class orc_r321_test_base(UVMTest):
-
+    """         
+       Class: Memory Interface Read Slave Monitor
+        
+       Definition: Contains functions, tasks and methods of this agent's monitor.
+    """
 
     def __init__(self, name="orc_r321_test_base", parent=None):
         super().__init__(name, parent)
@@ -55,29 +102,9 @@ class orc_r321_test_base(UVMTest):
 
 
     def end_of_elaboration_phase(self, phase):
-        # Set verbosity for the bus monitor for this demo
-        # if self.ubus_example_tb0.ubus0.bus_monitor is not None:
-        #     self.ubus_example_tb0.ubus0.bus_monitor.set_report_verbosity_level(UVM_FULL)
+        # Print topology
         uvm_info(self.get_type_name(),
             sv.sformatf("Printing the test topology :\n%s", self.sprint(self.printer)), UVM_LOW)
-
-
-    #  task run_phase(uvm_phase phase)
-    #    //set a drain-time for the environment if desired
-    #    phase.phase_done.set_drain_time(this, 50)
-    #  endtask : run_phase
-
-    # def extract_phase(self, phase):
-    #     self.err_msg = ""
-    #     if self.ubus_example_tb0.scoreboard0.sbd_error:
-    #         self.test_pass = False
-    #         self.err_msg += '\nScoreboard error flag set'
-    #     if self.ubus_example_tb0.scoreboard0.num_writes == 0:
-    #         self.test_pass = False
-    #         self.err_msg += '\nnum_writes == 0 in scb'
-    #     if self.ubus_example_tb0.scoreboard0.num_init_reads == 0:
-    #         self.test_pass = False
-    #         self.err_msg += '\nnum_init_reads == 0 in scb'
 
 
     def report_phase(self, phase):
@@ -88,7 +115,6 @@ class orc_r321_test_base(UVMTest):
                 self.err_msg)
 
 
-    #endclass : ubus_example_base_test
 uvm_component_utils(orc_r321_test_base)
 
 
@@ -100,13 +126,43 @@ class orc_r321_reg_test(orc_r321_test_base):
 
 
     async def run_phase(self, phase):
+
         phase.raise_objection(self, "test_read OBJECTED")
-        slave_sqr = self.tb_env.inst_agent.sqr
+        # Call the sequencer and create a new transaction
         slave_seq = read_sequence("read_seq")
-        #slave_seq.data = 5
+        slave_seq.data = 74135 # 32'h0001_2197 
+        slave_seq.opcaode = "AUIPC" 
+        #
+        slave_sqr = self.tb_env.inst_agent.sqr
         slave_proc = cocotb.fork(slave_seq.start(slave_sqr))
-        await slave_proc
-        #await sv.fork_join_any(slave_proc)
+        
+        #await slave_proc
+        phase.drop_objection(self, "test_read drop objection")
+
+        #
+        phase.raise_objection(self, "test_read OBJECTED")
+        # Call the sequencer and create a new transaction
+        slave_seq = read_sequence("read_seq")
+        slave_seq.data = 6460215235 # 32'h0001_2197 
+        slave_seq.opcaode = "RII" 
+        #
+        slave_sqr = self.tb_env.inst_agent.sqr
+        #slave_proc = cocotb.fork(slave_seq.start(slave_sqr))
+        
+        #await slave_proc
+        phase.drop_objection(self, "test_read drop objection")
+
+        #
+        phase.raise_objection(self, "test_read OBJECTED")
+        # Call the sequencer and create a new transaction
+        slave_seq = read_sequence("read_seq")
+        slave_seq.data = 2193720595 # 32'h0001_2197 
+        slave_seq.opcaode = "RII" 
+        #
+        slave_sqr = self.tb_env.inst_agent.sqr
+        #slave_proc = cocotb.fork(slave_seq.start(slave_sqr))
+                
+        #await slave_proc
         phase.drop_objection(self, "test_read drop objection")
 
 

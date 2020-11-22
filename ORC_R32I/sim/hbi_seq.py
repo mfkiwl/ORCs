@@ -30,55 +30,41 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 #################################################################################
-# File name     : memory_intfc_read_slave_seq.py
+# File name     : hbi_seq.py
 # Author        : Jose R Garcia
-# Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/20 01:23:17
+# Created       : 2020/11/22 10:24:13
+# Last modified : 2020/11/22 10:31:58
 # Project Name  : UVM Python Verification Library
-# Module Name   : memory_intfc_read_slave_seq
-# Description   : Memory Slave Interface Sequence Item.
+# Module Name   : hbi_seq, hbi_base_sequence
+# Description   : Handshake Bus Sequence Item and Sequences.
 #
 # Additional Comments:
 #   Create a a read or write transaction.
 #################################################################################
 from uvm import *
 
-class memory_intfc_read_slave_seq(UVMSequenceItem):
+class hbi_seq(UVMSequenceItem):
     """         
        Class: Memory Interface Sequence Item
         
        Definition: Contains functions, tasks and methods of this
     """
     READ = 0
+    WRITE = 1
 
-    def __init__(self, name="memory_intfc_read_slave_seq"):
+    def __init__(self, name="hbi_seq"):
         super().__init__(name)
-        self.addr   = 0  # Program Counter
-        self.data   = 0  # the instruction
-        self.opcode = "LUI"
-        self.rs1    = 0
-        self.rs2    = 0
-        self.simm   = 0
-        self.uimm   = 0
-        self.rd     = 0
-        self.fct3   = 0
-        self.fct7   = 0
-        self.byte_enable = 0  # logic
-        self.kind = memory_intfc_read_slave_seq.READ  # kind_e
+        self.addr            = 0      # Program Counter
+        self.data            = 0      # the instructio
+        self.byte_enable     = 0      # logic
+        self.type            = "READ" # type_e
+         self.transmit_delay = 0      # delay ins
 
 
     def do_copy(self, rhs):
         self.addr   = rhs.addr
         self.data   = rhs.data
-        self.opcode = rhs.opcode
-        self.rs1    = rhs.rs1
-        self.rs2    = rhs.rs2
-        self.simm   = rhs.simm
-        self.uimm   = rhs.uimm
-        self.rd     = rhs.rd
-        self.fct3   = rhs.fct3
-        self.fct7   = rhs.fct7
-        self.kind   = rhs.kind
+        self.type   = rhs.type
         self.byte_enable = rhs.byte_enable
         #for val in rhs.data:
         #    self.data.append(val)
@@ -87,42 +73,39 @@ class memory_intfc_read_slave_seq(UVMSequenceItem):
 
 
     def do_clone(self):
-        new_obj = memory_intfc_read_slave_seq()
+        new_obj = hbi_seq()
         new_obj.copy(self)
         return new_obj
 
 
     def convert2string(self):
-        kind = "FETCH"
-        return sv.sformatf("\n ======================================= \n            Type  : %s \n  Program Counter : 0h%0h \n      Instruction : 0h%0h \n           OPCODE : %s\n              rs1 : 0d%0d \n              rs2 : 0d%0d \n               rd : 0d%0d \n ======================================= \n ",
-                kind, self.addr, self.data, self.opcode, self.rs1, self.rs2, self.rd)
+        return sv.sformatf("\n ======================================= \n     Type  : %s \n  Address : 0h%0h \n     Data : 0h%0h \n ======================================= \n ",
+                self.type, self.addr, self.data)
 
-    #endclass: memory_intfc_read_slave_seq
-uvm_object_utils(memory_intfc_read_slave_seq)
+    #endclass: hbi_seq
+uvm_object_utils(hbi_seq)
 
 
-class memory_intfc_read_slave_base_sequence(UVMSequence):
+class hbi_base_sequence(UVMSequence):
 
-    def __init__(self, name="memory_intfc_read_slave_base_sequence"):
+    def __init__(self, name="hbi_base_sequence"):
         super().__init__(name)
         self.set_automatic_phase_objection(1)
-        self.req = memory_intfc_read_slave_seq()
-        self.rsp = memory_intfc_read_slave_seq()
+        self.req = hbi_seq()
+        self.rsp = hbi_seq()
 
 
-class read_sequence(memory_intfc_read_slave_base_sequence):
+class read_sequence(hbi_base_sequence):
 
     def __init__(self, name="read_byte_seq"):
-        memory_intfc_read_slave_base_sequence.__init__(self, name)
+        hbi_base_sequence.__init__(self, name)
         self.data = 0
-        self.opcode = " "
         self.transmit_delay = 0
 
 
     async def body(self):
         # Build the sequence item
         self.req.data = self.data
-        self.req.opcode = self.opcode
 
         await uvm_do_with(self, self.req)
 
@@ -136,3 +119,30 @@ class read_sequence(memory_intfc_read_slave_base_sequence):
 
 
 uvm_object_utils(read_sequence)
+
+class write_sequence(hbi_base_sequence):
+
+    def __init__(self, name="read_byte_seq"):
+        hbi_base_sequence.__init__(self, name)
+        self.data = 0
+        self.addr = 0
+        self.transmit_delay = 0
+
+
+    async def body(self):
+        # Build the sequence item
+        self.req.data = self.data
+        self.req.addr = self.addr
+
+        await uvm_do_with(self, self.req)
+
+        rsp = []
+        await self.get_response(rsp)
+        self.rsp = rsp[0]
+        uvm_info(self.get_type_name(),
+            sv.sformatf("%s read : addr = `x{}, data[0] = `x{}",
+                self.get_sequence_path(), self.rsp.addr, self.rsp.data[0]),
+            UVM_HIGH)
+
+
+uvm_object_utils(write_sequence)

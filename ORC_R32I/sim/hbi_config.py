@@ -30,50 +30,56 @@
 # OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 #
 #################################################################################
-# File name     : tb_env_config.py
+# File name     : hbi_config.py
 # Author        : Jose R Garcia
-# Created       : 2020/11/05 20:08:35
-# Last modified : 2020/11/22 12:41:18
-# Project Name  : UVM Python Verification Library
-# Module Name   : tb_env_config
-# Description   : Test Bench Configurations
+# Created       : 2020/11/22 10:13:34
+# Last modified : 2020/11/22 10:17:58
+# Project Name  : UVM-Python Verification Library
+# Module Name   : hbi_config
+# Description   : Handshake Bus Interface configuration object.
 #
 # Additional Comments:
 #
 #################################################################################
-import cocotb
-from cocotb.triggers import *
-from uvm.tlm1 import *
+from uvm.base.uvm_object import *
 from uvm.macros import *
-from memory_intfc_read_slave_agent import *
-from memory_intfc_read_slave_config import *
-from memory_intfc_read_slave_seq import *
+from hbi_if import *
 
-from mem_model import *
-
-class tb_env_config(UVMEnv):
+class hbi_config(UVMObject):
     """         
-       Class: Memory Interface Read Slave Monitor
+       Class: Memory Interface Read Slave Agent Config
         
-       Definition: Contains functions, tasks and methods of this agent's monitor.
+       Definition: Configuration of the agent.
     """
 
-    def __init__(self, name, parent=None):
-        super().__init__(name, parent)
+    
+    def __init__(self, name="hbi_config"):
+        super().__init__(name)
         """         
            Function: new
           
-           Definition: Read slave agent constructor.
+           Definition: Read slave config constructor.
 
            Args:
              name: This agents name.
              parent: NONE
         """
-        self.inst_agent_cfg = memory_intfc_read_slave_config.type_id.create("inst_agent_cfg", self)
-        self.reg_block = reg_block.type_id.create("reg_block", self)
-        self.reg_block = reg_block.build  # passive
-        self.has_scoreboard = 0           # scoreboard on/off
-        self.tag = "TB_ENV_CONFIG"
+        self.vif              = None  # hbi_if
+        self.has_memory_model = None
+        self.has_driver       = None
+        self.has_monitor      = None
 
 
-uvm_component_utils(tb_env_config)
+    def build_phase(self, phase):
+        """         
+           Function: build_phase
+          
+           Definition: Create a new read slave agent with all its components.
+
+           Args:
+             phase: build_phase
+        """
+        self.vif = hbi_if.type_id.create("vif", self)
+
+
+uvm_object_utils(hbi_config)
