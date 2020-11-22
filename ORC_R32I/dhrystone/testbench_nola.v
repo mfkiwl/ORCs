@@ -33,7 +33,7 @@ module testbench;
 	wire [3:0]  o_master_write_byte_enable;
 
 	// DUT
-	ORC_R32I uut (
+	ORC_R32I #(32'h0001_0000) uut (
 	  //
 	  .i_clk(clk),
 	  .i_reset_sync(!resetn),
@@ -100,8 +100,9 @@ module testbench;
 		if (o_master_write) begin
 		  case (o_master_write_addr)
 		  	32'h1000_0000: begin
-		  		$write("%c", o_master_write_data);
-		  		$fflush();
+		  		$display("%h", o_master_write_data);
+		  		// $write("%c", o_master_write_data);
+		  		// $fflush();
 		  	end
 		  	default: begin
 		  	  if (o_master_write_byte_enable[0]) 
