@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/23 00:37:55
+// Last modified : 2020/11/23 00:46:23
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a Verilog implementation of the riscv32i
@@ -370,6 +370,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
     end
     else begin
       // If Data not valid or if decoder not ready
+      r_rii   = 1'b0;
       r_rro   = 1'b0;
       r_jalr  = 1'b0;
       r_bcc   = 1'b0;
