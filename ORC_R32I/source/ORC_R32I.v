@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/19 15:08:14
+// Last modified : 2020/11/23 00:37:55
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a Verilog implementation of the riscv32i
@@ -88,12 +88,11 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
   // Instruction Fetch
-  wire w_instruction_valid = i_inst_read_ack; // & o_inst_read;
-  reg  r_instruction_valid;
+  reg r_inst_read_ack;
   // Program Counter Process
   reg [31:0] r_next_pc_fetch;         // 32-bit program counter t+2
   reg [31:0] r_next_pc_decode;        // 32-bit program counter t+1
-  reg [31:0] r_pc;		                // 32-bit program counter t+0
+  reg [31:0] r_pc;                    // 32-bit program counter t+0
   reg        r_program_counter_valid; // Program Counter Valid
   // Decoder Process Signals
   wire [6:0]  w_opcode = i_inst_read_data[6:0];
@@ -161,7 +160,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
                                                w_fct7[5] ? $signed(w_signed_rs1>>>w_unsigned_rs2_extended[4:0]) :                    
                                                   r_unsigned_rs1>>w_unsigned_rs2_extended[4:0];
   // Jump/Branch-group of instructions (w_opcode==7'b1100011)
-  wire        w_jal    = (w_opcode == L_JAL   && r_instruction_valid == 1'b1) ? 1:0;
+  wire        w_jal    = (w_opcode == L_JAL   && r_inst_read_ack == 1'b1) ? 1:0;
   wire [31:0] w_j_simm = { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21],
                            i_inst_read_data[31], i_inst_read_data[19:12],
                            i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
@@ -211,10 +210,10 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
       r_next_pc_decode        <= L_ALL_ZERO;
       r_pc                    <= L_ALL_ZERO;
       r_program_counter_valid <= 1'b0;
-      r_instruction_valid     <= 1'b0;
+      r_inst_read_ack     <= 1'b0;
     end
     else begin
-      if (w_program_counter_ready == 1'b1 && w_instruction_valid == 1'b1) begin
+      if (w_program_counter_ready == 1'b1 && i_inst_read_ack == 1'b1) begin
         // When there is a jump request update to the jump value else increment 
         // count by 4 and update the program counter.
         if (w_jump_request == 1'b1) begin
@@ -228,7 +227,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
         r_next_pc_decode <= r_next_pc_fetch;
         r_pc             <= r_next_pc_decode;
       end
-      if (w_program_counter_ready == 1'b1 && w_instruction_valid == 1'b0) begin
+      if (w_program_counter_ready == 1'b1 && i_inst_read_ack == 1'b0) begin
         // When the interface instruction read interface is ready for the next
         // address but the program counter is yet to be updated.
         r_program_counter_valid <= 1'b1;
@@ -240,7 +239,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
       end
     end
     // Register instruction valid so that the first instruction is not process twice.
-    r_instruction_valid <= w_instruction_valid;
+    r_inst_read_ack <= i_inst_read_ack;
   end
   assign o_inst_read_addr = r_next_pc_fetch;
   assign o_inst_read      = r_program_counter_valid & !w_jump_request;
@@ -263,7 +262,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
       r_simm      = L_ALL_ZERO;
       r_uimm      = L_ALL_ZERO;
     end
-    else if (w_decoder_ready == 1'b1 && r_instruction_valid == 1'b1) begin
+    else if (w_decoder_ready == 1'b1 && r_inst_read_ack == 1'b1) begin
       // 
       
       if (w_opcode == L_RII && w_i_destination_index_not_zero == 1'b1) begin
@@ -398,9 +397,9 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
     end
   end
 
-  // Used for testbench and debugging
-  wire w_lui   = (w_opcode == L_LUI   && r_instruction_valid == 1'b1) ? 1:0;
-  wire w_auipc = (w_opcode == L_AUIPC && r_instruction_valid == 1'b1) ? 1:0;
+  // Used for test bench debugging
+  wire w_lui   = (w_opcode == L_LUI   && r_inst_read_ack == 1'b1) ? 1:0;
+  wire w_auipc = (w_opcode == L_AUIPC && r_inst_read_ack == 1'b1) ? 1:0;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
@@ -418,7 +417,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
         general_registers1[r_destination_index] <= w_l_data;
         general_registers2[r_destination_index] <= w_l_data;
       end
-      else if (w_decoder_valid == 1'b1 && w_instruction_valid == 1'b1) begin
+      else if (w_decoder_valid == 1'b1 && i_inst_read_ack == 1'b1) begin
         // Store into general registers data that required date from rs1 or rs2.
         if (r_jalr == 1'b1) begin
           //  Jump And Link Register(indirect jump instruction).
@@ -436,7 +435,7 @@ module ORC_R32I #(parameter P_FETCH_COUNTER_RESET = 32'h0000_0000)(
           general_registers2[w_destination_index] <= w_rm_data;
         end
       end
-      else if (w_i_destination_index_not_zero == 1'b1 && r_instruction_valid == 1'b1) begin
+      else if (w_i_destination_index_not_zero == 1'b1 && r_inst_read_ack == 1'b1) begin
         // Store in memory data direct from the instruction.
         if (w_opcode == L_LUI) begin
           // Load Upper Immediate.
