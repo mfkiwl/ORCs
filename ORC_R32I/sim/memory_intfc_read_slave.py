@@ -33,7 +33,7 @@
 # File name     : memory_intfc_read_slave.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/20 01:17:02
+# Last modified : 2020/11/23 00:30:10
 # Project Name  : UVM Python Verification Library
 # Module Name   : memory_intfc_read_slave
 # Description   : Memory Slave Interface driver.
@@ -68,10 +68,9 @@ class memory_intfc_read_slave(UVMDriver):
              parent: NONE
         """
         self.seq_item_port
-        self.vif = memory_intfc_read_slave_if
-        #self.vif = memory_intfc_read_slave_if.type_id.create("vif", self)
+        self.vif  = memory_intfc_read_slave_if
         self.trig = Event("trans_exec")  # event
-        self.tag = "memory_intfc_read_slave_" + name
+        self.tag  = "memory_intfc_read_slave_" + name
         self.data = 0
 
 
@@ -85,9 +84,8 @@ class memory_intfc_read_slave(UVMDriver):
            Args:
              phase: build_phase
         """
-        #self.vif = memory_intfc_read_slave_if.type_id.create("vif", self)
     
-    async def run_phase(self, phase):
+    async def main_phase(self, phase):
         """         
            Function: run_phase
           
@@ -99,39 +97,69 @@ class memory_intfc_read_slave(UVMDriver):
         """
         uvm_info("memory_intfc_read_slave", "memory_intfc_read_slave run_phase started", UVM_MEDIUM)
         # Initiate Read signals at their reset values.
-        self.vif.i_inst_read_ack <= 0
+        self.vif.i_inst_read_ack  <= 0
         self.vif.i_inst_read_data <= 0
 
         while True:
+            if (self.vif.i_reset_sync == 1):
+                self.vif.i_inst_read_ack  <= 0
+                self.vif.i_inst_read_data <= 0
+                await self.drive_delay() # Wait for the clock's rising edge
+
+            if (self.vif.i_reset_sync == 0 and self.vif.o_inst_read == 1 and self.vif.i_inst_read_ack == 0):
+                tr = []
+                await self.seq_item_port.get_next_item(tr)
+                phase.raise_objection(self, "test_read objection")
+                tr_copy = tr[0]
+                
+                await self.drive_delay()
+  
+                await self.read(tr_copy.data)
+  
+                tr_copy.addr = self.vif.o_inst_read_addr
+  
+                #await self.trans_executed(tr_copy)
+                
+                self.seq_item_port.item_done()
+                phase.drop_objection(self, "test_read drop objection")
+                #self.trig.set()
+
+
+            if (self.vif.i_reset_sync == 0 and self.vif.o_inst_read == 1 and self.vif.i_inst_read_ack == 1):
+                tr = []
+                await self.seq_item_port.get_next_item(tr)
+                phase.raise_objection(self, "test_read objection")
+                tr_copy = tr[0]
+                
+                await self.drive_delay()
+  
+                await self.read(tr_copy.data)
+  
+                tr_copy.addr = self.vif.o_inst_read_addr
+  
+                #await self.trans_executed(tr_copy)
+                
+                self.seq_item_port.item_done()
+                phase.drop_objection(self, "test_read drop objection")
+                #self.trig.set()
+
             
-            await self.drive_delay() # Wait for the clock's rising edge
-            if (self.vif.i_reset_sync == 0 and self.vif.o_inst_read == 1):
-              tr = []
-              await self.seq_item_port.get_next_item(tr)
-              tr = tr[0]
-              
-              await self.trans_received(tr)
+            if (self.vif.i_reset_sync == 0 and self.vif.o_inst_read == 0):
+                await self.drive_delay() # Wait for the clock's rising edge
+                self.vif.i_inst_read_ack <= 0
 
-              await self.read(tr.data)
-
-              tr.addr = self.vif.o_inst_read_addr
-              tr.addr = self.vif.o_inst_read_addr
-
-              await self.trans_executed(tr)
-              
-              self.seq_item_port.item_done()
-              self.trig.set()
 
 
     async def read(self, data):
         self.vif.i_inst_read_data <= data
         #self.vif.i_inst_read_byte_enable <= byte_enable
         self.vif.i_inst_read_ack  <= 1
+        await Timer(0, "NS")
 
    
     async def drive_delay(self):
         await RisingEdge(self.vif.i_clk)
-        await Timer(1, "NS")
+        await Timer(0, "NS")
 
     
     async def trans_received(self, tr):
@@ -141,7 +169,7 @@ class memory_intfc_read_slave(UVMDriver):
     
     async def trans_executed(self, tr):
         # uvm_info(self.tag, "Finished Memory Interface read to address : " + str(tr.addr.value), UVM_MEDIUM)
-        tr.convert2string
+        # tr.convert2string
         await Timer(0, "NS")
 
 

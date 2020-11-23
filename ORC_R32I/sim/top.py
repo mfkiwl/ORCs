@@ -21,30 +21,15 @@ async def initial_run_test(dut, vif):
 
 
 async def initial_reset(vif):
-    await Timer(5, "NS")
+    await Timer(0, "NS")
     vif.i_reset_sync <= 1
-    await Timer(51, "NS")
+    await Timer(330, "NS") # clock*32 + 1 to clear all general register which are BRAM
     vif.i_reset_sync <= 0
 
 
-##async def always_clk(dut, ncycles):
-##    #dut.i_clk <= 0
-##    n = 0
-##    print("EEE starting always_clk")
-##    clock = Clock(dut.i_clk, 21, units="ns")  # Create a 48Mhz clock
-##    while n < 2*ncycles:
-##        n += 1
-##        await RisingEdge(dut.i_clk)
-# async def run_phase(self, phase):
-#     if (vif.i_reset_sync == 0):
-#         phase.raise_objection(self, " objects", 1)
-#         slave_proc = cocotb.fork(memory_intfc_read_slave_seq.start(sqr))
-#         await Timer(1000, "NS")
-#         phase.drop_objection(self)
-
 @cocotb.test()
 async def top(dut):
-    """ ORC R32I Test Bench """
+    """ ORC R32I Test Bench Top """
 
     vif = memory_intfc_read_slave_if(dut)
     clock = Clock(dut.i_clk, 10, units="ns")  # Create a 100Mhz clock

@@ -1,18 +1,18 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Fri Nov 20 04:46:11 2020
+[*] Mon Nov 23 04:26:25 2020
 [*]
 [dumpfile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/dump.vcd"
-[dumpfile_mtime] "Fri Nov 20 04:43:03 2020"
-[dumpfile_size] 498373
+[dumpfile_mtime] "Mon Nov 23 04:26:09 2020"
+[dumpfile_size] 7897324
 [savefile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/wave.gtkw"
-[timestart] 0
+[timestart] 287200
 [size] 1366 721
 [pos] -1 -1
-*-14.883986 66200 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-15.064209 350001 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top.
 [sst_width] 207
-[signals_width] 278
+[signals_width] 375
 [sst_expanded] 1
 [sst_vpaned_height] 186
 @200
@@ -49,6 +49,13 @@ top.ORC_R32I.w_program_counter_ready
 @200
 -Decoder Proc
 @28
+top.ORC_R32I.w_lui
+top.ORC_R32I.w_auipc
+top.ORC_R32I.w_jal
+@29
+top.ORC_R32I.r_rii
+top.ORC_R32I.r_rro
+@28
 top.ORC_R32I.r_scc
 top.ORC_R32I.r_bcc
 top.ORC_R32I.r_jalr
@@ -61,7 +68,7 @@ top.ORC_R32I.r_uimm[31:0]
 top.ORC_R32I.w_decoder_ready
 @200
 -GPRegisters Proc
-@23
+@22
 top.ORC_R32I.general_registers1(0)[31:0]
 top.ORC_R32I.general_registers1(1)[31:0]
 top.ORC_R32I.general_registers1(2)[31:0]

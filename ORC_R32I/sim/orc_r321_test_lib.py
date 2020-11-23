@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/20 01:23:17
+# Last modified : 2020/11/23 00:13:52
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -100,7 +100,6 @@ class orc_r321_test_base(UVMTest):
         self.printer.knobs.depth = 3
 
 
-
     def end_of_elaboration_phase(self, phase):
         # Print topology
         uvm_info(self.get_type_name(),
@@ -127,43 +126,34 @@ class orc_r321_reg_test(orc_r321_test_base):
 
     async def run_phase(self, phase):
 
-        phase.raise_objection(self, "test_read OBJECTED")
-        # Call the sequencer and create a new transaction
-        slave_seq = read_sequence("read_seq")
-        slave_seq.data = 74135 # 32'h0001_2197 
-        slave_seq.opcaode = "AUIPC" 
-        #
         slave_sqr = self.tb_env.inst_agent.sqr
-        slave_proc = cocotb.fork(slave_seq.start(slave_sqr))
         
-        #await slave_proc
-        phase.drop_objection(self, "test_read drop objection")
+        slave_seq0 = read_sequence("slave_seq0")
+        slave_seq1 = read_sequence("slave_seq1")
+        slave_seq2 = read_sequence("slave_seq2")
 
-        #
-        phase.raise_objection(self, "test_read OBJECTED")
         # Call the sequencer and create a new transaction
-        slave_seq = read_sequence("read_seq")
-        slave_seq.data = 6460215235 # 32'h0001_2197 
-        slave_seq.opcaode = "RII" 
-        #
-        slave_sqr = self.tb_env.inst_agent.sqr
-        #slave_proc = cocotb.fork(slave_seq.start(slave_sqr))
+        slave_seq0.data = 74135 # 32'h0001_2197 
+        slave_seq0.opcaode = "AUIPC" 
+        #slave_seq.convert2string()
+        await slave_seq0.start(slave_sqr)
+
+        #await Timer(0, "NS")
+
+        # Call the sequencer and create a new transaction
+        slave_seq1.data = 646021523 # 32'h0001_2197 
+        slave_seq1.opcaode = "RII"
+        #slave_seq.convert2string()
+        await slave_seq1.start(slave_sqr)
         
-        #await slave_proc
-        phase.drop_objection(self, "test_read drop objection")
+        #await Timer(0, "NS")
 
-        #
-        phase.raise_objection(self, "test_read OBJECTED")
         # Call the sequencer and create a new transaction
-        slave_seq = read_sequence("read_seq")
-        slave_seq.data = 2193720595 # 32'h0001_2197 
-        slave_seq.opcaode = "RII" 
-        #
-        slave_sqr = self.tb_env.inst_agent.sqr
-        #slave_proc = cocotb.fork(slave_seq.start(slave_sqr))
-                
-        #await slave_proc
-        phase.drop_objection(self, "test_read drop objection")
-
+        slave_seq2 = read_sequence("slave_seq2")
+        slave_seq2.data = 646021523 # 32'h0001_2197 
+        slave_seq2.opcaode = "RII"
+        await slave_seq2.start(slave_sqr)
+        
+        #await Timer(0, "NS")
 
 uvm_component_utils(orc_r321_reg_test)

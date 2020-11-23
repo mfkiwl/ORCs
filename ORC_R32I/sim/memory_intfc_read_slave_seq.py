@@ -33,7 +33,7 @@
 # File name     : memory_intfc_read_slave_seq.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/20 01:23:17
+# Last modified : 2020/11/22 23:04:47
 # Project Name  : UVM Python Verification Library
 # Module Name   : memory_intfc_read_slave_seq
 # Description   : Memory Slave Interface Sequence Item.
@@ -105,14 +105,14 @@ class memory_intfc_read_slave_base_sequence(UVMSequence):
 
     def __init__(self, name="memory_intfc_read_slave_base_sequence"):
         super().__init__(name)
-        self.set_automatic_phase_objection(1)
+        #self.set_automatic_phase_objection(1)
         self.req = memory_intfc_read_slave_seq()
         self.rsp = memory_intfc_read_slave_seq()
 
 
 class read_sequence(memory_intfc_read_slave_base_sequence):
 
-    def __init__(self, name="read_byte_seq"):
+    def __init__(self, name="read_sequence"):
         memory_intfc_read_slave_base_sequence.__init__(self, name)
         self.data = 0
         self.opcode = " "
@@ -124,15 +124,7 @@ class read_sequence(memory_intfc_read_slave_base_sequence):
         self.req.data = self.data
         self.req.opcode = self.opcode
 
-        await uvm_do_with(self, self.req)
-
-        rsp = []
-        await self.get_response(rsp)
-        self.rsp = rsp[0]
-        uvm_info(self.get_type_name(),
-            sv.sformatf("%s read : addr = `x{}, data[0] = `x{}",
-                self.get_sequence_path(), self.rsp.addr, self.rsp.data[0]),
-            UVM_HIGH)
+        await uvm_do_with(self, self.req) # start_item 
 
 
 uvm_object_utils(read_sequence)
