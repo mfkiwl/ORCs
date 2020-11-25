@@ -33,7 +33,7 @@
 # File name     : memory_intfc_read_slave.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/23 00:30:10
+# Last modified : 2020/11/24 01:08:25
 # Project Name  : UVM Python Verification Library
 # Module Name   : memory_intfc_read_slave
 # Description   : Memory Slave Interface driver.
@@ -101,56 +101,30 @@ class memory_intfc_read_slave(UVMDriver):
         self.vif.i_inst_read_data <= 0
 
         while True:
+            # await self.drive_delay()
             if (self.vif.i_reset_sync == 1):
                 self.vif.i_inst_read_ack  <= 0
                 self.vif.i_inst_read_data <= 0
                 await self.drive_delay() # Wait for the clock's rising edge
 
-            if (self.vif.i_reset_sync == 0 and self.vif.o_inst_read == 1 and self.vif.i_inst_read_ack == 0):
-                tr = []
-                await self.seq_item_port.get_next_item(tr)
-                phase.raise_objection(self, "test_read objection")
-                tr_copy = tr[0]
-                
-                await self.drive_delay()
-  
-                await self.read(tr_copy.data)
-  
-                tr_copy.addr = self.vif.o_inst_read_addr
-  
-                #await self.trans_executed(tr_copy)
-                
-                self.seq_item_port.item_done()
-                phase.drop_objection(self, "test_read drop objection")
-                #self.trig.set()
+            elif (self.vif.o_inst_read == 1):
+                    tr = []
+                    await self.seq_item_port.get_next_item(tr)
+                    phase.raise_objection(self, "test_read objection")
+                    tr_copy = tr[0]
+                    tr_copy.addr = self.vif.o_inst_read_addr
+                    await self.read_response(tr_copy.data)
+                    #await self.trans_executed(tr_copy)
+                    self.seq_item_port.item_done()
+                    phase.drop_objection(self, "test_read drop objection")
 
-
-            if (self.vif.i_reset_sync == 0 and self.vif.o_inst_read == 1 and self.vif.i_inst_read_ack == 1):
-                tr = []
-                await self.seq_item_port.get_next_item(tr)
-                phase.raise_objection(self, "test_read objection")
-                tr_copy = tr[0]
-                
-                await self.drive_delay()
-  
-                await self.read(tr_copy.data)
-  
-                tr_copy.addr = self.vif.o_inst_read_addr
-  
-                #await self.trans_executed(tr_copy)
-                
-                self.seq_item_port.item_done()
-                phase.drop_objection(self, "test_read drop objection")
-                #self.trig.set()
-
-            
-            if (self.vif.i_reset_sync == 0 and self.vif.o_inst_read == 0):
+            elif (self.vif.o_inst_read == 0):
                 await self.drive_delay() # Wait for the clock's rising edge
-                self.vif.i_inst_read_ack <= 0
+                self.vif.i_inst_read_ack <= 0           
 
 
-
-    async def read(self, data):
+    async def read_response(self, data):
+        await self.drive_delay()
         self.vif.i_inst_read_data <= data
         #self.vif.i_inst_read_byte_enable <= byte_enable
         self.vif.i_inst_read_ack  <= 1

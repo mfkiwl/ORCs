@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/23 00:13:52
+# Last modified : 2020/11/24 23:42:58
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -138,22 +138,26 @@ class orc_r321_reg_test(orc_r321_test_base):
         #slave_seq.convert2string()
         await slave_seq0.start(slave_sqr)
 
-        #await Timer(0, "NS")
+        slave_seq0.data = 74135 # 32'h0001_2197 
+        slave_seq0.opcaode = "AUIPC" 
+        #slave_seq.convert2string()
+        await slave_seq0.start(slave_sqr)
 
         # Call the sequencer and create a new transaction
         slave_seq1.data = 646021523 # 32'h0001_2197 
         slave_seq1.opcaode = "RII"
         #slave_seq.convert2string()
         await slave_seq1.start(slave_sqr)
-        
-        #await Timer(0, "NS")
 
         # Call the sequencer and create a new transaction
-        slave_seq2 = read_sequence("slave_seq2")
-        slave_seq2.data = 646021523 # 32'h0001_2197 
-        slave_seq2.opcaode = "RII"
+        slave_seq2.data = 2181145347 # 32'h0001_2197 
+        slave_seq2.opcaode = "LCC"
         await slave_seq2.start(slave_sqr)
         
-        #await Timer(0, "NS")
+        slave_seq0.data = 74135 # 32'h0001_2197 
+        slave_seq0.opcaode = "AUIPC" 
+        #slave_seq.convert2string()
+        await slave_seq0.start(slave_sqr)
+        
 
 uvm_component_utils(orc_r321_reg_test)
