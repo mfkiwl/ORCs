@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/24 23:42:58
+# Last modified : 2020/11/25 14:39:01
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -159,5 +159,9 @@ class orc_r321_reg_test(orc_r321_test_base):
         #slave_seq.convert2string()
         await slave_seq0.start(slave_sqr)
         
+        slave_seq0.data = 74135 # 32'h0001_2197
+        slave_seq0.opcaode = "AUIPC" 
+        #slave_seq.convert2string()
+        await slave_seq0.start(slave_sqr)
 
 uvm_component_utils(orc_r321_reg_test)
