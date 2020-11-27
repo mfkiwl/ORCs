@@ -1,0 +1,10 @@
+{signal: [
+  {name: 'i_clk', wave: 'n.....|........'},
+  {name: 'i_inst_read', wave: '01.0..|1...01.0'},
+  {name: 'i_inst_read_ack', wave: '0.1.0.|.1...010'},
+  {name: 'i_inst_read_addr[31:0]', wave: 'x3.x..|4.56x7.x', data: ['addr', 'addr', 'addr', 'addr', 'addr']},
+  {name: 'i_inst_read_data[31:0]', wave: 'x.3.x.|.4.56x7x', data: ['data', 'data', 'data', 'data', 'data']},
+  {name: 'i_inst_read_byte_enable[3:0]', wave: 'x3.x..|.4.56x7x', data: ['be', 'be', 'be', 'be', 'be']}
+]}
+
+// https://wavedrom.com/editor.html
