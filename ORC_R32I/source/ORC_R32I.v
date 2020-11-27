@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/26 02:28:08
+// Last modified : 2020/11/26 23:55:58
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -82,9 +82,8 @@ module ORC_R32I #(
   localparam [6:0] L_LCC   = 7'b0000011; // imm[11:0],rs1[19:15],funct[14:12],rd[11:7]
   localparam [6:0] L_SCC   = 7'b0100011; // imm[11:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:0]
   // Misc Definitions
-  localparam [31:0] L_ALL_ZERO   = 32'h0000_0000;
-  localparam [31:0] L_ALL_ONES   = 32'hFFFF_FFFF;
-  localparam        L_REG_LENGTH = 32;
+  localparam [31:0] L_ALL_ZERO = 32'h0000_0000;
+  localparam [31:0] L_ALL_ONES = 32'hFFFF_FFFF;
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
@@ -108,9 +107,9 @@ module ORC_R32I #(
   reg         r_rii;
   reg         r_rro;
   // General Purpose Registers. BRAM array duplicated to index source 1 & 2 at same time.
-  reg [31:0] general_registers1 [0:L_REG_LENGTH-1];	// 32x32-bit registers
-  reg [31:0] general_registers2 [0:L_REG_LENGTH-1];	// 32x32-bit registers
-  reg [4:0]  reset_index = 0;                       // This means the reset needs to be held for at least 32 clocks
+  reg [31:0] general_registers1 [0:31];	// 32x32-bit registers
+  reg [31:0] general_registers2 [0:31];	// 32x32-bit registers
+  reg [4:0]  reset_index = 0;           // This means the reset needs to be held for at least 32 clocks
   // Memory Master Read and Write Process
   reg        r_master_read;
   reg [31:0] r_master_read_addr;
@@ -118,7 +117,6 @@ module ORC_R32I #(
   reg [31:0] r_master_write_addr;
   reg [31:0] r_master_write_data;
   reg [3:0]  r_master_write_byte_enable;
-  reg [4:0]  r_destination_index;
   // Instruction Fields wires
   wire [4:0] w_destination_index = r_inst_data[11:7];
   wire [4:0] w_source1_pointer   = i_inst_read_data[19:15];
@@ -188,11 +186,11 @@ module ORC_R32I #(
   wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro | r_lcc | r_scc;
   wire w_decoder_ready = (!w_decoder_valid & w_read_ready & w_write_ready);// | w_decoder_valid;
   // Program Counter Process
-  wire w_decoder_opcode = w_opcode == L_RII ? 1:
-                          w_opcode == L_RRO ? 1:
-                          w_opcode == L_LCC ? 1:
-                          w_opcode == L_SCC ? 1:
-                          w_opcode == L_BCC ? 1:
+  wire w_decoder_opcode = w_opcode == L_RII  ? 1:
+                          w_opcode == L_RRO  ? 1:
+                          w_opcode == L_LCC  ? 1:
+                          w_opcode == L_SCC  ? 1:
+                          w_opcode == L_BCC  ? 1:
                           w_opcode == L_JALR ? 1:0;
   wire w_program_counter_ready = (w_decoder_ready & r_program_counter_valid) & !w_decoder_opcode | 
                                  !r_program_counter_valid;
@@ -279,104 +277,103 @@ module ORC_R32I #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_jalr              <= 1'b0;
-      r_bcc               <= 1'b0;
-      r_lcc               <= 1'b0;
-      r_scc               <= 1'b0;
-      r_rii               <= 1'b0;
-      r_rro               <= 1'b0;
-      r_simm              <= L_ALL_ZERO;
-      r_uimm              <= L_ALL_ZERO;
-      r_destination_index <= 5'h0;
-    end
-    else if (w_decoder_ready == 1'b1 && r_inst_read_ack == 1'b1) begin
-      // 
-      if (w_opcode == L_RII && w_i_destination_index_not_zero == 1'b1) begin
-        // Register-Immediate Instructions.
-        // Performs ADDI, SLTI, ANDI, ORI, XORI, SLLI, SRLI, SRAI (I=immediate).
-        r_rii  <= 1'b1;
-        r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], r_inst_data[31:20] };
-        r_uimm <= { L_ALL_ZERO[31:12], r_inst_data[31:20] };
-      end
-      else begin
-        r_rii <= 1'b0;
-      end
-
-      if ( w_opcode == L_RRO && w_i_destination_index_not_zero == 1'b1) begin
-        // Register-Register Operations
-        // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
-        r_rro <= 1'b1;
-      end
-      else begin
-        r_rro <= 1'b0;
-      end
-
-      if (w_opcode == L_JALR && w_i_destination_index_not_zero == 1'b1) begin
-        //  Jump And Link Register(indirect jump instruction).
-        // The target address is obtained by adding the sign-extended 12-bit
-        // I-immediate to the register rs1, then setting the least-significant bit of
-        // the result to zero. The address of the instruction following the jump
-        // (r_next_pc_decode) is written to register rd. Register x0 can be
-        // used as the destination if the result is not required.
-        r_jalr <= 1'b1;
-        r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12],
-                    r_inst_data[31:20] };
-      end
-      else begin
-        r_jalr <= 1'b0;
-      end
-        
-      if (w_opcode == L_BCC) begin
-        // Branches Conditional to Comparisons.
-        // The 12-bit B-immediate encodes signed offsets in multiples of 2 bytes.
-        // The offset is sign-extended and added to the address of the branch 
-        // instruction to give the target address. Branch instructions compare 
-        // two registers.
-        r_bcc  <= 1'b1;
-        r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], 
-                   r_inst_data[31],r_inst_data[7],r_inst_data[30:25],
-                   r_inst_data[11:8],L_ALL_ZERO[0] };
-      end
-      else begin
-        r_bcc <= 1'b0;
-      end
-
-      if ( w_opcode == L_LCC && w_i_destination_index_not_zero == 1'b1) begin
-        // Load, Conditional to Comparisons.
-        // The effective address is obtained by adding register rs1 to the 
-        // sign-extended 12-bit offset. Loads copy a value from memory to 
-        // register rd.
-        r_lcc  <= 1'b1;
-        r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
-                   r_inst_data[31:20] };
-      end
-      else begin
-        r_lcc <= 1'b0;
-      end
-
-      if (w_opcode == L_SCC && w_i_destination_index_not_zero == 1'b1) begin
-        // Store, Conditional to Comparisons.
-        // The effective address is obtained by adding register rs1 to the 
-        // sign-extended 12-bit offset. Stores copy the value in register rs2 to
-        // memory.
-        r_scc   <= 1'b1;
-        r_simm  <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
-                     r_inst_data[31:25], r_inst_data[11:7] };
-      end
-      else begin
-        r_scc <= 1'b0;
-      end
-      // 
-      r_destination_index  <= w_destination_index;
-    end
-    else begin
-      // If Data not valid or if decoder not ready
-      r_rii  <= 1'b0;
-      r_rro  <= 1'b0;
       r_jalr <= 1'b0;
       r_bcc  <= 1'b0;
       r_lcc  <= 1'b0;
       r_scc  <= 1'b0;
+      r_rii  <= 1'b0;
+      r_rro  <= 1'b0;
+      r_simm <= L_ALL_ZERO;
+      r_uimm <= L_ALL_ZERO;
+    end
+    else begin
+      if (w_decoder_ready == 1'b1 && r_inst_read_ack == 1'b1) begin
+        // 
+        if (w_opcode == L_RII && w_i_destination_index_not_zero == 1'b1) begin
+          // Register-Immediate Instructions.
+          // Performs ADDI, SLTI, ANDI, ORI, XORI, SLLI, SRLI, SRAI (I=immediate).
+          r_rii  <= 1'b1;
+          r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], r_inst_data[31:20] };
+          r_uimm <= { L_ALL_ZERO[31:12], r_inst_data[31:20] };
+        end
+        else begin
+          r_rii <= 1'b0;
+        end
+  
+        if ( w_opcode == L_RRO && w_i_destination_index_not_zero == 1'b1) begin
+          // Register-Register Operations
+          // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
+          r_rro <= 1'b1;
+        end
+        else begin
+          r_rro <= 1'b0;
+        end
+  
+        if (w_opcode == L_JALR && w_i_destination_index_not_zero == 1'b1) begin
+          //  Jump And Link Register(indirect jump instruction).
+          // The target address is obtained by adding the sign-extended 12-bit
+          // I-immediate to the register rs1, then setting the least-significant bit of
+          // the result to zero. The address of the instruction following the jump
+          // (r_next_pc_decode) is written to register rd. Register x0 can be
+          // used as the destination if the result is not required.
+          r_jalr <= 1'b1;
+          r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12],
+                      r_inst_data[31:20] };
+        end
+        else begin
+          r_jalr <= 1'b0;
+        end
+          
+        if (w_opcode == L_BCC) begin
+          // Branches Conditional to Comparisons.
+          // The 12-bit B-immediate encodes signed offsets in multiples of 2 bytes.
+          // The offset is sign-extended and added to the address of the branch 
+          // instruction to give the target address. Branch instructions compare 
+          // two registers.
+          r_bcc  <= 1'b1;
+          r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], 
+                     r_inst_data[31],r_inst_data[7],r_inst_data[30:25],
+                     r_inst_data[11:8],L_ALL_ZERO[0] };
+        end
+        else begin
+          r_bcc <= 1'b0;
+        end
+  
+        if ( w_opcode == L_LCC && w_i_destination_index_not_zero == 1'b1) begin
+          // Load, Conditional to Comparisons.
+          // The effective address is obtained by adding register rs1 to the 
+          // sign-extended 12-bit offset. Loads copy a value from memory to 
+          // register rd.
+          r_lcc  <= 1'b1;
+          r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+                     r_inst_data[31:20] };
+        end
+        else begin
+          r_lcc <= 1'b0;
+        end
+  
+        if (w_opcode == L_SCC && w_i_destination_index_not_zero == 1'b1) begin
+          // Store, Conditional to Comparisons.
+          // The effective address is obtained by adding register rs1 to the 
+          // sign-extended 12-bit offset. Stores copy the value in register rs2 to
+          // memory.
+          r_scc   <= 1'b1;
+          r_simm  <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+                       r_inst_data[31:25], r_inst_data[11:7] };
+        end
+        else begin
+          r_scc <= 1'b0;
+        end
+      end
+      else begin
+        // If Data not valid or if decoder not ready
+        r_rii  <= 1'b0;
+        r_rro  <= 1'b0;
+        r_jalr <= 1'b0;
+        r_bcc  <= 1'b0;
+        r_lcc  <= 1'b0;
+        r_scc  <= 1'b0;
+      end
     end
   end
 
@@ -392,9 +389,9 @@ module ORC_R32I #(
   end
 
   // Used for test bench debugging
-  //wire w_lui   = (w_opcode == L_LUI   && r_inst_read_ack == 1'b1) ? 1:0;
-  //wire w_auipc = (w_opcode == L_AUIPC && r_inst_read_ack == 1'b1) ? 1:0;
-  //
+  // wire w_lui   = (w_opcode == L_LUI   && r_inst_read_ack == 1'b1) ? 1:0;
+  // wire w_auipc = (w_opcode == L_AUIPC && r_inst_read_ack == 1'b1) ? 1:0;
+  
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
   // Description : Updates the contents of the general purpose registers.
@@ -410,18 +407,18 @@ module ORC_R32I #(
       // from rs1 or rs2.
       if (r_jalr == 1'b1) begin
         //  Jump And Link Register(indirect jump instruction).
-        general_registers1[r_destination_index] = r_next_pc_decode;
-        general_registers2[r_destination_index] = r_next_pc_decode;
+        general_registers1[w_destination_index] = r_next_pc_decode;
+        general_registers2[w_destination_index] = r_next_pc_decode;
       end
       if (r_rii == 1'b1) begin
         // Stores the Register-Immediate instruction result in the general register
-        general_registers1[r_destination_index] = w_rm_data;
-        general_registers2[r_destination_index] = w_rm_data;
+        general_registers1[w_destination_index] = w_rm_data;
+        general_registers2[w_destination_index] = w_rm_data;
       end
       if (r_rro == 1'b1) begin
         // Store the Register-Register operation result in the general registers
-        general_registers1[r_destination_index] = w_rm_data;
-        general_registers2[r_destination_index] = w_rm_data;
+        general_registers1[w_destination_index] = w_rm_data;
+        general_registers2[w_destination_index] = w_rm_data;
       end
     end
     else if (w_i_destination_index_not_zero == 1'b1 && r_inst_read_ack == 1'b1) begin
@@ -454,8 +451,8 @@ module ORC_R32I #(
     end
     else if (w_load_valid == 1'b1 && r_inst_read_ack == 1'b0) begin
       // Data loaded from memory.
-      general_registers1[r_destination_index] = w_l_data;
-      general_registers2[r_destination_index] = w_l_data;
+      general_registers1[w_destination_index] = w_l_data;
+      general_registers2[w_destination_index] = w_l_data;
     end
   end
 

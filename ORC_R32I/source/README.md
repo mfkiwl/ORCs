@@ -5,7 +5,7 @@ Document        | Metadata
 _Version_       | v0.0.1
 _Prepared by_   | Jose R Garcia
 _Created_       | 2020/11/26 18:14:45
-_Last modified_ | 2020/11/26 18:14:45
+_Last modified_ | 2020/11/26 23:18:53
 _Project_       | ORCs
 
 ## Overview
@@ -14,7 +14,23 @@ Verilog code for a FIR filter. As new values are fed through the input the filte
 
 ## Table Of Contents
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --> <!-- /TOC -->
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --> - [ORC_R32I Synthesizable Unit Specification](#orcr32i-synthesizable-unit-specification)
+  - [Overview](#overview)
+  - [Table Of Contents](#table-of-contents)
+  - [1 Syntax and Abbreviations](#1-syntax-and-abbreviations)
+  - [2 Design](#2-design)
+  - [3 Clocks and Resets](#3-clocks-and-resets)
+  - [4 Interfaces](#4-interfaces)
+    - [4.1 Instruction HBI Master Read](#41-instruction-hbi-master-read)
+    - [4.2 Memory and I/O HBI Master Read](#42-memory-and-io-hbi-master-read)
+    - [4.3 Memory and I/O HBI Master Write](#43-memory-and-io-hbi-master-write)
+  - [5 Generic Parameters](#5-generic-parameters)
+  - [6 Register Space](#6-register-space)
+    - [6.1 General Register _n_](#61-general-register-n)
+  - [7 Directory Structure](#7-directory-structure)
+  - [8 Simulation](#8-simulation)
+  - [9 Synthesis](#9-synthesis)
+  - [10 Build](#10-build)<!-- /TOC -->
 
  ## 1 Syntax and Abbreviations
 
