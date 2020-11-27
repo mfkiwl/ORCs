@@ -10,14 +10,14 @@ from memory_intfc_read_slave_seq import *
 from memory_intfc_read_slave_agent import *
 from memory_intfc_read_slave_config import *
 from tb_env_config import *
-from orc_r321_tb_env import *
-from orc_r321_test_lib import *
+from orc_r32i_tb_env import *
+from orc_r32i_test_lib import *
 
 async def initial_run_test(dut, vif):
     from uvm.base import UVMCoreService
     cs_ = UVMCoreService.get()
     UVMConfigDb.set(None, "*", "vif", vif)
-    await run_test("orc_r321_reg_test")
+    await run_test("orc_r32i_reg_test")
 
 
 async def initial_reset(vif):
