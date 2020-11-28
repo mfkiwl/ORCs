@@ -34,16 +34,20 @@ Verilog code for a FIR filter. As new values are fed through the input the filte
 
  ## 1 Syntax and Abbreviations
 
-Characters  | Definition
+Term        | Definition
 :---------- | :----------------------------
 0b0         | Binary number syntax
 0x0000_0000 | Hexadecimal number syntax
+bit         | Single binary digit (0 or 1)
+BYTE        | 8-bits wide data unit
+DWORD       | 32-bits wide data unit
+FPGA        | Field Programmable Gate Array
 HART        | Hardware thread
 HBI         | Handshake Bus Interface
 ISA         | Instruction Set Architecture
 LSB         | Least Significant bit
 MSB         | Most Significant bit
-FPGA        | Field Programmable Gate Array
+
 
 ## 2 Design
 
@@ -70,7 +74,7 @@ The ORC_R32I employs independent interfaces for reading the memory containing th
 
 Signals            | Initial State | Dimension | Direction | Definition
 :----------------- | :-----------: | :-------: | :-------: | :-----------------------
-`o_inst_read`      |      0b0      |   1-bit   |    Out    | Read request signal.
+`o_inst_read_stb`  |      0b0      |   1-bit   |    Out    | Read request signal.
 `i_inst_read_ack`  |      N/A      |   1-bit   |    In     | Read acknowledge signal.
 `o_inst_read_addr` |  0x0000_0000  | `[31:0]`  |    Out    | Read Address signal.
 `i_inst_read_data` |      N/A      | `[31:0]`  |    In     | Read response data.
@@ -79,7 +83,7 @@ Signals            | Initial State | Dimension | Direction | Definition
 
 Signals              | Initial State | Dimension | Direction | Definition
 :------------------- | :-----------: | :-------: | :-------: | :-----------------------
-`o_master_read`      |      0b0      |   1-bit   |    Out    | Read request signal.
+`o_master_read_stb`  |      0b0      |   1-bit   |    Out    | Read request signal.
 `i_master_read_ack`  |      N/A      |   1-bit   |    In     | Read acknowledge signal.
 `o_master_read_addr` |  0x0000_0000  | `[31:0]`  |    Out    | Read Address signal.
 `i_master_read_data` |      N/A      | `[31:0]`  |    In     | Read response data.
@@ -88,7 +92,7 @@ Signals              | Initial State | Dimension | Direction | Definition
 
 Signals                      | Initial State | Dimension | Direction | Definition
 :--------------------------- | :-----------: | :-------: | :-------: | :------------------------
-`o_master_write`             |      0b0      |   1-bit   |    Out    | Write request signal.
+`o_master_write_stb`         |      0b0      |   1-bit   |    Out    | Write request signal.
 `i_master_write_ack`         |      N/A      |   1-bit   |    In     | Write acknowledge signal.
 `o_master_write_addr`        |  0x0000_0000  | `[31:0]`  |    Out    | Write Address signal.
 `i_master_read_data`         |      N/A      | `[31:0]`  |    In     | Write response data.
@@ -122,18 +126,23 @@ Bits | Access |    Reset    | Description
 
 Simulation scripts assumes _Icarus Verilog_ (iverilog) as the simulation tool. From the /sim directory run make. Options available are
 
-Command    | Description
-:--------- | :--------------------------------------------------------------------
-make all   | cleans, compiles and runs the test bench, then it loads the waveform.
-make test  | compiles the test bench and UUT
-make run   | runs the simulation
-make wave  | loads the waveform in gtkwave
-make clean | cleans all the compile and simulation products
+Command              | Description
+:------------------- | :--------------------------------------------------------------------
+`SIM=verilator make` | cleans, compiles and runs the test bench, then it loads the waveform.
+`make clean`         | cleans all the compile and simulation products
 
 ## 9 Synthesis
 
 Synthesis scripts assume _Yosys_ as the tool for synthesizing code and _Lattice ICE HX-8K_ as the target FPGA device.
 
+Command              | Description
+:------------------- | :-----------------------------------------------------
+`yosys syn_ice40.ys` | runs synthesis scripts.
+
 ## 10 Build
 
 Build scripts are written for the Icestorm tool-chain. The target device is the hx8kboard sold by Lattice.
+
+Command    | Description
+:--------- | :-----------------------------------------------------
+`make all` | cleans, compiles and runs synthesis and build scripts.
