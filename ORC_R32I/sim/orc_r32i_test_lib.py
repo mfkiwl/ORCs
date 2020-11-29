@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/26 23:42:45
+# Last modified : 2020/11/29 09:43:44
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -138,7 +138,7 @@ class orc_r32i_reg_test(orc_r32i_test_base):
 
         slave_seq2 = read_sequence("slave_seq2")
         slave_seq2.data = 2193720595
-        slave_seq2.opcaode = "AUIPC" 
+        slave_seq2.opcaode = "RII" 
 
         slave_seq3 = read_sequence("slave_seq3")
         slave_seq3.data = 83479
@@ -157,7 +157,7 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         slave_seq6.opcaode = "LCC"
 
         # Call the sequencer
-        await slave_seq0.start(slave_sqr)
+        #await slave_seq0.start(slave_sqr)
         await slave_seq0.start(slave_sqr)
 
         #await slave_seq1.start(slave_sqr)
@@ -166,11 +166,11 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         #await slave_seq2.start(slave_sqr)
         await slave_seq2.start(slave_sqr)
         
-        await slave_seq3.start(slave_sqr)
+        #await slave_seq3.start(slave_sqr)
         await slave_seq3.start(slave_sqr)
 
         #await slave_seq4.start(slave_sqr)
-        await slave_seq4.start(slave_sqr)
+        #await slave_seq4.start(slave_sqr)
 
         #await slave_seq5.start(slave_sqr)
         await slave_seq5.start(slave_sqr)
