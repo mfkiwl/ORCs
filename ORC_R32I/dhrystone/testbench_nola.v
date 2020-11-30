@@ -16,61 +16,61 @@ module testbench;
   
 	// Signals Definitions
 	// Instruction interface
-	wire        o_inst_read;
+	wire        o_inst_read_stb;
 	reg         i_inst_read_ack;
 	wire [31:0] o_inst_read_addr;
 	reg  [31:0] i_inst_read_data;
 	// Read Interface
-	wire        o_master_read;
+	wire        o_master_read_stb;
 	reg         i_master_read_ack;
 	wire [31:0] o_master_read_addr;
 	reg  [31:0] i_master_read_data;
 	// Write Interface
-	wire        o_master_write;
+	wire        o_master_write_stb;
 	reg         i_master_write_ack;
 	wire [31:0] o_master_write_addr;
 	wire [31:0] o_master_write_data;
-	wire [3:0]  o_master_write_byte_enable;
+	wire [3:0]  o_master_write_sel;
 
 	// DUT
 	ORC_R32I #(32'h0001_0000) uut (
 	  //
 	  .i_clk(clk),
 	  .i_reset_sync(!resetn),
-      // Instruction Data Interface
-      .o_inst_read(o_inst_read),           // read enable
-      .i_inst_read_ack(i_inst_read_ack),   // acknowledge 
-      .o_inst_read_addr(o_inst_read_addr), // address
-      .i_inst_read_data(i_inst_read_data), // data
-      // Master Read Interface
-      .o_master_read(o_master_read),           // read enable
-      .i_master_read_ack(i_master_read_ack),   // acknowledge 
-      .o_master_read_addr(o_master_read_addr), // address
-      .i_master_read_data(i_master_read_data), // data
-      // Master Write Interface
-      .o_master_write(o_master_write),                        // write enable
-      .i_master_write_ack(i_master_write_ack),                // acknowledge 
-      .o_master_write_addr(o_master_write_addr),              // address
-      .o_master_write_data(o_master_write_data),              // data
-      .o_master_write_byte_enable(o_master_write_byte_enable) // byte enable
+    // Instruction Data Interface
+    .o_inst_read_stb(o_inst_read_stb),           // read enable
+    .i_inst_read_ack(i_inst_read_ack),   // acknowledge 
+    .o_inst_read_addr(o_inst_read_addr), // address
+    .i_inst_read_data(i_inst_read_data), // data
+    // Master Read Interface
+    .o_master_read_stb(o_master_read_stb),           // read enable
+    .i_master_read_ack(i_master_read_ack),   // acknowledge 
+    .o_master_read_addr(o_master_read_addr), // address
+    .i_master_read_data(i_master_read_data), // data
+    // Master Write Interface
+    .o_master_write_stb(o_master_write_stb),                        // write enable
+    .i_master_write_ack(i_master_write_ack),                // acknowledge 
+    .o_master_write_addr(o_master_write_addr),              // address
+    .o_master_write_data(o_master_write_data),              // data
+    .o_master_write_sel(o_master_write_sel) // byte enable
 	);
 
 	reg [7:0] memory [0:256*1024-1];
 	initial $readmemh("dhry.hex", memory);
 
 	always @(posedge clk) begin
-      if (!resetn) begin
-		//
-        i_inst_read_data <= 0;
-        i_inst_read_ack <= 0;
-        //
-        i_master_read_data <= 0;
-        i_master_read_ack <= 0;
-		//
-        i_master_write_ack <= 0;
+    if (!resetn) begin
+	    //
+      i_inst_read_data <= 0;
+      i_inst_read_ack <= 0;
+      //
+      i_master_read_data <= 0;
+      i_master_read_ack <= 0;
+		  //
+      i_master_write_ack <= 0;
 	  end
 	  else begin
-		if (o_inst_read) begin
+		if (o_inst_read_stb) begin
 			// Core is fetchin instructions
 			i_inst_read_data[ 7: 0] <= memory[o_inst_read_addr + 0];
 			i_inst_read_data[15: 8] <= memory[o_inst_read_addr + 1];
@@ -84,7 +84,7 @@ module testbench;
           i_inst_read_ack  <= 0;
 		end
 
-		if (o_master_read) begin
+		if (o_master_read_stb) begin
 		  // Core is fetchin from memory
 		  i_master_read_data[ 7: 0] <= memory[o_master_read_addr + 0];
 		  i_master_read_data[15: 8] <= memory[o_master_read_addr + 1];
@@ -97,7 +97,7 @@ module testbench;
 		  i_master_read_ack  <= 0;
 		end
 
-		if (o_master_write) begin
+		if (o_master_write_stb) begin
 		  case (o_master_write_addr)
 		  	32'h1000_0000: begin
 		  		$display("%h", o_master_write_data);
@@ -105,13 +105,13 @@ module testbench;
 		  		// $fflush();
 		  	end
 		  	default: begin
-		  	  if (o_master_write_byte_enable[0]) 
+		  	  if (o_master_write_sel[0]) 
 			  	  memory[o_master_write_addr + 0] <= o_master_write_data[ 7: 0];
-		  	  if (o_master_write_byte_enable[1]) 
+		  	  if (o_master_write_sel[1]) 
 			  	  memory[o_master_write_addr + 1] <= o_master_write_data[15: 8];
-		  	  if (o_master_write_byte_enable[2]) 
+		  	  if (o_master_write_sel[2]) 
 			  	  memory[o_master_write_addr + 2] <= o_master_write_data[23:16];
-		  	  if (o_master_write_byte_enable[3]) 
+		  	  if (o_master_write_sel[3]) 
 			  	  memory[o_master_write_addr + 3] <= o_master_write_data[31:24];
 
 		  	end
