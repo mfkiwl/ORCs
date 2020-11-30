@@ -1,0 +1,1343 @@
+Archive member included to satisfy reference by file (symbol)
+
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-errno.o)
+                              syscalls.o (__errno)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-exit.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o (exit)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-impure.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-exit.o) (_global_impure_ptr)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-init.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o (__libc_init_array)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-malloc.o)
+                              dhry_1.o (malloc)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-malloc.o) (_malloc_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memset.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o (memset)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mlock.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o) (__malloc_lock)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-printf.o)
+                              dhry_1.o (printf)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putchar.o)
+                              dhry_1.o (putchar)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putc.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putchar.o) (_putc_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o)
+                              dhry_1.o (puts)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sbrkr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o) (_sbrk_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcmp.o)
+                              dhry_2.o (strcmp)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strlen.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o) (strlen)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-printf.o) (_vfprintf_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wbuf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putc.o) (__swbuf_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wsetup.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__swsetup_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-exit.o) (__call_exitprocs)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fflush.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (_fflush_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putc.o) (__sinit)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fini.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o) (__libc_fini_array)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-freer.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-malloc.o) (_free_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o) (__sfvwrite_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fwalk.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o) (_fwalk)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (_ldtoa_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-localeconv.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (_localeconv_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-localeconv.o) (__global_locale)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-makebuf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wsetup.o) (__smakebuf_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mbtowc_r.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o) (__ascii_mbtowc)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memchr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (memchr)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o) (memcpy)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memmove-stub.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o) (memmove)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o) (_Balloc)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reallocr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o) (_realloc_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reent.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sbrkr.o) (errno)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-s_frexp.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (frexp)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sprintf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o) (sprintf)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o) (__sread)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcpy.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o) (strcpy)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strncpy.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (strncpy)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sprintf.o) (_svfprintf_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__sprint_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wctomb_r.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o) (__ascii_wctomb)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-writer.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o) (_write_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o) (__assert_func)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-atexit.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o) (atexit)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-callocr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o) (_calloc_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-closer.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o) (_close_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ctype_.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o) (_ctype_)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fclose.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o) (_fclose_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fiprintf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o) (fiprintf)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fputwc.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o) (_fputwc_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fstatr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-makebuf.o) (_fstat_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-isattyr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-makebuf.o) (_isatty_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-lseekr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o) (_lseek_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-readr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o) (_read_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfiprintf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o) (__ssprint_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wcrtomb.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fputwc.o) (_wcrtomb_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-abort.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o) (abort)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__atexit.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-atexit.o) (__register_exitproc)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signal.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-abort.o) (raise)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signalr.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signal.o) (_kill_r)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__udivdi3)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__umoddi3)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__eqtf2)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__gttf2)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__lttf2)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__multf3)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__subtf3)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__fixtfsi)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__floatsitf)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__extenddftf2)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o) (__trunctfdf2)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o) (__clz_tab)
+/home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+                              /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o) (__clzsi2)
+
+Discarded input sections
+
+ .debug_info    0x0000000000000000      0x7b2 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .debug_abbrev  0x0000000000000000      0x19d /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .debug_loc     0x0000000000000000      0xbcd /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .debug_ranges  0x0000000000000000       0xf8 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .debug_line    0x0000000000000000      0x749 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .debug_str     0x0000000000000000      0x2d0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .debug_info    0x0000000000000000      0x80c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .debug_abbrev  0x0000000000000000      0x1b9 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .debug_loc     0x0000000000000000      0x930 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .debug_ranges  0x0000000000000000       0xd8 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .debug_line    0x0000000000000000      0x7ed /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .debug_str     0x0000000000000000      0x2d0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .debug_info    0x0000000000000000      0x27d /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .debug_abbrev  0x0000000000000000      0x166 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .debug_loc     0x0000000000000000      0x155 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .debug_ranges  0x0000000000000000       0x48 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .debug_line    0x0000000000000000      0x2e8 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .debug_str     0x0000000000000000      0x239 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .debug_frame   0x0000000000000000       0x2c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .debug_info    0x0000000000000000      0x265 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .debug_abbrev  0x0000000000000000      0x15b /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .debug_loc     0x0000000000000000      0x13f /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .debug_ranges  0x0000000000000000       0x50 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .debug_line    0x0000000000000000      0x34f /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .debug_str     0x0000000000000000      0x25d /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .debug_frame   0x0000000000000000       0x2c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .debug_info    0x0000000000000000      0x265 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .debug_abbrev  0x0000000000000000      0x15b /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .debug_loc     0x0000000000000000      0x13f /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .debug_ranges  0x0000000000000000       0x50 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .debug_line    0x0000000000000000      0x34f /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .debug_str     0x0000000000000000      0x25d /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .debug_frame   0x0000000000000000       0x2c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .debug_info    0x0000000000000000     0x1387 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .debug_abbrev  0x0000000000000000      0x1b6 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .debug_loc     0x0000000000000000     0x932f /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .debug_ranges  0x0000000000000000      0x708 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .debug_line    0x0000000000000000     0x2593 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .debug_str     0x0000000000000000      0x5e4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .debug_frame   0x0000000000000000       0x64 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .debug_info    0x0000000000000000      0xeb0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .debug_abbrev  0x0000000000000000      0x1d1 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .debug_loc     0x0000000000000000     0x2769 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .debug_ranges  0x0000000000000000      0x610 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .debug_line    0x0000000000000000     0x2ea1 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .debug_str     0x0000000000000000      0x4c5 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .debug_frame   0x0000000000000000       0x60 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .debug_info    0x0000000000000000      0x2a1 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .debug_abbrev  0x0000000000000000      0x163 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .debug_loc     0x0000000000000000      0x659 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .debug_ranges  0x0000000000000000       0xa8 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .debug_line    0x0000000000000000      0x430 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .debug_str     0x0000000000000000      0x2a1 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .debug_frame   0x0000000000000000       0x2c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .debug_info    0x0000000000000000      0x3bd /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .debug_abbrev  0x0000000000000000      0x1c9 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .debug_loc     0x0000000000000000      0x1e1 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .debug_ranges  0x0000000000000000       0x88 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .debug_line    0x0000000000000000      0x304 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .debug_str     0x0000000000000000      0x389 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .debug_frame   0x0000000000000000       0x40 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .debug_info    0x0000000000000000      0x411 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .debug_abbrev  0x0000000000000000      0x1ac /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .debug_loc     0x0000000000000000      0x50b /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .debug_ranges  0x0000000000000000       0x80 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .debug_line    0x0000000000000000      0x60d /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .debug_str     0x0000000000000000      0x2d6 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .debug_frame   0x0000000000000000       0x44 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .debug_info    0x0000000000000000      0x56d /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .debug_abbrev  0x0000000000000000      0x1af /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .debug_loc     0x0000000000000000      0x96d /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .debug_ranges  0x0000000000000000      0x148 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .debug_line    0x0000000000000000      0xa53 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .debug_str     0x0000000000000000      0x404 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .debug_frame   0x0000000000000000       0x3c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .debug_info    0x0000000000000000       0xd7 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .debug_abbrev  0x0000000000000000       0x70 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .debug_aranges
+                0x0000000000000000       0x18 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .debug_line    0x0000000000000000       0x53 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .debug_str     0x0000000000000000      0x217 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .debug_info    0x0000000000000000      0x144 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .debug_abbrev  0x0000000000000000       0xca /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .debug_loc     0x0000000000000000       0x6b /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .debug_aranges
+                0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .debug_ranges  0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .debug_line    0x0000000000000000       0xdf /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .debug_str     0x0000000000000000      0x234 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .debug_frame   0x0000000000000000       0x20 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+
+Memory Configuration
+
+Name             Origin             Length             Attributes
+*default*        0x0000000000000000 0xffffffffffffffff
+
+Linker script and memory map
+
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+                0x0000000000010000                . = 0x10000
+
+.text           0x0000000000010000     0xed8a
+ *(.text)
+ .text          0x0000000000010000       0x40 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o
+                0x0000000000010000                _start
+ .text          0x0000000000010040       0x50 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+ .text          0x0000000000010090      0x1f0 dhry_1.o
+                0x0000000000010090                Proc_1
+                0x0000000000010200                Proc_2
+                0x0000000000010228                Proc_3
+                0x000000000001024c                Proc_4
+                0x0000000000010270                Proc_5
+ .text          0x0000000000010280      0x130 dhry_2.o
+                0x0000000000010280                Proc_6
+                0x00000000000102d0                Proc_7
+                0x00000000000102e0                Proc_8
+                0x0000000000010344                Func_1
+                0x0000000000010364                Func_2
+                0x00000000000103a4                Func_3
+ .text          0x00000000000103b0       0x10 stdlib.o
+                0x00000000000103b0                time
+                0x00000000000103b8                insn
+ .text          0x00000000000103c0       0xac syscalls.o
+                0x00000000000103c0                _getpid
+                0x00000000000103c0                _utime
+                0x00000000000103c0                _sysconf
+                0x00000000000103c0                _ftime
+                0x00000000000103c0                _isatty
+                0x00000000000103c0                _open
+                0x00000000000103c0                _times
+                0x00000000000103c0                _stat
+                0x00000000000103c0                _chdir
+                0x00000000000103c0                _wait
+                0x00000000000103c0                _lseek
+                0x00000000000103c0                _fstatat
+                0x00000000000103c0                _link
+                0x00000000000103c0                _chown
+                0x00000000000103c0                _access
+                0x00000000000103c0                _openat
+                0x00000000000103c0                _execve
+                0x00000000000103c0                _chmod
+                0x00000000000103c0                _lstat
+                0x00000000000103c0                _unlink
+                0x00000000000103c0                _fork
+                0x00000000000103c0                _getcwd
+                0x00000000000103c0                _kill
+                0x00000000000103c0                _gettimeofday
+                0x00000000000103c0                _faccessat
+                0x00000000000103c4                unimplemented_syscall
+                0x00000000000103e8                _read
+                0x00000000000103f0                _write
+                0x0000000000010414                _close
+                0x000000000001041c                _fstat
+                0x0000000000010440                _sbrk
+                0x0000000000010468                _exit
+ .text          0x000000000001046c        0x6 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-errno.o)
+                0x000000000001046c                __errno
+ .text          0x0000000000010472       0x1c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-exit.o)
+                0x0000000000010472                exit
+ .text          0x000000000001048e        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-impure.o)
+ .text          0x000000000001048e       0x72 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-init.o)
+                0x000000000001048e                __libc_init_array
+ .text          0x0000000000010500       0x12 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-malloc.o)
+                0x0000000000010500                malloc
+                0x0000000000010508                free
+ .text          0x0000000000010512      0x5ae /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o)
+                0x0000000000010512                _malloc_r
+ .text          0x0000000000010ac0       0xa8 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memset.o)
+                0x0000000000010ac0                memset
+ .text          0x0000000000010b68        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mlock.o)
+                0x0000000000010b68                __malloc_lock
+                0x0000000000010b6a                __malloc_unlock
+ .text          0x0000000000010b6c       0x4a /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-printf.o)
+                0x0000000000010b6c                _printf_r
+                0x0000000000010b8c                printf
+ .text          0x0000000000010bb6       0x10 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putchar.o)
+                0x0000000000010bb6                _putchar_r
+                0x0000000000010bba                putchar
+ .text          0x0000000000010bc6       0xc8 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putc.o)
+                0x0000000000010bc6                _putc_r
+                0x0000000000010c20                putc
+ .text          0x0000000000010c8e       0x86 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o)
+                0x0000000000010c8e                _puts_r
+                0x0000000000010d0c                puts
+ .text          0x0000000000010d14       0x36 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sbrkr.o)
+                0x0000000000010d14                _sbrk_r
+ .text          0x0000000000010d4a      0x11e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcmp.o)
+                0x0000000000010d4a                strcmp
+ .text          0x0000000000010e68       0x62 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strlen.o)
+                0x0000000000010e68                strlen
+ .text          0x0000000000010eca     0x1d90 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o)
+                0x0000000000010eca                _vfprintf_r
+                0x0000000000012bb8                vfprintf
+ .text          0x0000000000012c5a       0xfc /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wbuf.o)
+                0x0000000000012c5a                __swbuf_r
+                0x0000000000012d4a                __swbuf
+ .text          0x0000000000012d56       0xf4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wsetup.o)
+                0x0000000000012d56                __swsetup_r
+ .text          0x0000000000012e4a       0xbe /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o)
+                0x0000000000012e4a                __call_exitprocs
+ .text          0x0000000000012f08      0x212 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fflush.o)
+                0x0000000000012f08                __sflush_r
+                0x000000000001309c                _fflush_r
+                0x00000000000130d0                fflush
+ .text          0x000000000001311a      0x292 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o)
+                0x000000000001311e                _cleanup_r
+                0x0000000000013256                __sfmoreglue
+                0x000000000001329e                __sfp
+                0x0000000000013378                _cleanup
+                0x0000000000013384                __sinit
+                0x000000000001338c                __sfp_lock_acquire
+                0x000000000001338e                __sfp_lock_release
+                0x0000000000013390                __sinit_lock_acquire
+                0x0000000000013392                __sinit_lock_release
+                0x0000000000013394                __fp_lock_all
+                0x00000000000133a0                __fp_unlock_all
+ .text          0x00000000000133ac       0x38 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fini.o)
+                0x00000000000133ac                __libc_fini_array
+ .text          0x00000000000133e4      0x30e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-freer.o)
+                0x00000000000133e4                _malloc_trim_r
+                0x00000000000134ba                _free_r
+ .text          0x00000000000136f2      0x32e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o)
+                0x00000000000136f2                __sfvwrite_r
+ .text          0x0000000000013a20       0xe0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fwalk.o)
+                0x0000000000013a20                _fwalk
+                0x0000000000013a8c                _fwalk_reent
+ .text          0x0000000000013b00     0x2080 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o)
+                0x0000000000014d06                _ldtoa_r
+                0x0000000000015b36                _ldcheck
+ .text          0x0000000000015b80       0x1a /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-localeconv.o)
+                0x0000000000015b80                __localeconv_l
+                0x0000000000015b86                _localeconv_r
+                0x0000000000015b90                localeconv
+ .text          0x0000000000015b9a       0xb2 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o)
+                0x0000000000015b9a                _setlocale_r
+                0x0000000000015bee                __locale_mb_cur_max
+                0x0000000000015bf8                setlocale
+ .text          0x0000000000015c4c      0x190 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-makebuf.o)
+                0x0000000000015c4c                __smakebuf_r
+                0x0000000000015d5a                __swhatbuf_r
+ .text          0x0000000000015ddc       0x4a /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mbtowc_r.o)
+                0x0000000000015ddc                _mbtowc_r
+                0x0000000000015de6                __ascii_mbtowc
+ .text          0x0000000000015e26       0x94 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memchr.o)
+                0x0000000000015e26                memchr
+ .text          0x0000000000015eba       0xde /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+                0x0000000000015eba                memcpy
+ .text          0x0000000000015f98       0xd0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memmove-stub.o)
+                0x0000000000015f98                memmove
+ .text          0x0000000000016068      0xbee /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+                0x0000000000016068                _Balloc
+                0x00000000000160ce                _Bfree
+                0x00000000000160e0                __multadd
+                0x00000000000161c6                __s2b
+                0x0000000000016288                __hi0bits
+                0x00000000000162d0                __lo0bits
+                0x000000000001635a                __i2b
+                0x00000000000163c6                __multiply
+                0x0000000000016562                __pow5mult
+                0x0000000000016638                __lshift
+                0x0000000000016748                __mcmp
+                0x0000000000016788                __mdiff
+                0x000000000001691e                __ulp
+                0x0000000000016976                __b2d
+                0x0000000000016a44                __d2b
+                0x0000000000016b36                __ratio
+                0x0000000000016b9c                _mprec_log10
+                0x0000000000016bc8                __copybits
+                0x0000000000016c0e                __any_on
+ .text          0x0000000000016c56      0x3ea /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reallocr.o)
+                0x0000000000016c56                _realloc_r
+ .text          0x0000000000017040      0x10e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reent.o)
+                0x0000000000017040                cleanup_glue
+                0x00000000000170a0                _reclaim_reent
+ .text          0x000000000001714e       0x76 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-s_frexp.o)
+                0x000000000001714e                frexp
+ .text          0x00000000000171c4       0x88 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sprintf.o)
+                0x00000000000171c4                _sprintf_r
+                0x0000000000017204                sprintf
+ .text          0x000000000001724c       0xda /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o)
+                0x000000000001724c                __sread
+                0x0000000000017284                __seofread
+                0x0000000000017288                __swrite
+                0x00000000000172dc                __sseek
+                0x000000000001731e                __sclose
+ .text          0x0000000000017326       0x78 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcpy.o)
+                0x0000000000017326                strcpy
+ .text          0x000000000001739e       0x7a /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strncpy.o)
+                0x000000000001739e                strncpy
+ .text          0x0000000000017418     0x1cbc /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o)
+                0x0000000000017418                _svfprintf_r
+ .text          0x00000000000190d4      0xe5e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o)
+                0x000000000001916c                __sprint_r
+                0x000000000001917a                _vfiprintf_r
+                0x0000000000019e8e                vfiprintf
+ .text          0x0000000000019f32       0x2a /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wctomb_r.o)
+                0x0000000000019f32                _wctomb_r
+                0x0000000000019f3c                __ascii_wctomb
+ .text          0x0000000000019f5c       0x3c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-writer.o)
+                0x0000000000019f5c                _write_r
+ .text          0x0000000000019f98       0x4a /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o)
+                0x0000000000019f98                __assert_func
+                0x0000000000019fd8                __assert
+ .text          0x0000000000019fe2        0xc /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-atexit.o)
+                0x0000000000019fe2                atexit
+ .text          0x0000000000019fee       0x82 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-callocr.o)
+                0x0000000000019fee                _calloc_r
+ .text          0x000000000001a070       0x36 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-closer.o)
+                0x000000000001a070                _close_r
+ .text          0x000000000001a0a6        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ctype_.o)
+ .text          0x000000000001a0a6      0x100 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fclose.o)
+                0x000000000001a126                _fclose_r
+                0x000000000001a164                fclose
+ .text          0x000000000001a1a6       0x4c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fiprintf.o)
+                0x000000000001a1a6                _fiprintf_r
+                0x000000000001a1c6                fiprintf
+ .text          0x000000000001a1f2      0x12c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fputwc.o)
+                0x000000000001a1f2                __fputwc
+                0x000000000001a2b6                _fputwc_r
+                0x000000000001a2d4                fputwc
+ .text          0x000000000001a31e       0x3a /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fstatr.o)
+                0x000000000001a31e                _fstat_r
+ .text          0x000000000001a358       0x36 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-isattyr.o)
+                0x000000000001a358                _isatty_r
+ .text          0x000000000001a38e       0x3c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-lseekr.o)
+                0x000000000001a38e                _lseek_r
+ .text          0x000000000001a3ca       0x3c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-readr.o)
+                0x000000000001a3ca                _read_r
+ .text          0x000000000001a406      0xca6 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfiprintf.o)
+                0x000000000001a406                __ssprint_r
+                0x000000000001a532                _svfiprintf_r
+ .text          0x000000000001b0ac       0x9e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wcrtomb.o)
+                0x000000000001b0ac                _wcrtomb_r
+                0x000000000001b0f4                wcrtomb
+ .text          0x000000000001b14a        0xe /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-abort.o)
+                0x000000000001b14a                abort
+ .text          0x000000000001b158       0x6c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__atexit.o)
+                0x000000000001b158                __register_exitproc
+ .text          0x000000000001b1c4      0x34e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signal.o)
+                0x000000000001b1c4                _init_signal_r
+                0x000000000001b200                _signal_r
+                0x000000000001b264                _raise_r
+                0x000000000001b2de                __sigtramp_r
+                0x000000000001b366                raise
+                0x000000000001b3e0                signal
+                0x000000000001b44c                _init_signal
+                0x000000000001b48a                __sigtramp
+ .text          0x000000000001b512       0x3e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signalr.o)
+                0x000000000001b512                _kill_r
+                0x000000000001b54c                _getpid_r
+ .text          0x000000000001b550      0x360 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+                0x000000000001b550                __udivdi3
+ .text          0x000000000001b8b0      0x33e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+                0x000000000001b8b0                __umoddi3
+ .text          0x000000000001bbee       0xf4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+                0x000000000001bbee                __eqtf2
+                0x000000000001bbee                __netf2
+ .text          0x000000000001bce2       0xfc /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+                0x000000000001bce2                __getf2
+                0x000000000001bce2                __gttf2
+ .text          0x000000000001bdde       0xfc /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+                0x000000000001bdde                __letf2
+                0x000000000001bdde                __lttf2
+ .text          0x000000000001beda      0xd18 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+                0x000000000001beda                __multf3
+ .text          0x000000000001cbf2     0x127c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+                0x000000000001cbf2                __subtf3
+ .text          0x000000000001de6e      0x12e /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+                0x000000000001de6e                __fixtfsi
+ .text          0x000000000001df9c       0xd0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+                0x000000000001df9c                __floatsitf
+ .text          0x000000000001e06c      0x172 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+                0x000000000001e06c                __extenddftf2
+ .text          0x000000000001e1de      0x386 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+                0x000000000001e1de                __trunctfdf2
+ .text          0x000000000001e564        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .text          0x000000000001e564       0x3c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+                0x000000000001e564                __clzsi2
+ .text          0x000000000001e5a0        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtend.o
+ *(.text.unlikely .text.*_unlikely .text.unlikely.*)
+ *(.text.exit .text.exit.*)
+ *(.text.startup .text.startup.*)
+ *fill*         0x000000000001e5a0        0x0 
+ .text.startup  0x000000000001e5a0      0x7d8 dhry_1.o
+                0x000000000001e5a0                main
+ .text.startup  0x000000000001ed78       0x12 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o)
+ *(.text.hot .text.hot.*)
+ *(.stub .text.* .gnu.linkonce.t.*)
+ *(.gnu.warning)
+
+.init
+ *(SORT_NONE(.init))
+
+.plt
+ *(.plt)
+
+.iplt
+ *(.iplt)
+
+.fini
+ *(SORT_NONE(.fini))
+                [!provide]                        PROVIDE (__etext = .)
+                [!provide]                        PROVIDE (_etext = .)
+                [!provide]                        PROVIDE (etext = .)
+
+.rodata         0x000000000001ed90     0x12ec
+ *(.rodata .rodata.* .gnu.linkonce.r.*)
+ .rodata.str1.4
+                0x000000000001ed90      0x5bb dhry_1.o
+ *fill*         0x000000000001f34b        0x1 
+ .rodata.str1.4
+                0x000000000001f34c       0x23 syscalls.o
+ .rodata.str1.4
+                0x000000000001f36f       0x23 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o)
+                                          0x2 (size before relaxing)
+ *fill*         0x000000000001f36f        0x1 
+ .rodata.str1.4
+                0x000000000001f370       0x42 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o)
+ *fill*         0x000000000001f3b2        0x2 
+ .rodata        0x000000000001f3b4      0x18c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o)
+ .rodata.str1.4
+                0x000000000001f540       0x26 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o)
+ *fill*         0x000000000001f566        0x2 
+ .rodata        0x000000000001f568      0x252 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o)
+ *fill*         0x000000000001f7ba        0x2 
+ .rodata.str1.4
+                0x000000000001f7bc        0xe /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o)
+                                         0x12 (size before relaxing)
+ *fill*         0x000000000001f7ca        0x2 
+ .rodata.str1.4
+                0x000000000001f7cc       0x61 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+ *fill*         0x000000000001f82d        0x3 
+ .rodata        0x000000000001f830      0x128 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+                0x000000000001f840                __mprec_tens
+                0x000000000001f908                __mprec_tinytens
+                0x000000000001f930                __mprec_bigtens
+ .rodata.str1.4
+                0x000000000001f958       0x42 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o)
+ .rodata        0x000000000001f958      0x18c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o)
+ .rodata.str1.4
+                0x000000000001fae4       0x2f /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o)
+ .rodata        0x000000000001fae4      0x18c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o)
+ .rodata.str1.4
+                0x000000000001fc70       0x3f /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o)
+                                         0x43 (size before relaxing)
+ *fill*         0x000000000001fcaf        0x1 
+ .rodata        0x000000000001fcb0      0x101 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ctype_.o)
+                0x000000000001fcb0                _ctype_
+ .rodata.str1.4
+                0x000000000001fdb1       0x2f /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfiprintf.o)
+ *fill*         0x000000000001fdb1        0x3 
+ .rodata        0x000000000001fdb4      0x18c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfiprintf.o)
+ .rodata        0x000000000001ff40       0x3c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .rodata        0x000000000001ff7c      0x100 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+                0x000000000001ff7c                __clz_tab
+
+.rela.dyn       0x000000000002007c        0x0
+ .rela.text     0x000000000002007c        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o
+ .rela.text.startup
+                0x000000000002007c        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o
+
+.rodata1
+ *(.rodata1)
+
+.sdata2
+ *(.sdata2 .sdata2.* .gnu.linkonce.s2.*)
+
+.sbss2
+ *(.sbss2 .sbss2.* .gnu.linkonce.sb2.*)
+
+.eh_frame_hdr
+ *(.eh_frame_hdr)
+ *(.eh_frame_entry .eh_frame_entry.*)
+
+.eh_frame
+ *(.eh_frame)
+ *(.eh_frame.*)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.gnu_extab
+ *(.gnu_extab*)
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+                0x000000000002107c                . = DATA_SEGMENT_ALIGN (CONSTANT (MAXPAGESIZE), CONSTANT (COMMONPAGESIZE))
+
+.eh_frame       0x000000000002107c       0x40
+ *(.eh_frame)
+ .eh_frame      0x000000000002107c        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+ .eh_frame      0x000000000002107c       0x28 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .eh_frame      0x00000000000210a4       0x14 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+                                         0x28 (size before relaxing)
+ .eh_frame      0x00000000000210b8        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtend.o
+ *(.eh_frame.*)
+
+.gnu_extab
+ *(.gnu_extab)
+
+.gcc_except_table
+ *(.gcc_except_table .gcc_except_table.*)
+
+.exception_ranges
+ *(.exception_ranges .exception_ranges*)
+
+.tdata
+ *(.tdata .tdata.* .gnu.linkonce.td.*)
+
+.tbss
+ *(.tbss .tbss.* .gnu.linkonce.tb.*)
+ *(.tcommon)
+
+.preinit_array  0x00000000000210bc        0x0
+                0x00000000000210bc                PROVIDE (__preinit_array_start = .)
+ *(.preinit_array)
+                0x00000000000210bc                PROVIDE (__preinit_array_end = .)
+
+.init_array     0x00000000000210bc        0x8
+                0x00000000000210bc                PROVIDE (__init_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.init_array.*) SORT_BY_INIT_PRIORITY(.ctors.*))
+ .init_array.00000
+                0x00000000000210bc        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o)
+ *(.init_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .ctors)
+ .init_array    0x00000000000210c0        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+                0x00000000000210c4                PROVIDE (__init_array_end = .)
+
+.fini_array     0x00000000000210c4        0x4
+                0x00000000000210c4                PROVIDE (__fini_array_start = .)
+ *(SORT_BY_INIT_PRIORITY(.fini_array.*) SORT_BY_INIT_PRIORITY(.dtors.*))
+ *(.fini_array EXCLUDE_FILE(*crtend?.o *crtend.o *crtbegin?.o *crtbegin.o) .dtors)
+ .fini_array    0x00000000000210c4        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+                0x00000000000210c8                PROVIDE (__fini_array_end = .)
+
+.ctors
+ *crtbegin.o(.ctors)
+ *crtbegin?.o(.ctors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .ctors)
+ *(SORT_BY_NAME(.ctors.*))
+ *(.ctors)
+
+.dtors
+ *crtbegin.o(.dtors)
+ *crtbegin?.o(.dtors)
+ *(EXCLUDE_FILE(*crtend?.o *crtend.o) .dtors)
+ *(SORT_BY_NAME(.dtors.*))
+ *(.dtors)
+
+.jcr
+ *(.jcr)
+
+.data.rel.ro
+ *(.data.rel.ro.local* .gnu.linkonce.d.rel.ro.local.*)
+ *(.data.rel.ro .data.rel.ro.* .gnu.linkonce.d.rel.ro.*)
+
+.dynamic
+ *(.dynamic)
+                0x00000000000210c8                . = DATA_SEGMENT_RELRO_END (., 0x0)
+
+.data           0x00000000000210c8      0x99c
+ *(.data .data.* .gnu.linkonce.d.*)
+ .data          0x00000000000210c8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o
+ .data          0x00000000000210c8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+ .data          0x00000000000210c8        0x0 dhry_1.o
+ .data          0x00000000000210c8        0x0 dhry_2.o
+ .data          0x00000000000210c8        0x0 stdlib.o
+ .data          0x00000000000210c8        0x0 syscalls.o
+ .data          0x00000000000210c8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-errno.o)
+ .data          0x00000000000210c8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-exit.o)
+ .data          0x00000000000210c8      0x428 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-impure.o)
+ .data          0x00000000000214f0        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-init.o)
+ .data          0x00000000000214f0        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-malloc.o)
+ .data          0x00000000000214f0      0x408 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o)
+                0x00000000000214f0                __malloc_av_
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memset.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mlock.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-printf.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putchar.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putc.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sbrkr.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcmp.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strlen.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wbuf.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wsetup.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fflush.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fini.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-freer.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fwalk.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o)
+ .data          0x00000000000218f8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-localeconv.o)
+ .data          0x00000000000218f8      0x16c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o)
+                0x00000000000218f8                __global_locale
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-makebuf.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mbtowc_r.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memchr.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memmove-stub.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reallocr.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reent.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-s_frexp.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sprintf.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcpy.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strncpy.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wctomb_r.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-writer.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-atexit.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-callocr.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-closer.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ctype_.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fclose.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fiprintf.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fputwc.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fstatr.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-isattyr.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-lseekr.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-readr.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfiprintf.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wcrtomb.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-abort.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__atexit.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signal.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signalr.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .data          0x0000000000021a64        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtend.o
+
+.data1
+ *(.data1)
+
+.got
+ *(.got.plt)
+ *(.igot.plt)
+ *(.got)
+ *(.igot)
+
+.sdata          0x0000000000021a68       0x2c
+                0x0000000000022268                __global_pointer$ = (. + 0x800)
+ *(.srodata.cst16)
+ *(.srodata.cst8)
+ .srodata.cst8  0x0000000000021a68       0x10 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+ .srodata.cst8  0x0000000000021a78        0x8 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-s_frexp.o)
+ *(.srodata.cst4)
+ *(.srodata.cst2)
+ *(.srodata .srodata.*)
+ .srodata       0x0000000000021a80        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-impure.o)
+                0x0000000000021a80                _global_impure_ptr
+ *(.sdata .sdata.* .gnu.linkonce.s.*)
+ .sdata         0x0000000000021a84        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+                0x0000000000021a84                __dso_handle
+ .sdata         0x0000000000021a88        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-impure.o)
+                0x0000000000021a88                _impure_ptr
+ .sdata         0x0000000000021a8c        0x8 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o)
+                0x0000000000021a8c                __malloc_sbrk_base
+                0x0000000000021a90                __malloc_trim_threshold
+                0x0000000000021a94                _edata = .
+                [!provide]                        PROVIDE (edata = .)
+                0x0000000000021a94                . = .
+                0x0000000000021a94                __bss_start = .
+
+.sbss           0x0000000000021a94       0x50
+ *(.dynsbss)
+ *(.sbss .sbss.* .gnu.linkonce.sb.*)
+ .sbss          0x0000000000021a94       0x38 dhry_1.o
+                0x0000000000021a94                Dhrystones_Per_Second
+                0x0000000000021a98                Microseconds
+                0x0000000000021a9c                User_Insn
+                0x0000000000021aa0                End_Insn
+                0x0000000000021aa4                Begin_Insn
+                0x0000000000021aa8                User_Time
+                0x0000000000021aac                End_Time
+                0x0000000000021ab0                Begin_Time
+                0x0000000000021ab4                Reg
+                0x0000000000021ab8                Ch_2_Glob
+                0x0000000000021ab9                Ch_1_Glob
+                0x0000000000021abc                Bool_Glob
+                0x0000000000021ac0                Int_Glob
+                0x0000000000021ac4                Next_Ptr_Glob
+                0x0000000000021ac8                Ptr_Glob
+ .sbss          0x0000000000021acc        0x4 syscalls.o
+ .sbss          0x0000000000021ad0        0xc /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o)
+                0x0000000000021ad0                __malloc_max_total_mem
+                0x0000000000021ad4                __malloc_max_sbrked_mem
+                0x0000000000021ad8                __malloc_top_pad
+ .sbss          0x0000000000021adc        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o)
+                0x0000000000021adc                _PathLocale
+ .sbss          0x0000000000021ae0        0x4 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reent.o)
+                0x0000000000021ae0                errno
+ *(.scommon)
+
+.bss            0x0000000000021ae4     0x281c
+ *(.dynbss)
+ *(.bss .bss.* .gnu.linkonce.b.*)
+ .bss           0x0000000000021ae4        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o
+ .bss           0x0000000000021ae4       0x1c /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+ .bss           0x0000000000021b00     0x27d8 dhry_1.o
+                0x0000000000021b00                Arr_1_Glob
+                0x0000000000021bc8                Arr_2_Glob
+ .bss           0x00000000000242d8        0x0 dhry_2.o
+ .bss           0x00000000000242d8        0x0 stdlib.o
+ .bss           0x00000000000242d8        0x0 syscalls.o
+ .bss           0x00000000000242d8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-errno.o)
+ .bss           0x00000000000242d8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-exit.o)
+ .bss           0x00000000000242d8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-impure.o)
+ .bss           0x00000000000242d8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-init.o)
+ .bss           0x00000000000242d8        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-malloc.o)
+ .bss           0x00000000000242d8       0x28 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o)
+                0x00000000000242d8                __malloc_current_mallinfo
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memset.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mlock.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-printf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putchar.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putc.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sbrkr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcmp.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strlen.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wbuf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wsetup.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fflush.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fini.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-freer.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fwalk.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-localeconv.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-makebuf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mbtowc_r.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memchr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memmove-stub.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reallocr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reent.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-s_frexp.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sprintf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcpy.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strncpy.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wctomb_r.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-writer.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-atexit.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-callocr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-closer.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ctype_.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fclose.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fiprintf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fputwc.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fstatr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-isattyr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-lseekr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-readr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfiprintf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wcrtomb.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-abort.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__atexit.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signal.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signalr.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .bss           0x0000000000024300        0x0 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtend.o
+ *(COMMON)
+                0x0000000000024300                . = ALIGN ((. != 0x0)?0x4:0x1)
+                0x0000000000024300                . = ALIGN (0x4)
+                0x0000000000024300                . = SEGMENT_START ("ldata-segment", .)
+                0x0000000000024300                . = ALIGN (0x4)
+                0x0000000000024300                _end = .
+                [!provide]                        PROVIDE (end = .)
+                0x0000000000024300                . = DATA_SEGMENT_END (.)
+
+.stab
+ *(.stab)
+
+.stabstr
+ *(.stabstr)
+
+.stab.excl
+ *(.stab.excl)
+
+.stab.exclstr
+ *(.stab.exclstr)
+
+.stab.index
+ *(.stab.index)
+
+.stab.indexstr
+ *(.stab.indexstr)
+
+.comment        0x0000000000000000       0x12
+ *(.comment)
+ .comment       0x0000000000000000       0x12 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+                                         0x13 (size before relaxing)
+ .comment       0x0000000000000012       0x13 dhry_1.o
+ .comment       0x0000000000000012       0x13 dhry_2.o
+ .comment       0x0000000000000012       0x13 stdlib.o
+ .comment       0x0000000000000012       0x13 syscalls.o
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-errno.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-exit.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-impure.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-init.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-malloc.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mlock.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-printf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putchar.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putc.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sbrkr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strlen.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wbuf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wsetup.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fflush.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fini.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-freer.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fwalk.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-localeconv.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-makebuf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mbtowc_r.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memchr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memmove-stub.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reallocr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reent.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-s_frexp.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sprintf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcpy.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strncpy.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wctomb_r.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-writer.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-atexit.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-callocr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-closer.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ctype_.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fclose.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fiprintf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fputwc.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fstatr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-isattyr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-lseekr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-readr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfiprintf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wcrtomb.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-abort.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__atexit.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signal.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signalr.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .comment       0x0000000000000012       0x13 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtend.o
+
+.riscv.attributes
+                0x0000000000000000       0x39
+ .riscv.attributes
+                0x0000000000000000       0x33 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/crt0.o
+ .riscv.attributes
+                0x0000000000000033       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtbegin.o
+ .riscv.attributes
+                0x0000000000000068       0x30 dhry_1.o
+ .riscv.attributes
+                0x0000000000000098       0x30 dhry_2.o
+ .riscv.attributes
+                0x00000000000000c8       0x30 stdlib.o
+ .riscv.attributes
+                0x00000000000000f8       0x30 syscalls.o
+ .riscv.attributes
+                0x0000000000000128       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-errno.o)
+ .riscv.attributes
+                0x000000000000015d       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-exit.o)
+ .riscv.attributes
+                0x0000000000000192       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-impure.o)
+ .riscv.attributes
+                0x00000000000001c7       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-init.o)
+ .riscv.attributes
+                0x00000000000001fc       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-malloc.o)
+ .riscv.attributes
+                0x0000000000000231       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mallocr.o)
+ .riscv.attributes
+                0x0000000000000266       0x33 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memset.o)
+ .riscv.attributes
+                0x0000000000000299       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mlock.o)
+ .riscv.attributes
+                0x00000000000002ce       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-printf.o)
+ .riscv.attributes
+                0x0000000000000303       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putchar.o)
+ .riscv.attributes
+                0x0000000000000338       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-putc.o)
+ .riscv.attributes
+                0x000000000000036d       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-puts.o)
+ .riscv.attributes
+                0x00000000000003a2       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sbrkr.o)
+ .riscv.attributes
+                0x00000000000003d7       0x33 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcmp.o)
+ .riscv.attributes
+                0x000000000000040a       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strlen.o)
+ .riscv.attributes
+                0x000000000000043f       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfprintf.o)
+ .riscv.attributes
+                0x0000000000000474       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wbuf.o)
+ .riscv.attributes
+                0x00000000000004a9       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wsetup.o)
+ .riscv.attributes
+                0x00000000000004de       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__call_atexit.o)
+ .riscv.attributes
+                0x0000000000000513       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fflush.o)
+ .riscv.attributes
+                0x0000000000000548       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-findfp.o)
+ .riscv.attributes
+                0x000000000000057d       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fini.o)
+ .riscv.attributes
+                0x00000000000005b2       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-freer.o)
+ .riscv.attributes
+                0x00000000000005e7       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fvwrite.o)
+ .riscv.attributes
+                0x000000000000061c       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fwalk.o)
+ .riscv.attributes
+                0x0000000000000651       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ldtoa.o)
+ .riscv.attributes
+                0x0000000000000686       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-localeconv.o)
+ .riscv.attributes
+                0x00000000000006bb       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-locale.o)
+ .riscv.attributes
+                0x00000000000006f0       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-makebuf.o)
+ .riscv.attributes
+                0x0000000000000725       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mbtowc_r.o)
+ .riscv.attributes
+                0x000000000000075a       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memchr.o)
+ .riscv.attributes
+                0x000000000000078f       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memcpy.o)
+ .riscv.attributes
+                0x00000000000007c4       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-memmove-stub.o)
+ .riscv.attributes
+                0x00000000000007f9       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-mprec.o)
+ .riscv.attributes
+                0x000000000000082e       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reallocr.o)
+ .riscv.attributes
+                0x0000000000000863       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-reent.o)
+ .riscv.attributes
+                0x0000000000000898       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-s_frexp.o)
+ .riscv.attributes
+                0x00000000000008cd       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-sprintf.o)
+ .riscv.attributes
+                0x0000000000000902       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-stdio.o)
+ .riscv.attributes
+                0x0000000000000937       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strcpy.o)
+ .riscv.attributes
+                0x000000000000096c       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-strncpy.o)
+ .riscv.attributes
+                0x00000000000009a1       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfprintf.o)
+ .riscv.attributes
+                0x00000000000009d6       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-vfiprintf.o)
+ .riscv.attributes
+                0x0000000000000a0b       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wctomb_r.o)
+ .riscv.attributes
+                0x0000000000000a40       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-writer.o)
+ .riscv.attributes
+                0x0000000000000a75       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-assert.o)
+ .riscv.attributes
+                0x0000000000000aaa       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-atexit.o)
+ .riscv.attributes
+                0x0000000000000adf       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-callocr.o)
+ .riscv.attributes
+                0x0000000000000b14       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-closer.o)
+ .riscv.attributes
+                0x0000000000000b49       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-ctype_.o)
+ .riscv.attributes
+                0x0000000000000b7e       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fclose.o)
+ .riscv.attributes
+                0x0000000000000bb3       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fiprintf.o)
+ .riscv.attributes
+                0x0000000000000be8       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fputwc.o)
+ .riscv.attributes
+                0x0000000000000c1d       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-fstatr.o)
+ .riscv.attributes
+                0x0000000000000c52       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-isattyr.o)
+ .riscv.attributes
+                0x0000000000000c87       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-lseekr.o)
+ .riscv.attributes
+                0x0000000000000cbc       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-readr.o)
+ .riscv.attributes
+                0x0000000000000cf1       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-svfiprintf.o)
+ .riscv.attributes
+                0x0000000000000d26       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-wcrtomb.o)
+ .riscv.attributes
+                0x0000000000000d5b       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-abort.o)
+ .riscv.attributes
+                0x0000000000000d90       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-__atexit.o)
+ .riscv.attributes
+                0x0000000000000dc5       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signal.o)
+ .riscv.attributes
+                0x0000000000000dfa       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a(lib_a-signalr.o)
+ .riscv.attributes
+                0x0000000000000e2f       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_udivdi3.o)
+ .riscv.attributes
+                0x0000000000000e64       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_umoddi3.o)
+ .riscv.attributes
+                0x0000000000000e99       0x39 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(eqtf2.o)
+ .riscv.attributes
+                0x0000000000000ed2       0x39 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(getf2.o)
+ .riscv.attributes
+                0x0000000000000f0b       0x39 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(letf2.o)
+ .riscv.attributes
+                0x0000000000000f44       0x39 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(multf3.o)
+ .riscv.attributes
+                0x0000000000000f7d       0x39 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(subtf3.o)
+ .riscv.attributes
+                0x0000000000000fb6       0x39 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(fixtfsi.o)
+ .riscv.attributes
+                0x0000000000000fef       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(floatsitf.o)
+ .riscv.attributes
+                0x0000000000001024       0x39 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(extenddftf2.o)
+ .riscv.attributes
+                0x000000000000105d       0x39 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(trunctfdf2.o)
+ .riscv.attributes
+                0x0000000000001096       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clz.o)
+ .riscv.attributes
+                0x00000000000010cb       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a(_clzsi2.o)
+ .riscv.attributes
+                0x0000000000001100       0x35 /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtend.o
+
+.debug
+ *(.debug)
+
+.line
+ *(.line)
+
+.debug_srcinfo
+ *(.debug_srcinfo)
+
+.debug_sfnames
+ *(.debug_sfnames)
+
+.debug_aranges
+ *(.debug_aranges)
+
+.debug_pubnames
+ *(.debug_pubnames)
+
+.debug_info
+ *(.debug_info .gnu.linkonce.wi.*)
+
+.debug_abbrev
+ *(.debug_abbrev)
+
+.debug_line
+ *(.debug_line .debug_line.* .debug_line_end)
+
+.debug_frame
+ *(.debug_frame)
+
+.debug_str
+ *(.debug_str)
+
+.debug_loc
+ *(.debug_loc)
+
+.debug_macinfo
+ *(.debug_macinfo)
+
+.debug_weaknames
+ *(.debug_weaknames)
+
+.debug_funcnames
+ *(.debug_funcnames)
+
+.debug_typenames
+ *(.debug_typenames)
+
+.debug_varnames
+ *(.debug_varnames)
+
+.debug_pubtypes
+ *(.debug_pubtypes)
+
+.debug_ranges
+ *(.debug_ranges)
+
+.debug_macro
+ *(.debug_macro)
+
+.debug_addr
+ *(.debug_addr)
+
+.gnu.attributes
+ *(.gnu.attributes)
+
+/DISCARD/
+ *(.note.GNU-stack)
+ *(.gnu_debuglink)
+ *(.gnu.lto_*)
+LOAD dhry_1.o
+LOAD dhry_2.o
+LOAD stdlib.o
+LOAD syscalls.o
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a
+START GROUP
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libc.a
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/../../../../riscv32-unknown-elf/lib/libgloss.a
+END GROUP
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/libgcc.a
+LOAD /home/jota/riscv/_install/bin/../lib/gcc/riscv32-unknown-elf/10.2.0/crtend.o
+OUTPUT(dhry.elf elf32-littleriscv)

@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/29 12:45:05
+// Last modified : 2020/11/29 20:43:40
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -50,25 +50,25 @@ module ORC_R32I #(
   // Compile time configurable generic parameters
   parameter P_FETCH_COUNTER_RESET = 32'h0000_0000 // First instruction address
 )(
-  // Component clocks and resets
+  // Component's clocks and resets
   input i_clk,        // clock
   input i_reset_sync, // reset
-  // Instruction Wishbone(pipeline) Interface
-  output        o_inst_read,      // HBI read enable
-  input         i_inst_read_ack,  // HBI acknowledge 
-  output [31:0] o_inst_read_addr, // HBI address
-  input  [31:0] i_inst_read_data, // HBI data
+  // Instruction Wishbone(pipeline) Master Read Interface
+  output        o_inst_read_stb,  // WB read enable
+  input         i_inst_read_ack,  // WB acknowledge 
+  output [31:0] o_inst_read_addr, // WB address
+  input  [31:0] i_inst_read_data, // WB data
   // Wishbone(pipeline) Master Read Interface
-  output        o_master_read,      // HBI read enable
-  input         i_master_read_ack,  // HBI acknowledge 
-  output [31:0] o_master_read_addr, // HBI address
-  input  [31:0] i_master_read_data, // HBI data
+  output        o_master_read_stb,  // WB read enable
+  input         i_master_read_ack,  // WB acknowledge 
+  output [31:0] o_master_read_addr, // WB address
+  input  [31:0] i_master_read_data, // WB data
   // Wishbone(pipeline) Master Write Interface
-  output        o_master_write,            // HBI write enable
-  input         i_master_write_ack,        // HBI acknowledge 
-  output [31:0] o_master_write_addr,       // HBI address
-  output [31:0] o_master_write_data,       // HBI data
-  output [3:0]  o_master_write_byte_enable // HBI byte enable
+  output        o_master_write_stb,  // WB write enable
+  input         i_master_write_ack,  // WB acknowledge 
+  output [31:0] o_master_write_addr, // WB address
+  output [31:0] o_master_write_data, // WB data
+  output [3:0]  o_master_write_sel   // WB byte enable
 );
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
@@ -83,6 +83,12 @@ module ORC_R32I #(
   localparam [6:0] L_BCC   = 7'b1100011; // imm[12|10:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:1|11]
   localparam [6:0] L_LCC   = 7'b0000011; // imm[11:0],rs1[19:15],funct[14:12],rd[11:7]
   localparam [6:0] L_SCC   = 7'b0100011; // imm[11:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:0]
+  // Program Counter
+  localparam [2:0] L_WAKEUP           = 3'h0;
+  localparam [2:0] L_WAIT_FOR_ACK     = 3'h1;
+  localparam [2:0] L_WAIT_FOR_DECODER = 3'h2;
+  localparam [2:0] L_WAIT_FOR_READ    = 3'h3;
+  localparam [2:0] L_WAIT_FOR_WRITE   = 3'h4;
   // Misc Definitions
   localparam [31:0] L_ALL_ZERO = 32'h0000_0000;
   localparam [31:0] L_ALL_ONES = 32'hFFFF_FFFF;
@@ -94,11 +100,10 @@ module ORC_R32I #(
   reg [31:0] r_next_pc_decode;        // 32-bit program counter t+1
   reg [31:0] r_pc;                    // 32-bit program counter t+0
   reg        r_program_counter_valid; // Program Counter Valid
-  reg        r_inst_read_ack;
-  reg [31:0] r_inst_data;
+  reg [31:0] r_inst_data;             // registers the valid instructions
+  reg [2:0]  r_program_counter_state; // Current State Holder.
   // Decoder Process Signals
-  wire [6:0]  w_opcode    = i_inst_read_data[6:0];
-  wire [6:0]  w_pc_opcode = r_inst_data[6:0];
+  wire [6:0]  w_opcode = i_inst_read_data[6:0];
   reg  [31:0] r_simm;
   reg  [31:0] r_uimm;
   reg         r_jalr;
@@ -112,10 +117,9 @@ module ORC_R32I #(
   reg [31:0] general_registers2 [0:31];	// 32x32-bit registers
   reg [4:0]  reset_index = 0;           // This means the reset needs to be held for at least 32 clocks
   // Memory Master Read and Write Process
-  // External devices R/W
-  reg        r_read_ready;
-  reg        r_write_ready;
+  reg        r_master_read_ready;
   reg [31:0] r_master_read_addr;
+  reg        r_master_write_ready;
   // Instruction Fields wires
   wire [4:0] w_rd                = i_inst_read_data[11:7];
   wire [4:0] w_destination_index = r_inst_data[11:7];
@@ -147,22 +151,21 @@ module ORC_R32I #(
   // RM-group of instructions (OPCODEs==7'b0010011/7'b0110011), merged! src=immediate(M)/register(R)
   wire signed [31:0] w_signed_rs2_extended   = r_rii ? r_simm : w_signed_rs2;
   wire        [31:0] w_unsigned_rs2_extended = r_rii ? r_uimm : r_unsigned_rs2;
-  wire        [31:0] w_rm_data               = w_fct3==7 ? r_unsigned_rs1&w_signed_rs2_extended :
-                                               w_fct3==6 ? r_unsigned_rs1|w_signed_rs2_extended :
-                                               w_fct3==4 ? r_unsigned_rs1^w_signed_rs2_extended :
-                                               w_fct3==3 ? r_unsigned_rs1<w_unsigned_rs2_extended?1:0 :
-                                               w_fct3==2 ? w_signed_rs1<w_signed_rs2_extended?1:0 : 
-                                               w_fct3==0 ? (r_rro&&w_fct7[5] ? r_unsigned_rs1-w_unsigned_rs2_extended : 
-                                                                               r_unsigned_rs1+w_signed_rs2_extended) :
-                                               w_fct3==1 ? r_unsigned_rs1<<w_unsigned_rs2_extended[4:0] :                         
-                                               w_fct7[5] ? $signed(w_signed_rs1>>>w_unsigned_rs2_extended[4:0]) :                    
-                                                  r_unsigned_rs1>>w_unsigned_rs2_extended[4:0];
+  wire        [31:0] w_rm_data               = w_fct3==7 ? (r_unsigned_rs1 & w_signed_rs2_extended) :
+                                               w_fct3==6 ? (r_unsigned_rs1 | w_signed_rs2_extended) :
+                                               w_fct3==4 ? (r_unsigned_rs1 ^ w_signed_rs2_extended) :
+                                               w_fct3==3 ? (r_unsigned_rs1 < w_unsigned_rs2_extended ? 1:0) :
+                                               w_fct3==2 ? (w_signed_rs1 < w_signed_rs2_extended ? 1:0) : 
+                                               w_fct3==0 ? (r_rro && w_fct7[5] ? r_unsigned_rs1 - w_unsigned_rs2_extended : 
+                                                                                r_unsigned_rs1 + w_signed_rs2_extended) :
+                                               w_fct3==1 ? (r_unsigned_rs1 << w_unsigned_rs2_extended[4:0]) :                         
+                                               w_fct7[5] ? $signed(w_signed_rs1 >>> w_unsigned_rs2_extended[4:0]) :                    
+                                                            r_unsigned_rs1 >> w_unsigned_rs2_extended[4:0];
   // Jump/Branch-group of instructions (w_opcode==7'b1100011)
-  wire        w_jal    = (w_opcode == L_JAL   && i_inst_read_ack == 1'b1) ? 1:0;
-  wire [31:0] w_j_simm = { i_inst_read_data[31] ? L_ALL_ONES[31:21]:
-                           L_ALL_ZERO[31:21], i_inst_read_data[31], 
-                           i_inst_read_data[19:12], i_inst_read_data[20],
-                           i_inst_read_data[30:21], L_ALL_ZERO[0] };
+  wire        w_jal    = w_opcode == L_JAL ? 1:0;
+  wire [31:0] w_j_simm = { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21],
+                           i_inst_read_data[31], i_inst_read_data[19:12],
+                           i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
   wire w_bmux = r_bcc & (
                 w_fct3==4 ? w_signed_rs1   <  w_signed_rs2 :   // blt
                 w_fct3==5 ? w_signed_rs1   >= w_signed_rs2 :   // bge
@@ -171,17 +174,15 @@ module ORC_R32I #(
                 w_fct3==0 ? r_unsigned_rs1 == r_unsigned_rs2 : // beq
                 w_fct3==1 ? r_unsigned_rs1 != r_unsigned_rs2 : // bne
                 0);
-  wire        w_jump_request = w_jal | r_jalr | w_bmux;
-  wire [31:0] w_jump_value   = w_bmux == 1'b1 ? r_simm + r_next_pc_decode : 
-                               r_jalr == 1'b1 ? r_simm + r_unsigned_rs1 : 
-                               w_j_simm + r_next_pc_decode; // w_jal == 1'b1 ?
+  wire        w_jump_request = r_jalr | w_bmux;
+  wire [31:0] w_jump_value   = w_bmux == 1'b1 ? r_simm + r_pc : 
+                               r_jalr == 1'b1 ? r_simm + r_unsigned_rs1:
+                               r_next_pc_fetch;
   // Mem Process wires
-  wire w_rd_not_zero                = |w_rd;
-  wire w_destination_index_not_zero = |w_destination_index;
-  // Ready signals
+  wire w_rd_not_zero = |w_rd;
+  // Qualifying signals
   // Decoder Process
-  wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro | r_lcc | r_scc;
-  wire w_decoder_ready = (!w_decoder_valid & r_read_ready & r_write_ready);// | w_decoder_valid;
+  wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro;
   // Program Counter Process
   wire w_decoder_opcode = w_opcode == L_RII  ? 1:
                           w_opcode == L_RRO  ? 1:
@@ -189,16 +190,13 @@ module ORC_R32I #(
                           w_opcode == L_SCC  ? 1:
                           w_opcode == L_BCC  ? 1:
                           w_opcode == L_JALR ? 1:0;
-  wire w_program_counter_ready = (w_decoder_ready & r_program_counter_valid) & (!w_decoder_opcode) | 
-                                 (!r_program_counter_valid );
-  //   wire w_program_counter_ready = (w_decoder_ready & !r_program_counter_valid) | (!w_decoder_opcode);
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
   ///////////////////////////////////////////////////////////////////////////////
   
   // Wishbone Strobe and address output assignments
-  assign o_inst_read      = r_program_counter_valid; // & !w_jump_request;
+  assign o_inst_read_stb  = r_program_counter_valid;
   assign o_inst_read_addr = r_next_pc_fetch;
   
   ///////////////////////////////////////////////////////////////////////////////
@@ -208,72 +206,100 @@ module ORC_R32I #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
+      r_program_counter_state <= L_WAKEUP;
       r_next_pc_fetch         <= P_FETCH_COUNTER_RESET;
       r_next_pc_decode        <= L_ALL_ZERO;
       r_pc                    <= L_ALL_ZERO;
+      r_inst_data             <= L_ALL_ZERO;
       r_program_counter_valid <= 1'b0;
     end
     else begin
-      if (w_program_counter_ready == 1'b1) begin
-        // If the no valid inst is currently available or if the following process
-        // is ready to consume the valid instruction.
-        if ( i_inst_read_ack == 1'b1) begin
-          // If a valid instruction was just received.
-          if (w_jump_request == 1'b1) begin
-            // When there is a jump request update the program counter with the 
-            // jump value.
-            r_next_pc_fetch         <= w_jump_value;
-            r_program_counter_valid <= w_jal ? 1'b1 : 1'b0;
-          end
-          else if (w_decoder_ready == 1'b1) begin
-            // Increment the address and update the program counter.
-            r_next_pc_fetch         <= r_next_pc_fetch+4;
-            r_program_counter_valid <= 1'b1;
-          end
-          // Update the program counter.
-          r_next_pc_decode <= r_next_pc_fetch;
-          r_pc             <= r_next_pc_decode;
-        end
-        else if (r_program_counter_valid == 1'b1) begin
-          // When the program counter is valid but no instruction has been received
-          r_program_counter_valid <= 1'b0;
-        end
-        else if (r_inst_read_ack == 1'b1) begin
-          // If backpreasssure was applied to finish an instruction and now a new
-          // instruction needs to be requested.
-          if (w_jump_request == 1'b1) begin
-            // When there is a jump request update the program counter with the 
-            // jump value.
-            r_next_pc_fetch         <= w_jump_value;
-            r_program_counter_valid <= r_program_counter_valid <= w_jal ? 1'b1 : 1'b0;
-          end
-          else if (w_decoder_ready == 1'b1) begin
-            // Increment the address and update the program counter.
-            r_next_pc_fetch         <= r_next_pc_fetch+4;
-            r_program_counter_valid <= 1'b1;
-          end
-          // Update the program counter.
-          r_next_pc_decode <= r_next_pc_fetch;
-          r_pc             <= r_next_pc_decode;
-        end
-        else begin
-          // When the interface instruction read interface is ready for the next
-          // address but the program counter is yet to be updated.
+      case (r_program_counter_state)
+        L_WAKEUP : begin
+          // Fetch first instruction after reset.
           r_program_counter_valid <= 1'b1;
+          r_program_counter_state <= L_WAIT_FOR_ACK;
         end
-      end
-      else begin
-        // When the decoder is applying back preassure.
-        r_program_counter_valid <= 1'b0;
-      end
-      if ( i_inst_read_ack == 1'b1) begin
-        // If a valid instruction was just received.
-        r_inst_data     <= i_inst_read_data;
-        r_inst_read_ack <= 1'b1;
-      end
-      else begin
-        r_inst_read_ack <= 1'b0;
-      end
+        L_WAIT_FOR_ACK : begin
+          // If the no valid inst is currently available or if the following process
+          // is ready to consume the valid instruction.
+          if (i_inst_read_ack == 1'b1) begin
+            if (w_decoder_opcode == 1'b1) begin
+              // Increment the address and preload the program counter.
+              r_next_pc_fetch <= r_next_pc_fetch+4;
+              // If a valid instruction was just received.
+              r_inst_data     <= i_inst_read_data;
+              // Transition
+              r_program_counter_valid <= 1'b0;
+              r_program_counter_state <= L_WAIT_FOR_DECODER;
+            end
+            else begin
+              if (w_jal == 1'b1) begin
+                // Is an immidieate jump request. Update the program counter with the 
+                // jump value.
+                r_next_pc_fetch <= w_j_simm + r_next_pc_fetch;
+              end
+              else begin
+                // Increment the program counter. Ignore this instruction
+                r_next_pc_fetch <= r_next_pc_fetch+4;
+              end
+              // Transition
+              r_program_counter_valid <= 1'b1;
+              r_program_counter_state <= L_WAIT_FOR_ACK;
+            end
+          end
+          else begin
+            r_program_counter_valid <= 1'b0;
+            r_program_counter_state <= L_WAIT_FOR_ACK;
+          end
+          // Update the program counter.
+          r_next_pc_decode <= r_next_pc_fetch;
+          r_pc             <= r_next_pc_decode;
+        end
+        L_WAIT_FOR_DECODER : begin
+          // Wait one clock cycle to allow data to be stored in the registers.
+          if (r_lcc == 1'b1) begin
+            // Fetch external data
+            r_program_counter_valid <= 1'b0;
+            r_program_counter_state <= L_WAIT_FOR_READ;
+          end
+          else if(r_scc == 1'b1) begin
+            // Store data in external.
+            r_program_counter_valid <= 1'b0;
+            r_program_counter_state <= L_WAIT_FOR_WRITE;
+          end
+          else if (w_jump_request == 1'b1) begin
+            // Jump request by comparison (Branch or JALR).
+            r_next_pc_fetch         <= w_jump_value;
+            r_program_counter_valid <= 1'b1;
+            r_program_counter_state <= L_WAIT_FOR_ACK;
+          end
+          else begin
+            // Done with regular instruction.
+            r_program_counter_valid <= 1'b1;
+            r_program_counter_state <= L_WAIT_FOR_ACK;
+          end
+        end
+        L_WAIT_FOR_READ : begin
+          if (i_master_read_ack == 1'b1) begin
+            // Data received. Transition to fetch new instruction.
+            r_program_counter_valid <= 1'b1;
+            r_program_counter_state <= L_WAIT_FOR_ACK;
+          end // else implement a timeout counter
+        end
+        L_WAIT_FOR_WRITE : begin
+          if (i_master_write_ack ==1'b1) begin
+            // Data write acknowledge. Trasition to fetch new instruction.
+            r_program_counter_valid <= 1'b1;
+            r_program_counter_state <= L_WAIT_FOR_ACK;
+          end // else implement a timeout counter
+        end
+        default : begin
+          // Error condition by SEU? re-fetch instruction
+          r_program_counter_valid <= 1'b1;
+          r_program_counter_state <= L_WAIT_FOR_ACK;
+        end
+      endcase
     end
   end
 
@@ -293,20 +319,20 @@ module ORC_R32I #(
       r_uimm <= L_ALL_ZERO;
     end
     else begin
-      if (w_decoder_ready == 1'b1 && r_inst_read_ack == 1'b1 && w_destination_index_not_zero == 1'b1) begin
-        // 
-        if (w_pc_opcode == L_RII) begin
+      if (i_inst_read_ack == 1'b1 && w_rd_not_zero == 1'b1) begin
+        // If rs1 and rs2 are valid
+        if (w_opcode == L_RII) begin
           // Register-Immediate Instructions.
           // Performs ADDI, SLTI, ANDI, ORI, XORI, SLLI, SRLI, SRAI (I=immediate).
           r_rii  <= 1'b1;
-          r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], r_inst_data[31:20] };
-          r_uimm <= { L_ALL_ZERO[31:12], r_inst_data[31:20] };
+          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+          r_uimm <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
         end
         else begin
           r_rii <= 1'b0;
         end
   
-        if ( w_pc_opcode == L_RRO) begin
+        if ( w_opcode == L_RRO) begin
           // Register-Register Operations
           // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
           r_rro <= 1'b1;
@@ -315,57 +341,57 @@ module ORC_R32I #(
           r_rro <= 1'b0;
         end
   
-        if (w_pc_opcode == L_JALR) begin
+        if (w_opcode == L_JALR) begin
           //  Jump And Link Register(indirect jump instruction).
           // The target address is obtained by adding the sign-extended 12-bit
           // I-immediate to the register rs1, then setting the least-significant bit of
           // the result to zero. The address of the instruction following the jump
-          // (r_next_pc_decode) is written to register rd. Register x0 can be
+          // (r_next_pc_fetch) is written to register rd. Register x0 can be
           // used as the destination if the result is not required.
           r_jalr <= 1'b1;
-          r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12],
-                      r_inst_data[31:20] };
+          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12],
+                      i_inst_read_data[31:20] };
         end
         else begin
           r_jalr <= 1'b0;
         end
           
-        if (w_pc_opcode == L_BCC) begin
+        if (w_opcode == L_BCC) begin
           // Branches Conditional to Comparisons.
           // The 12-bit B-immediate encodes signed offsets in multiples of 2 bytes.
           // The offset is sign-extended and added to the address of the branch 
           // instruction to give the target address. Branch instructions compare 
           // two registers.
           r_bcc  <= 1'b1;
-          r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], 
-                     r_inst_data[31],r_inst_data[7],r_inst_data[30:25],
-                     r_inst_data[11:8],L_ALL_ZERO[0] };
+          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], 
+                     i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],
+                     i_inst_read_data[11:8],L_ALL_ZERO[0] };
         end
         else begin
           r_bcc <= 1'b0;
         end
   
-        if ( w_pc_opcode == L_LCC) begin
+        if ( w_opcode == L_LCC) begin
           // Load, Conditional to Comparisons.
           // The effective address is obtained by adding register rs1 to the 
           // sign-extended 12-bit offset. Loads copy a value from memory to 
           // register rd.
           r_lcc  <= 1'b1;
-          r_simm <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
-                     r_inst_data[31:20] };
+          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+                     i_inst_read_data[31:20] };
         end
         else begin
           r_lcc <= 1'b0;
         end
   
-        if (w_pc_opcode == L_SCC) begin
+        if (w_opcode == L_SCC) begin
           // Store, Conditional to Comparisons.
           // The effective address is obtained by adding register rs1 to the 
           // sign-extended 12-bit offset. Stores copy the value in register rs2 to
           // memory.
           r_scc   <= 1'b1;
-          r_simm  <= { r_inst_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
-                       r_inst_data[31:25], r_inst_data[11:7] };
+          r_simm  <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+                       i_inst_read_data[31:25], i_inst_read_data[11:7] };
         end
         else begin
           r_scc <= 1'b0;
@@ -389,14 +415,15 @@ module ORC_R32I #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_inst_read_ack == 1'b1) begin
+      // Get rs1 and rs2
       r_unsigned_rs1 = general_registers1[w_source1_pointer];
       r_unsigned_rs2 = general_registers2[w_source2_pointer];
     end
   end
 
   // Used for test bench debugging
-  wire w_lui   = (w_opcode == L_LUI   && i_inst_read_ack == 1'b1) ? 1:0;
-  wire w_auipc = (w_opcode == L_AUIPC && i_inst_read_ack == 1'b1) ? 1:0;
+  // wire w_lui   = (w_opcode == L_LUI   && i_inst_read_ack == 1'b1) ? 1:0;
+  // wire w_auipc = (w_opcode == L_AUIPC && i_inst_read_ack == 1'b1) ? 1:0;
   
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
@@ -412,9 +439,9 @@ module ORC_R32I #(
       // If w_decoder_valid = 1 store into general registers data that required date
       // from rs1 or rs2.
       if (r_jalr == 1'b1) begin
-        //  Jump And Link Register(indirect jump instruction).
-        general_registers1[w_destination_index] = r_next_pc_decode+4;
-        general_registers2[w_destination_index] = r_next_pc_decode+4;
+        // Jump And Link Register(indirect jump instruction).
+        general_registers1[w_destination_index] = r_next_pc_fetch;
+        general_registers2[w_destination_index] = r_next_pc_fetch;
       end
       if (r_rii == 1'b1) begin
         // Stores the Register-Immediate instruction result in the general register
@@ -451,12 +478,12 @@ module ORC_R32I #(
         // instruction to form the jump target address. JAL stores the address of
         // the instruction following the jump (r_next_pc_decode) into 
         // register rd.
-        general_registers1[w_rd] = r_next_pc_fetch+4;
-        general_registers2[w_rd] = r_next_pc_fetch+4;
+        general_registers1[w_rd] = r_next_pc_fetch + 4;
+        general_registers2[w_rd] = r_next_pc_fetch + 4;
       end
     end
-    else if (i_master_read_ack == 1'b1 && r_inst_read_ack == 1'b0) begin
-      // Data loaded from memory.
+    else if (i_master_read_ack == 1'b1 && r_master_read_ready == 1'b0) begin
+      // Data loaded from memory or I/O device.
       general_registers1[w_destination_index] = w_l_data;
       general_registers2[w_destination_index] = w_l_data;
     end
@@ -469,20 +496,21 @@ module ORC_R32I #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_read_ready       <= 1'b1;
-      r_master_read_addr <= L_ALL_ZERO;
+      r_master_read_ready <= 1'b1;
+      r_master_read_addr  <= L_ALL_ZERO;
     end
-    else if (r_read_ready == 1'b1 && r_lcc == 1'b1) begin
+    else if (r_master_read_ready == 1'b1 &&  r_lcc == 1'b1) begin
       // Load the decode data to an external mem or I/O device.
-      r_read_ready       <= 1'b0;
-      r_master_read_addr <= w_master_addr;
+      r_master_read_ready <= 1'b0;
+      r_master_read_addr  <= w_master_addr;
     end
-    else if (r_read_ready == 1'b0 && i_master_read_ack == 1'b1) begin
-      r_read_ready <= 1'b1;
+    else if (r_master_read_ready == 1'b0 &&  i_master_write_ack == 1'b1) begin
+      // Received valid data. Ready for new transaction on the next clock.
+      r_master_read_ready <= 1'b1;
     end
   end
   assign o_master_read_addr = w_master_addr;
-  assign o_master_read      = r_lcc;
+  assign o_master_read_stb  = r_lcc;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : Write Process
@@ -491,27 +519,27 @@ module ORC_R32I #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_write_ready <= 1'b1;
+      r_master_write_ready <= 1'b0;
     end
-    else if (r_write_ready == 1'b1 && r_scc == 1'b1) begin
+    else if (r_master_write_ready == 1'b1 && r_scc == 1'b1) begin
       // Store (write) data in external memory or device.
-      r_write_ready <= 1'b0;
+      r_master_write_ready <= 1'b0;                       
     end
-    else if (r_write_ready == 1'b0 && i_master_write_ack == 1'b1) begin
-      r_write_ready <= 1'b1;
+    else if (r_master_write_ready == 1'b0 && i_master_write_ack == 1'b1) begin
+      r_master_write_ready <= 1'b1;
     end
   end
-  assign o_master_write             = r_scc;
-  assign o_master_write_addr        = w_master_addr;
-  assign o_master_write_data        = w_s_data;
-  assign o_master_write_byte_enable = w_fct3==0||w_fct3==4 ? ( 
-                                        w_master_addr[1:0]==3 ? 4'b1000 : 
-                                        w_master_addr[1:0]==2 ? 4'b0100 : 
-                                        w_master_addr[1:0]==1 ? 4'b0010 : 
-                                                                4'b0001 ) :
-                                      w_fct3==1||w_fct3==5 ? ( 
-                                        w_master_addr[1] == 1 ? 4'b1100 :
-                                                                4'b0011 ) :
-                                                                4'b1111;  
+  assign o_master_write_stb  = r_scc;
+  assign o_master_write_addr = w_master_addr;
+  assign o_master_write_data = w_s_data;
+  assign o_master_write_sel  = w_fct3==0||w_fct3==4 ? ( 
+                                 w_master_addr[1:0]==3 ? 4'b1000 : 
+                                 w_master_addr[1:0]==2 ? 4'b0100 : 
+                                 w_master_addr[1:0]==1 ? 4'b0010 : 
+                                                         4'b0001 ) :
+                               w_fct3==1||w_fct3==5 ? ( 
+                                 w_master_addr[1] == 1 ? 4'b1100 :
+                                                         4'b0011 ) :
+                                                         4'b1111;
 
 endmodule
