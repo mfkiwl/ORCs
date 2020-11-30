@@ -90,13 +90,13 @@ Signals              | Initial State | Dimension | Direction | Definition
 
 ### 4.3 Memory and I/O HBI Master Write
 
-Signals                      | Initial State | Dimension | Direction | Definition
-:--------------------------- | :-----------: | :-------: | :-------: | :------------------------
-`o_master_write_stb`         |      0b0      |   1-bit   |    Out    | Write request signal.
-`i_master_write_ack`         |      N/A      |   1-bit   |    In     | Write acknowledge signal.
-`o_master_write_addr`        |  0x0000_0000  | `[31:0]`  |    Out    | Write Address signal.
-`i_master_read_data`         |      N/A      | `[31:0]`  |    In     | Write response data.
-`o_master_write_byte_enable` |      0x0      |  `[3:0]`  |    Out    | Write response data.
+Signals                | Initial State | Dimension | Direction | Definition
+:--------------------- | :-----------: | :-------: | :-------: | :------------------------
+`o_master_write_stb`   |      0b0      |   1-bit   |    Out    | Write request signal.
+`i_master_write_ack`   |      N/A      |   1-bit   |    In     | Write acknowledge signal.
+`o_master_write_addr`  |  0x0000_0000  | `[31:0]`  |    Out    | Write Address signal.
+`i_master_read_data`   |      N/A      | `[31:0]`  |    In     | Write response data.
+`o_master_write_sel`   |      0x0      |  `[3:0]`  |    Out    | Write byte enable
 
 ## 5 Generic Parameters
 

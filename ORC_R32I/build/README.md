@@ -9,14 +9,15 @@ _This results were generated using Yosys, NextPNR and the Icestorm tool chain ta
 ### Synthesis Results
 | Resource                  | Usage Count | 
 | :------------------------ | ----------: |
-| Number of  wire           |         1107|
-| Number of wire bits       |         3376|
-| Number of public wires    |         1107|
-| Number of public wire bits|         3376|
+| Number of  wire           |         1124|
+| Number of wire bits       |         3493|
+| Number of public wires    |         1124|
+| Number of public wire bits|         3493|
 | Number of memories        |            0|
 | Number of memory bits     |            0|
 | Number of processes       |             0|
-| Number of cells<br> --- SB_CARRY <br> --- SB_DFFE <br> --- SB_DFFESR <br> --- SB_DFFSR <br> --- SB_LUT4 <br> --- SB_RAM40_4K |               1828<br>268<br>38<br>160<br>8<br>1350<br>4|
+| Number of cells<br> --- SB_CARRY <br> --- SB_DFF <br> --- SB_DFFE <br> --- SB_DFFESR <br> --- SB_DFFESS <br> --- SB_DFFSR <br> --- SB_LUT4 <br> --- SB_RAM40_4K |               1809<br>269<br>5<br>5<br>133<br>1<br>6<br>1386<br>4|
+
 
 ## Plance and Route
 NextPnR version: `(Version d5dde5df)`
@@ -28,40 +29,40 @@ nextpnr-ice40 flags : `--pcf-allow-unconstrained --timing-allow-fail --ignore-lo
 
 |Device Resources |Device Utilization|Percentage|
 | --------------: | :--------------: | :------: |
-|ICESTORM_LC      |  1551 / 7680     |    20%   |
+|ICESTORM_LC      |  1566 / 7680     |    20%   |
 |ICESTORM_RAM     |     4 /   32     |    12%   |
 |SB_IO            |   204 /  256     |    79%   |
-|SB_GB            |     6 /    8     |    75%   |
+|SB_GB            |     4 /    8     |    50%   |
 |ICESTORM_PLL     |     0 /    2     |     0%   |
 |SB_WARMBOOT      |     0 /    1     |     0%   |
 
 
-**Checksum:** 0x04633f8d
+**Checksum:** 0xeb8ad1b6
 
 ### Slack
 
 |**Slack histogram** | Legend:<br> * represents 5 endpoint(s) + represents [1,5) endpoint(s)|
 | :--------------: | :-------------- |
-|Info: [ 64552,  65439) |********+|
-|Info: [ 65439,  66326) |****+|
-|Info: [ 66326,  67213) |************+|
-|Info: [ 67213,  68100) |**********************+|
-|Info: [ 68100,  68987) |****+|
-|Info: [ 68987,  69874) |*********+|
-|Info: [ 69874,  70761) |*********+|
-|Info: [ 70761,  71648) |***************+|
-|Info: [ 71648,  72535) |************+|
-|Info: [ 72535,  73422) |************************************************+|
-|Info: [ 73422,  74309) |***********+|
-|Info: [ 74309,  75196) |****************************+|
-|Info: [ 75196,  76083) |************************+|
-|Info: [ 76083,  76970) |*************************+|
-|Info: [ 76970,  77857) |*******+|
-|Info: [ 77857,  78744) |*****+|
-|Info: [ 78744,  79631) |**********************+|
-|Info: [ 79631,  80518) |************************************************************ |
-|Info: [ 80518,  81405) |*****************************+|
-|Info: [ 81405,  82292) |***************+|
+|[ 65019,  65862) |**********+|
+|[ 65862,  66705) |*****+|
+|[ 66705,  67548) |******+|
+|[ 67548,  68391) |*****+|
+|[ 68391,  69234) |************+|
+|[ 69234,  70077) |*****+|
+|[ 70077,  70920) |*******+|
+|[ 70920,  71763) |********+|
+|[ 71763,  72606) |***************+|
+|[ 72606,  73449) |***************************+|
+|[ 73449,  74292) |**********************+|
+|[ 74292,  75135) |*************************+|
+|[ 75135,  75978) |**********************+|
+|[ 75978,  76821) |***************************+|
+|[ 76821,  77664) |***********************+|
+|[ 77664,  78507) |***+|
+|[ 78507,  79350) |***+|
+|[ 79350,  80193) |*****************+|
+|[ 80193,  81036) |************************************************************ |
+|[ 81036,  81879) |************************+|
 
 
 ### Clock slack
@@ -76,6 +77,6 @@ nextpnr-ice40 flags : `--pcf-allow-unconstrained --timing-allow-fail --ignore-lo
 
 ## IceTime timing Analysis
 
-Total number of logic levels: 13
+Total number of logic levels: 11
 
-Total path delay: 19.53 ns (51.21 MHz)
+Total path delay: 18.16 ns (55.07 MHz)
