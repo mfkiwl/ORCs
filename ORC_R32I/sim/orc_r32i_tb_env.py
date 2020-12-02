@@ -33,7 +33,7 @@
 # File name     : orc_r32i_tb_env.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/11/26 23:25:01
+# Last modified : 2020/12/01 16:45:28
 # Project Name  : UVM Python Verification Library
 # Module Name   : orc_r32i_tb_env
 # Description   : Memory Slave Interface  monitor.
@@ -45,7 +45,7 @@ import cocotb
 from uvm.base import *
 from uvm.comps import UVMEnv
 from uvm.macros import uvm_component_utils
-from memory_intfc_read_slave_agent import *
+from Wishbone_Pipeline_Master.wb_master_agent import *
 from mem_model import *
 
 class orc_r32i_tb_env(UVMEnv):
@@ -71,7 +71,7 @@ class orc_r32i_tb_env(UVMEnv):
         self.cfg = None   # tb_env_config
         self.scoreboard = None   # scoreboard
         self.f_cov = None   # functional coverage
-        self.tag = "ORC_R32I_TB_ENV"
+        self.tag = "orc_r32i_tb_env"
 
 
     def build_phase(self, phase):
@@ -90,7 +90,7 @@ class orc_r32i_tb_env(UVMEnv):
         
         self.cfg = arr[0]
 
-        self.inst_agent = memory_intfc_read_slave_agent.type_id.create("inst_agent", self)
+        self.inst_agent = wb_master_agent.type_id.create("inst_agent", self)
         self.inst_agent.cfg = self.cfg.inst_agent_cfg
         
         #self.predictor = orc_r32i_predictor.type_id.create("predictor", self)

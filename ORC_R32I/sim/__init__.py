@@ -1,2 +1,0 @@
-
-from memory_intfc_read_slave_if import memory_intfc_read_slave_if

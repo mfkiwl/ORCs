@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/11/29 09:43:44
+# Last modified : 2020/12/01 21:59:25
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -45,9 +45,9 @@ import cocotb
 from cocotb.triggers import Timer
 
 from uvm import *
-from memory_intfc_read_slave_seq import *
-from memory_intfc_read_slave_agent import *
-from memory_intfc_read_slave_config import *
+from Wishbone_Pipeline_Master.wb_master_seq import *
+from Wishbone_Pipeline_Master.wb_master_agent import *
+from Wishbone_Pipeline_Master.wb_master_config import *
 from tb_env_config import *
 from orc_r32i_tb_env import *
 from mem_model import *
@@ -79,13 +79,15 @@ class orc_r32i_test_base(UVMTest):
         self.tb_env_config = tb_env_config.type_id.create("tb_env_config", self)
         self.tb_env_config.reg_block = self.reg_block
         # Create the instruction agent
-        self.inst_agent_cfg = memory_intfc_read_slave_config.type_id.create("inst_agent_cfg", self)
+        self.inst_agent_cfg = wb_master_config.type_id.create("inst_agent_cfg", self)
         arr = []
         # Get the instruction interface created at top
         if UVMConfigDb.get(None, "*", "vif", arr) is True:
             UVMConfigDb.set(self, "*", "vif", arr[0])
             # Make this agent's interface the interface connected at top
-            self.inst_agent_cfg.vif = arr[0]
+            self.inst_agent_cfg.vif         = arr[0]
+            self.inst_agent_cfg.has_driver  = 1
+            self.inst_agent_cfg.has_monitor = 1
             UVMConfigDb.set(self, "*", "cfg", self.inst_agent_cfg)
         else:
             uvm_fatal("NOVIF", "Could not get vif from config DB")
@@ -128,33 +130,33 @@ class orc_r32i_reg_test(orc_r32i_test_base):
 
         slave_sqr = self.tb_env.inst_agent.sqr
         
-        slave_seq0 = read_sequence("slave_seq0")
+        slave_seq0 = read_single_sequence("slave_seq0")
         slave_seq0.data = 74135
-        slave_seq0.opcaode = "AUIPC" 
+        #slave_seq0.opcaode = "AUIPC" 
 
-        slave_seq1 = read_sequence("slave_seq1")
+        slave_seq1 = read_single_sequence("slave_seq1")
         slave_seq1.data = 646021523
-        slave_seq1.opcaode = "RII"
+        #slave_seq1.opcaode = "RII"
 
-        slave_seq2 = read_sequence("slave_seq2")
+        slave_seq2 = read_single_sequence("slave_seq2")
         slave_seq2.data = 2193720595
-        slave_seq2.opcaode = "RII" 
+        #slave_seq2.opcaode = "RII" 
 
-        slave_seq3 = read_sequence("slave_seq3")
+        slave_seq3 = read_single_sequence("slave_seq3")
         slave_seq3.data = 83479
-        slave_seq3.opcaode = "AUIPC"
+        #slave_seq3.opcaode = "AUIPC"
 
-        slave_seq4 = read_sequence("slave_seq4")
+        slave_seq4 = read_single_sequence("slave_seq4")
         slave_seq4.data = 1166118409
-        slave_seq4.opcaode = "JAL"
+        #slave_seq4.opcaode = "JAL"
 
-        slave_seq5 = read_sequence("slave_seq5")
+        slave_seq5 = read_single_sequence("slave_seq5")
         slave_seq5.data = 714080495
-        slave_seq5.opcaode = "JAL"
+        #slave_seq5.opcaode = "JAL"
 
-        slave_seq6 = read_sequence("slave_seq6")
+        slave_seq6 = read_single_sequence("slave_seq6")
         slave_seq6.data = 2181145347
-        slave_seq6.opcaode = "LCC"
+        #slave_seq6.opcaode = "LCC"
 
         # Call the sequencer
         #await slave_seq0.start(slave_sqr)
