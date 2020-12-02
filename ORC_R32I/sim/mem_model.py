@@ -33,7 +33,7 @@
 # File name     : memory_intfc_read_slave_config.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:11:12
-# Last modified : 2020/11/11 23:39:24
+# Last modified : 2020/12/01 21:56:38
 # Project Name  : UVM Python Verification Library
 # Module Name   : memory_intfc_read_slave_config
 # Description   : Memory Interface Configuraion object.
@@ -42,7 +42,7 @@
 #
 #################################################################################
 from uvm import *
-from memory_intfc_read_slave_seq import *
+from wb_master_seq import *
 
 class reg_model(UVMReg):
 
@@ -223,30 +223,29 @@ uvm_object_utils(reg_block)
 class reg_adapter(UVMRegAdapter):
 
 
-    def __init__(self, name="reg2memory_intfc_read_slave_adapter"):
+    def __init__(self, name="reg_adapter"):
         super().__init__(name)
 
     def reg2bus(self, rw):
-        memory_intfc = memory_intfc_read_slave_seq.type_id.create("memory_intfc_read_slave_seq")
-        memory_intfc.kind = memory_intfc_read_slave_seq.READ
-        memory_intfc.addr = rw.addr
-        memory_intfc.data = rw.data
-        memory_intfc.byte_enable = rw.byte_enable
+        memory_intfc = wb_master_seq.type_id.create("memory_intfc")
+        # memory_intfc.addr = rw.addr
+        # memory_intfc.data = rw.data
+        # memory_intfc.byte_enable = rw.byte_enable
         return memory_intfc
 
 
     def bus2reg(self, bus_item, rw):  # rw must be ref
         memory_intfc = None
         arr = []
-        if (not sv.cast(arr,bus_item, memory_intfc_read_slave_seq)):
+        if (not sv.cast(arr,bus_item, wb_master_seq)):
             uvm_fatal("NOT_memory_intfc_read_slave_TYPE", "Provided bus_item is not of the correct type")
             return
 
         memory_intfc = arr[0]
-        rw.addr = memory_intfc.addr
-        rw.data = memory_intfc.data
-        rw.byte_enable = memory_intfc.byte_enable
-        rw.status = UVM_IS_OK
+        # rw.addr = memory_intfc.addr
+        # rw.data = memory_intfc.data
+        # rw.byte_enable = memory_intfc.byte_enable
+        # rw.status = UVM_IS_OK
         return rw
 
 
