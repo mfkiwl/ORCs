@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/11/29 20:43:40
+// Last modified : 2020/12/01 22:13:03
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -84,11 +84,11 @@ module ORC_R32I #(
   localparam [6:0] L_LCC   = 7'b0000011; // imm[11:0],rs1[19:15],funct[14:12],rd[11:7]
   localparam [6:0] L_SCC   = 7'b0100011; // imm[11:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:0]
   // Program Counter
-  localparam [2:0] L_WAKEUP           = 3'h0;
-  localparam [2:0] L_WAIT_FOR_ACK     = 3'h1;
-  localparam [2:0] L_WAIT_FOR_DECODER = 3'h2;
-  localparam [2:0] L_WAIT_FOR_READ    = 3'h3;
-  localparam [2:0] L_WAIT_FOR_WRITE   = 3'h4;
+  localparam [2:0] S_WAKEUP           = 3'h0; // r_program_counter_state after reset
+  localparam [2:0] S_WAIT_FOR_ACK     = 3'h1; // r_program_counter_state, waiting for valid instruction
+  localparam [2:0] S_WAIT_FOR_DECODER = 3'h2; // r_program_counter_state, wait for Decoder process
+  localparam [2:0] S_WAIT_FOR_READ    = 3'h3; // r_program_counter_state, wait for load to complete
+  localparam [2:0] S_WAIT_FOR_WRITE   = 3'h4; // r_program_counter_state, wait for store to complete
   // Misc Definitions
   localparam [31:0] L_ALL_ZERO = 32'h0000_0000;
   localparam [31:0] L_ALL_ONES = 32'hFFFF_FFFF;
@@ -96,22 +96,22 @@ module ORC_R32I #(
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
   // Program Counter Process
-  reg [31:0] r_next_pc_fetch;         // 32-bit program counter t+2
-  reg [31:0] r_next_pc_decode;        // 32-bit program counter t+1
-  reg [31:0] r_pc;                    // 32-bit program counter t+0
+  reg [31:0] r_next_pc_fetch;         // 32-bit program counter t
+  reg [31:0] r_next_pc_decode;        // 32-bit program counter t-1
+  reg [31:0] r_pc;                    // 32-bit program counter t-2
   reg        r_program_counter_valid; // Program Counter Valid
   reg [31:0] r_inst_data;             // registers the valid instructions
   reg [2:0]  r_program_counter_state; // Current State Holder.
   // Decoder Process Signals
-  wire [6:0]  w_opcode = i_inst_read_data[6:0];
-  reg  [31:0] r_simm;
-  reg  [31:0] r_uimm;
-  reg         r_jalr;
-  reg         r_bcc;
-  reg         r_lcc;
-  reg         r_scc;
-  reg         r_rii;
-  reg         r_rro;
+  wire [6:0]  w_opcode = i_inst_read_data[6:0]; // OPCODE field
+  reg  [31:0] r_simm;                           // Signed Immediate
+  reg  [31:0] r_uimm;                           // Unsigned Immediate
+  reg         r_jalr;                           // valid JALR flag
+  reg         r_bcc;                            // valid branch flag
+  reg         r_lcc;                            // valid load flag
+  reg         r_scc;                            // valid store flag
+  reg         r_rii;                            // valid register-immediate flag
+  reg         r_rro;                            // valid register-register flag
   // General Purpose Registers. BRAM array duplicated to index source 1 & 2 at same time.
   reg [31:0] general_registers1 [0:31];	// 32x32-bit registers
   reg [31:0] general_registers2 [0:31];	// 32x32-bit registers
@@ -121,18 +121,18 @@ module ORC_R32I #(
   reg [31:0] r_master_read_addr;
   reg        r_master_write_ready;
   // Instruction Fields wires
-  wire [4:0] w_rd                = i_inst_read_data[11:7];
-  wire [4:0] w_destination_index = r_inst_data[11:7];
-  wire [4:0] w_source1_pointer   = i_inst_read_data[19:15];
-  wire [4:0] w_source2_pointer   = i_inst_read_data[24:20];
-  wire [2:0] w_fct3              = r_inst_data[14:12];
-  wire [6:0] w_fct7              = r_inst_data[31:25];
+  wire [4:0] w_rd                = i_inst_read_data[11:7];  // rd field
+  wire [4:0] w_destination_index = r_inst_data[11:7];       // registered rd_field (one clock delayed of w_rd)
+  wire [4:0] w_source1_pointer   = i_inst_read_data[19:15]; // s1 field
+  wire [4:0] w_source2_pointer   = i_inst_read_data[24:20]; // s2 field
+  wire [2:0] w_fct3              = r_inst_data[14:12];      // fct3 field
+  wire [6:0] w_fct7              = r_inst_data[31:25];      // fct7 field
   // source-1 and source-2 register selection
-  reg         [31:0] r_unsigned_rs1;
-  reg         [31:0] r_unsigned_rs2;
-  wire signed [31:0] w_signed_rs1  = $signed(r_unsigned_rs1);
-  wire signed [31:0] w_signed_rs2  = $signed(r_unsigned_rs2);
-  wire        [31:0] w_master_addr = r_unsigned_rs1 + r_simm;
+  reg         [31:0] r_unsigned_rs1;                          // rs1 field
+  reg         [31:0] r_unsigned_rs2;                          // rs2 field
+  wire signed [31:0] w_signed_rs1  = $signed(r_unsigned_rs1); // signed rs1
+  wire signed [31:0] w_signed_rs2  = $signed(r_unsigned_rs2); // signed rs2
+  wire        [31:0] w_master_addr = r_unsigned_rs1 + r_simm; // address created by lcc and scc instructions
   // L-group of instructions (w_opcode==7'b0000011)
   wire [31:0] w_l_data = w_fct3==0||w_fct3==4 ? 
                            (r_master_read_addr[1:0]==3 ? { w_fct3==0&&i_master_read_data[31] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[31:24] } :
@@ -157,7 +157,7 @@ module ORC_R32I #(
                                                w_fct3==3 ? (r_unsigned_rs1 < w_unsigned_rs2_extended ? 1:0) :
                                                w_fct3==2 ? (w_signed_rs1 < w_signed_rs2_extended ? 1:0) : 
                                                w_fct3==0 ? (r_rro && w_fct7[5] ? r_unsigned_rs1 - w_unsigned_rs2_extended : 
-                                                                                r_unsigned_rs1 + w_signed_rs2_extended) :
+                                                                                 r_unsigned_rs1 + w_signed_rs2_extended) :
                                                w_fct3==1 ? (r_unsigned_rs1 << w_unsigned_rs2_extended[4:0]) :                         
                                                w_fct7[5] ? $signed(w_signed_rs1 >>> w_unsigned_rs2_extended[4:0]) :                    
                                                             r_unsigned_rs1 >> w_unsigned_rs2_extended[4:0];
@@ -179,7 +179,7 @@ module ORC_R32I #(
                                r_jalr == 1'b1 ? r_simm + r_unsigned_rs1:
                                r_next_pc_fetch;
   // Mem Process wires
-  wire w_rd_not_zero = |w_rd;
+  wire w_rd_not_zero = |w_rd; // or reduction of the destination register.
   // Qualifying signals
   // Decoder Process
   wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro;
@@ -206,7 +206,7 @@ module ORC_R32I #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_program_counter_state <= L_WAKEUP;
+      r_program_counter_state <= S_WAKEUP;
       r_next_pc_fetch         <= P_FETCH_COUNTER_RESET;
       r_next_pc_decode        <= L_ALL_ZERO;
       r_pc                    <= L_ALL_ZERO;
@@ -215,27 +215,27 @@ module ORC_R32I #(
     end
     else begin
       case (r_program_counter_state)
-        L_WAKEUP : begin
+        S_WAKEUP : begin
           // Fetch first instruction after reset.
           r_program_counter_valid <= 1'b1;
-          r_program_counter_state <= L_WAIT_FOR_ACK;
+          r_program_counter_state <= S_WAIT_FOR_ACK;
         end
-        L_WAIT_FOR_ACK : begin
+        S_WAIT_FOR_ACK : begin
           // If the no valid inst is currently available or if the following process
           // is ready to consume the valid instruction.
           if (i_inst_read_ack == 1'b1) begin
             if (w_decoder_opcode == 1'b1) begin
-              // Increment the address and preload the program counter.
+              // Increment the address and pre-load the program counter.
               r_next_pc_fetch <= r_next_pc_fetch+4;
               // If a valid instruction was just received.
-              r_inst_data     <= i_inst_read_data;
+              r_inst_data <= i_inst_read_data;
               // Transition
               r_program_counter_valid <= 1'b0;
-              r_program_counter_state <= L_WAIT_FOR_DECODER;
+              r_program_counter_state <= S_WAIT_FOR_DECODER;
             end
             else begin
               if (w_jal == 1'b1) begin
-                // Is an immidieate jump request. Update the program counter with the 
+                // Is an immediate jump request. Update the program counter with the 
                 // jump value.
                 r_next_pc_fetch <= w_j_simm + r_next_pc_fetch;
               end
@@ -245,59 +245,58 @@ module ORC_R32I #(
               end
               // Transition
               r_program_counter_valid <= 1'b1;
-              r_program_counter_state <= L_WAIT_FOR_ACK;
+              r_program_counter_state <= S_WAIT_FOR_ACK;
             end
           end
           else begin
             r_program_counter_valid <= 1'b0;
-            r_program_counter_state <= L_WAIT_FOR_ACK;
+            r_program_counter_state <= S_WAIT_FOR_ACK;
           end
           // Update the program counter.
           r_next_pc_decode <= r_next_pc_fetch;
           r_pc             <= r_next_pc_decode;
         end
-        L_WAIT_FOR_DECODER : begin
+        S_WAIT_FOR_DECODER : begin
           // Wait one clock cycle to allow data to be stored in the registers.
           if (r_lcc == 1'b1) begin
             // Fetch external data
             r_program_counter_valid <= 1'b0;
-            r_program_counter_state <= L_WAIT_FOR_READ;
+            r_program_counter_state <= S_WAIT_FOR_READ;
           end
           else if(r_scc == 1'b1) begin
             // Store data in external.
             r_program_counter_valid <= 1'b0;
-            r_program_counter_state <= L_WAIT_FOR_WRITE;
+            r_program_counter_state <= S_WAIT_FOR_WRITE;
           end
           else if (w_jump_request == 1'b1) begin
             // Jump request by comparison (Branch or JALR).
             r_next_pc_fetch         <= w_jump_value;
             r_program_counter_valid <= 1'b1;
-            r_program_counter_state <= L_WAIT_FOR_ACK;
+            r_program_counter_state <= S_WAIT_FOR_ACK;
           end
           else begin
             // Done with regular instruction.
             r_program_counter_valid <= 1'b1;
-            r_program_counter_state <= L_WAIT_FOR_ACK;
+            r_program_counter_state <= S_WAIT_FOR_ACK;
           end
         end
-        L_WAIT_FOR_READ : begin
+        S_WAIT_FOR_READ : begin
           if (i_master_read_ack == 1'b1) begin
             // Data received. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
-            r_program_counter_state <= L_WAIT_FOR_ACK;
-          end // else implement a timeout counter
+            r_program_counter_state <= S_WAIT_FOR_ACK;
+          end // else implement a timeout counter?
         end
-        L_WAIT_FOR_WRITE : begin
+        S_WAIT_FOR_WRITE : begin
           if (i_master_write_ack ==1'b1) begin
             // Data write acknowledge. Trasition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
-            r_program_counter_state <= L_WAIT_FOR_ACK;
-          end // else implement a timeout counter
+            r_program_counter_state <= S_WAIT_FOR_ACK;
+          end // else implement a timeout counter?
         end
         default : begin
-          // Error condition by SEU? re-fetch instruction
-          r_program_counter_valid <= 1'b1;
-          r_program_counter_state <= L_WAIT_FOR_ACK;
+          // Error condition caused by SEU? re-fetch instruction
+          r_program_counter_state <= S_WAIT_FOR_ACK;
         end
       endcase
     end
