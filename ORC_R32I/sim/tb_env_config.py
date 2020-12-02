@@ -33,7 +33,7 @@
 # File name     : tb_env_config.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/11/26 23:25:03
+# Last modified : 2020/12/01 16:46:41
 # Project Name  : UVM Python Verification Library
 # Module Name   : tb_env_config
 # Description   : Test Bench Configurations
@@ -45,9 +45,9 @@ import cocotb
 from cocotb.triggers import *
 from uvm.tlm1 import *
 from uvm.macros import *
-from memory_intfc_read_slave_agent import *
-from memory_intfc_read_slave_config import *
-from memory_intfc_read_slave_seq import *
+from Wishbone_Pipeline_Master.wb_master_agent import *
+from Wishbone_Pipeline_Master.wb_master_config import *
+from Wishbone_Pipeline_Master.wb_master_seq import *
 
 from mem_model import *
 
@@ -69,11 +69,11 @@ class tb_env_config(UVMEnv):
              name: This agents name.
              parent: NONE
         """
-        self.inst_agent_cfg = memory_intfc_read_slave_config.type_id.create("inst_agent_cfg", self)
+        self.inst_agent_cfg = wb_master_config.type_id.create("inst_agent_cfg", self)
         self.reg_block = reg_block.type_id.create("reg_block", self)
         self.reg_block = reg_block.build  # passive
         self.has_scoreboard = 0           # scoreboard on/off
-        self.tag = "TB_ENV_CONFIG"
+        self.tag = "tb_env_config"
 
 
 uvm_component_utils(tb_env_config)
