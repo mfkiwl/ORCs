@@ -33,7 +33,7 @@
 # File name     : orc_r32i_tb_env.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/12/01 16:45:28
+# Last modified : 2020/12/02 21:58:54
 # Project Name  : UVM Python Verification Library
 # Module Name   : orc_r32i_tb_env
 # Description   : Memory Slave Interface  monitor.
@@ -45,7 +45,7 @@ import cocotb
 from uvm.base import *
 from uvm.comps import UVMEnv
 from uvm.macros import uvm_component_utils
-from Wishbone_Pipeline_Master.wb_master_agent import *
+from uvm_externals.Wishbone_Pipeline_Master.wb_master_agent import *
 from mem_model import *
 
 class orc_r32i_tb_env(UVMEnv):

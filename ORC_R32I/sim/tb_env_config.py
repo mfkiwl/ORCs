@@ -33,7 +33,7 @@
 # File name     : tb_env_config.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/12/01 16:46:41
+# Last modified : 2020/12/02 21:58:58
 # Project Name  : UVM Python Verification Library
 # Module Name   : tb_env_config
 # Description   : Test Bench Configurations
@@ -45,9 +45,9 @@ import cocotb
 from cocotb.triggers import *
 from uvm.tlm1 import *
 from uvm.macros import *
-from Wishbone_Pipeline_Master.wb_master_agent import *
-from Wishbone_Pipeline_Master.wb_master_config import *
-from Wishbone_Pipeline_Master.wb_master_seq import *
+from uvm_externals.Wishbone_Pipeline_Master.wb_master_agent import *
+from uvm_externals.Wishbone_Pipeline_Master.wb_master_config import *
+from uvm_externals.Wishbone_Pipeline_Master.wb_master_seq import *
 
 from mem_model import *
 

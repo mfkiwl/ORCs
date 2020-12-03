@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/12/01 21:59:25
+# Last modified : 2020/12/02 21:58:56
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -45,9 +45,9 @@ import cocotb
 from cocotb.triggers import Timer
 
 from uvm import *
-from Wishbone_Pipeline_Master.wb_master_seq import *
-from Wishbone_Pipeline_Master.wb_master_agent import *
-from Wishbone_Pipeline_Master.wb_master_config import *
+from uvm_externals.Wishbone_Pipeline_Master.wb_master_seq import *
+from uvm_externals.Wishbone_Pipeline_Master.wb_master_agent import *
+from uvm_externals.Wishbone_Pipeline_Master.wb_master_config import *
 from tb_env_config import *
 from orc_r32i_tb_env import *
 from mem_model import *

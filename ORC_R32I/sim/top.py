@@ -3,13 +3,13 @@ import random
 import cocotb
 import sys
 # insert at 1, 0 is the script path (or '' in REPL)
-sys.path.append('./Wishbone_Pipeline_Master/')
+sys.path.append('uvm_externals/Wishbone_Pipeline_Master/')
 from cocotb.triggers import Timer
 from cocotb.clock import Clock
 from uvm.base import run_test, UVMDebug
 from uvm.base.uvm_phase import UVMPhase
 from uvm.seq import UVMSequence
-from Wishbone_Pipeline_Master.wb_master_if import *
+from uvm_externals.Wishbone_Pipeline_Master.wb_master_if import *
 from tb_env_config import *
 from orc_r32i_tb_env import *
 from orc_r32i_test_lib import *
