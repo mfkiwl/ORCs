@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/01 22:13:03
+// Last modified : 2020/12/03 07:48:26
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -415,14 +415,10 @@ module ORC_R32I #(
   always@(posedge i_clk) begin
     if (i_inst_read_ack == 1'b1) begin
       // Get rs1 and rs2
-      r_unsigned_rs1 = general_registers1[w_source1_pointer];
-      r_unsigned_rs2 = general_registers2[w_source2_pointer];
+      r_unsigned_rs1 <= general_registers1[w_source1_pointer];
+      r_unsigned_rs2 <= general_registers2[w_source2_pointer];
     end
   end
-
-  // Used for test bench debugging
-  // wire w_lui   = (w_opcode == L_LUI   && i_inst_read_ack == 1'b1) ? 1:0;
-  // wire w_auipc = (w_opcode == L_AUIPC && i_inst_read_ack == 1'b1) ? 1:0;
   
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
@@ -430,27 +426,27 @@ module ORC_R32I #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      reset_index                     = reset_index+1;
-      general_registers1[reset_index] = L_ALL_ZERO;
-      general_registers2[reset_index] = L_ALL_ZERO;
+      reset_index                     <= reset_index+1;
+      general_registers1[reset_index] <= L_ALL_ZERO;
+      general_registers2[reset_index] <= L_ALL_ZERO;
     end
     else if (w_decoder_valid == 1'b1) begin
       // If w_decoder_valid = 1 store into general registers data that required date
       // from rs1 or rs2.
       if (r_jalr == 1'b1) begin
         // Jump And Link Register(indirect jump instruction).
-        general_registers1[w_destination_index] = r_next_pc_fetch;
-        general_registers2[w_destination_index] = r_next_pc_fetch;
+        general_registers1[w_destination_index] <= r_next_pc_fetch;
+        general_registers2[w_destination_index] <= r_next_pc_fetch;
       end
       if (r_rii == 1'b1) begin
         // Stores the Register-Immediate instruction result in the general register
-        general_registers1[w_destination_index] = w_rm_data;
-        general_registers2[w_destination_index] = w_rm_data;
+        general_registers1[w_destination_index] <= w_rm_data;
+        general_registers2[w_destination_index] <= w_rm_data;
       end
       if (r_rro == 1'b1) begin
         // Store the Register-Register operation result in the general registers
-        general_registers1[w_destination_index] = w_rm_data;
-        general_registers2[w_destination_index] = w_rm_data;
+        general_registers1[w_destination_index] <= w_rm_data;
+        general_registers2[w_destination_index] <= w_rm_data;
       end
     end
     else if (w_rd_not_zero == 1'b1 && i_inst_read_ack == 1'b1) begin
@@ -459,8 +455,8 @@ module ORC_R32I #(
         // Used to build 32-bit constants and uses the U-type format. Places the
         // 32-bit U-immediate value into the destination register rd, filling in
         // the lowest 12 bits with zeros.
-        general_registers1[w_rd] = { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        general_registers2[w_rd] = { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        general_registers1[w_rd] <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        general_registers2[w_rd] <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
       end
       if (w_opcode == L_AUIPC) begin
         // Add Upper Immediate to Program Counter.
@@ -468,8 +464,8 @@ module ORC_R32I #(
         // AUIPC forms a 32-bit offset from the U-immediate, filling in the 
         // lowest 12 bits with zeros, adds this offset to the address of the 
         // AUIPC instruction, then places the result in register rd.
-        general_registers1[w_rd] = r_next_pc_fetch + { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        general_registers2[w_rd] = r_next_pc_fetch + { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        general_registers1[w_rd] <= r_next_pc_fetch + { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
+        general_registers2[w_rd] <= r_next_pc_fetch + { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
       end
       if (w_opcode == L_JAL) begin
         // Jump And Link Operation.
@@ -477,14 +473,14 @@ module ORC_R32I #(
         // instruction to form the jump target address. JAL stores the address of
         // the instruction following the jump (r_next_pc_decode) into 
         // register rd.
-        general_registers1[w_rd] = r_next_pc_fetch + 4;
-        general_registers2[w_rd] = r_next_pc_fetch + 4;
+        general_registers1[w_rd] <= r_next_pc_fetch + 4;
+        general_registers2[w_rd] <= r_next_pc_fetch + 4;
       end
     end
     else if (i_master_read_ack == 1'b1 && r_master_read_ready == 1'b0) begin
       // Data loaded from memory or I/O device.
-      general_registers1[w_destination_index] = w_l_data;
-      general_registers2[w_destination_index] = w_l_data;
+      general_registers1[w_destination_index] <= w_l_data;
+      general_registers2[w_destination_index] <= w_l_data;
     end
   end
 
