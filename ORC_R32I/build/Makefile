@@ -7,19 +7,19 @@ PLACE_AND_ROUTE = nextpnr-ice40
 all: clean asc_0 asc_1 asc_2 asc_3 rpt
 
 blif:
-	yosys -q -p "synth_ice40 -abc2 -relut -retime -device hx -json ORC_R32I_syn.json -top ORC_R32I" "../source/ORC_R32I.v"
+	yosys -p "synth_ice40 -abc2 -retime -device hx -json ORC_R32I_syn.json -top ORC_R32I" "../source/ORC_R32I.v"
 
 asc_0: blif
-	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --pre-pack pre_pack.py --opt-timing --seed 0 --asc $(PROJ).asc
+	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --seed 0 --asc $(PROJ).asc
 
 asc_1: blif
-	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --pre-pack pre_pack.py --opt-timing --seed 77 --asc $(PROJ)_111.asc
+	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --seed 99 --asc $(PROJ)_111.asc
 
 asc_2: blif
-	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --pre-pack pre_pack.py --opt-timing --seed 999 --asc $(PROJ)_222.asc
+	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --seed 9797 --asc $(PROJ)_222.asc
 
 asc_3: blif
-	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --pre-pack pre_pack.py --opt-timing --seed 3579 --asc $(PROJ)_333.asc
+	$(PLACE_AND_ROUTE) --$(DEVICE) --package $(PACKAGE) --json $(PROJ)_syn.json --pcf $(PIN_DEF).pcf --pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --seed 99999 --asc $(PROJ)_333.asc
 
 bin_0: asc_0
 	icepack $(PROJ).asc $(PROJ).bin
