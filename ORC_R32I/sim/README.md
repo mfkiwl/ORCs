@@ -17,11 +17,11 @@ For setting cocotb and uvm-python:
     python -m pip install --user .
 
 
-It is recommend to run the simulation using 
+It is recommend to run the simulation using verilator as such
    
-     SIM=verilator make
+    make
 
-          or 
+or 
 
     SIM=icarus make  # Use iverilog as a simulator
 

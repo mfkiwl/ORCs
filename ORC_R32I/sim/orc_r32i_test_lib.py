@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/12/02 21:58:56
+# Last modified : 2020/12/02 23:30:59
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -99,7 +99,7 @@ class orc_r32i_test_base(UVMTest):
         self.tb_env = orc_r32i_tb_env.type_id.create("tb_env", self)
         # Create a specific depth printer for printing the created topology
         self.printer = UVMTablePrinter()
-        self.printer.knobs.depth = 3
+        self.printer.knobs.depth = 4
 
 
     def end_of_elaboration_phase(self, phase):
