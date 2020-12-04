@@ -34,26 +34,26 @@ async def top(dut):
 
 
     # Map the signals in the DUT to the interface
-    bus_map = {"clk_i"   : "i_clk", 
-               "rst_i"   : "i_reset_sync",
-               "adr_o"   : "o_inst_read_addr", 
-               "dat_i"   : "i_inst_read_data",
-               "dat_o"   : "", 
-               "we_o"    : "",
-               "sel_o"   : "",
-               "stb_o"   : "o_inst_read_stb",
-               "ack_i"   : "i_inst_read_ack",
-               "cyc_o"   : "",
-               "stall_i" : "",
-               "tga_o"   : "",
-               "tgd_i"   : "",
-               "tgd_o"   : "",
-               "tgc_o"   : ""}
+    bus_map = {"clk_i": "i_clk", 
+               "rst_i": "i_reset_sync",
+               "adr_o": "o_inst_read_addr", 
+               "dat_i": "i_inst_read_data",
+               "dat_o": "dat_o", 
+               "we_o": "we_o",
+               "sel_o": "sel_o",
+               "stb_o": "o_inst_read_stb",
+               "ack_i": "i_inst_read_ack",
+               "cyc_o": "cyc_o",
+               "stall_i": "stall_i",
+               "tga_o": "tga_o",
+               "tgd_i": "tgd_i",
+               "tgd_o": "tgd_o",
+               "tgc_o": "tgc_o"}
  
     vif = wb_master_if(dut, bus_map)
-    clock = Clock(dut.i_clk, 10, units="ns")  # Create a 100Mhz clock
+    clock = Clock(vif.clk_i, 10, units="ns")  # Create a 100Mhz clock
     cocotb.fork(clock.start())  # Start the clock
-    cocotb.fork(initial_reset(dut))
+    #cocotb.fork(initial_reset(dut))
     #proc_run_test = cocotb.fork(initial_run_test(dut, vif))
     cocotb.fork(initial_run_test(dut, vif))
     #proc_clk = cocotb.fork(always_clk(dut, 100))
