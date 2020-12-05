@@ -17,17 +17,17 @@ The current code will not work for Anlogic FPGAs. The attempt to synthesize the 
 ## Performance
 
 ### Clocks Per Instructions
- ________\ Wait For <br> Instruction \ ________ | Fetch | Decode | Register | Response | Total Clocks
+ _________\ Waits For <br> Instruction \ ________ | Fetch | Decode | Register | Response | Total Clocks
 :---------- | :---: | :----: | :------: | :------: | :----------:
-LUI         |   X   |    X   |          |          |      2
-AUIPC       |   X   |    X   |          |          |      2
-JAL         |   X   |    X   |          |          |      2
-JALR        |   X   |    X   |     X    |          |      3
-BRANCH      |   X   |    X   |     X    |          |      3
-R-R         |   X   |    X   |     X    |          |      3
-R-I         |   X   |    X   |     X    |          |      3
-Load        |   X   |    X   |     X    |    X     |      4*
-Store       |   X   |    X   |     X    |    X     |      4*
+LUI         |   ✔️   |    ✔️   |          |          |      2
+AUIPC       |   ✔️   |    ✔️   |          |          |      2
+JAL         |   ✔️   |    ✔️   |          |          |      2
+JALR        |   ✔️   |    ✔️   |     ✔️    |          |      3
+BRANCH      |   ✔️   |    ✔️   |     ✔️    |          |      3
+R-R         |   ✔️   |    ✔️   |     ✔️    |          |      3
+R-I         |   ✔️   |    ✔️   |     ✔️    |          |      3
+Load        |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4*
+Store       |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4*
 
 _*minimum_
 
