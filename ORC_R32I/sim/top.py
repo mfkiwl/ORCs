@@ -32,7 +32,6 @@ async def initial_reset(vif):
 async def top(dut):
     """ ORC R32I Test Bench Top """
 
-
     # Map the signals in the DUT to the interface
     bus_map = {"clk_i": "i_clk", 
                "rst_i": "i_reset_sync",
@@ -54,10 +53,6 @@ async def top(dut):
     clock = Clock(vif.clk_i, 10, units="ns")  # Create a 100Mhz clock
     cocotb.fork(clock.start())  # Start the clock
     #cocotb.fork(initial_reset(dut))
-    #proc_run_test = cocotb.fork(initial_run_test(dut, vif))
     cocotb.fork(initial_run_test(dut, vif))
-    #proc_clk = cocotb.fork(always_clk(dut, 100))
 
     await Timer(999, "NS")
-    #await [proc_run_test, proc_reset.join()]
-    #await sv.fork_join([proc_run_test, proc_reset])

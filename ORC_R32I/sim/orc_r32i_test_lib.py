@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/12/02 23:30:59
+# Last modified : 2020/12/04 23:35:55
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -155,7 +155,12 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         #slave_seq5.opcaode = "JAL"
 
         slave_seq6 = read_single_sequence("slave_seq6")
-        slave_seq6.data = 2181145347
+        slave_seq6.data = 46351203
+        #slave_seq6.data = 46363491
+        #slave_seq6.opcaode = "BCC" 46351203
+
+        slave_seq7 = read_single_sequence("slave_seq6")
+        slave_seq7.data = 2181145347
         #slave_seq6.opcaode = "LCC"
 
         # Call the sequencer
@@ -179,5 +184,8 @@ class orc_r32i_reg_test(orc_r32i_test_base):
 
         #await slave_seq6.start(slave_sqr)
         await slave_seq6.start(slave_sqr)
+
+        #await slave_seq7.start(slave_sqr)
+        await slave_seq7.start(slave_sqr)
 
 uvm_component_utils(orc_r32i_reg_test)
