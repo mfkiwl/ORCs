@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/03 07:48:26
+// Last modified : 2020/12/05 00:20:08
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -98,7 +98,6 @@ module ORC_R32I #(
   // Program Counter Process
   reg [31:0] r_next_pc_fetch;         // 32-bit program counter t
   reg [31:0] r_next_pc_decode;        // 32-bit program counter t-1
-  reg [31:0] r_pc;                    // 32-bit program counter t-2
   reg        r_program_counter_valid; // Program Counter Valid
   reg [31:0] r_inst_data;             // registers the valid instructions
   reg [2:0]  r_program_counter_state; // Current State Holder.
@@ -175,7 +174,7 @@ module ORC_R32I #(
                 w_fct3==1 ? r_unsigned_rs1 != r_unsigned_rs2 : // bne
                 0);
   wire        w_jump_request = r_jalr | w_bmux;
-  wire [31:0] w_jump_value   = w_bmux == 1'b1 ? r_simm + r_pc : 
+  wire [31:0] w_jump_value   = w_bmux == 1'b1 ? r_simm + r_next_pc_decode : 
                                r_jalr == 1'b1 ? r_simm + r_unsigned_rs1:
                                r_next_pc_fetch;
   // Mem Process wires
@@ -209,7 +208,6 @@ module ORC_R32I #(
       r_program_counter_state <= S_WAKEUP;
       r_next_pc_fetch         <= P_FETCH_COUNTER_RESET;
       r_next_pc_decode        <= L_ALL_ZERO;
-      r_pc                    <= L_ALL_ZERO;
       r_inst_data             <= L_ALL_ZERO;
       r_program_counter_valid <= 1'b0;
     end
@@ -254,7 +252,6 @@ module ORC_R32I #(
           end
           // Update the program counter.
           r_next_pc_decode <= r_next_pc_fetch;
-          r_pc             <= r_next_pc_decode;
         end
         S_WAIT_FOR_DECODER : begin
           // Wait one clock cycle to allow data to be stored in the registers.
@@ -435,8 +432,8 @@ module ORC_R32I #(
       // from rs1 or rs2.
       if (r_jalr == 1'b1) begin
         // Jump And Link Register(indirect jump instruction).
-        general_registers1[w_destination_index] <= r_next_pc_fetch;
-        general_registers2[w_destination_index] <= r_next_pc_fetch;
+        general_registers1[w_destination_index] <= r_next_pc_decode + 4;
+        general_registers2[w_destination_index] <= r_next_pc_decode + 4;
       end
       if (r_rii == 1'b1) begin
         // Stores the Register-Immediate instruction result in the general register
