@@ -10,6 +10,25 @@ This project is currently under progress it uses previous work from the DarkRISC
 ## Current State
 The code synthesizes, which provides a reference on possible FPGA resource usage and timing. The test bench is under progress. It is being written using uvm-python and cocotb. The Dhrystone benchmark code from picorv32 is being ported. Note that this benchmark calls multiplication and division opcodes which are not part of the RV32I instruction set, so it is yet to be fully determined whether it is worth the effort at this point.
 
+The design build results for the HX8K can e found in the build directory, it consumes about 20% of the cells and can close timing with a clock of ~50MHz depending on PnR. For a Xilinx S7 like the one in the Arty board it will consume about 8% of resources and run up to 140MHz of clock speed.
+
+## Performance
+
+### Clocks Per Instructions
+Instruction | Fetch | Decode | Register | Response | Total Clocks
+:---------- | :---: | :----: | :------: | :------: | :----------:
+LUI         |   X   |    X   |          |          | 2
+AUIPC       |   X   |    X   |          |          | 2
+JAL         |   X   |    X   |          |          | 2
+JALR        |   X   |    X   |     X    |          | 3
+BRANCH      |   X   |    X   |     X    |          | 3
+R-R         |   X   |    X   |     X    |          | 3
+R-I         |   X   |    X   |     X    |          | 3
+Load        |   X   |    X   |     X    |    X     | 4*
+Store       |   X   |    X   |     X    |    X     | 4*
+
+_*minimum_
+
 ## Tools Directory
 Collection of tools for compiling, synthesizing, building, simulating and verifying the implementations. **A recursive GIT clone takes about 7GB of disk space.**
 
