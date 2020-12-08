@@ -31,3 +31,6 @@
 [submodule "tools/riscv-dv"]
 	path = tools/riscv-dv
 	url = https://github.com/google/riscv-dv
+[submodule "tools/riscv-compliance"]
+	path = tools/riscv-compliance
+	url = https://github.com/riscv/riscv-compliance.git
