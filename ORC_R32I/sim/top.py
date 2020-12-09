@@ -21,11 +21,12 @@ async def initial_run_test(dut, vif):
     await run_test("orc_r32i_reg_test")
 
 
-async def initial_reset(vif):
+async def initial_reset(vif, dut):
     await Timer(0, "NS")
-    vif.i_reset_sync <= 1
+    vif.rst_i <= 1
     await Timer(330, "NS") # clock*32 + 1 to clear all general register which are BRAM
-    vif.i_reset_sync <= 0
+    vif.rst_i <= 0
+    cocotb.fork(initial_run_test(dut, vif))
 
 
 @cocotb.test()
@@ -52,7 +53,7 @@ async def top(dut):
     vif = wb_master_if(dut, bus_map)
     clock = Clock(vif.clk_i, 10, units="ns")  # Create a 100Mhz clock
     cocotb.fork(clock.start())  # Start the clock
-    #cocotb.fork(initial_reset(dut))
-    cocotb.fork(initial_run_test(dut, vif))
+    cocotb.fork(initial_reset(vif, dut))
+    #cocotb.fork(initial_run_test(dut, vif))
 
     await Timer(999, "NS")

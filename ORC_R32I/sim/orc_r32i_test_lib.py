@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/12/04 23:35:55
+# Last modified : 2020/12/08 17:45:13
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -50,6 +50,7 @@ from uvm_externals.Wishbone_Pipeline_Master.wb_master_agent import *
 from uvm_externals.Wishbone_Pipeline_Master.wb_master_config import *
 from tb_env_config import *
 from orc_r32i_tb_env import *
+from orc_r32i_predictor import *
 from mem_model import *
 
 class orc_r32i_test_base(UVMTest):
@@ -73,11 +74,14 @@ class orc_r32i_test_base(UVMTest):
         # Enable transaction recording for everything
         UVMConfigDb.set(self, "*", "recording_detail", UVM_FULL)
         # Create the reg block
-        self.reg_block = reg_block.type_id.create("reg_block", self)
-        self.reg_block.build()
+        # self.reg_block = reg_block.type_id.create("reg_block", self)
+        # self.reg_block.build()
         # create this test test bench environment config
         self.tb_env_config = tb_env_config.type_id.create("tb_env_config", self)
-        self.tb_env_config.reg_block = self.reg_block
+        # self.tb_env_config.reg_block = self.reg_block
+        self.tb_env_config.has_scoreboard = True
+        self.tb_env_config.has_predictor = True
+        self.tb_env_config.has_functional_coverage = False
         # Create the instruction agent
         self.inst_agent_cfg = wb_master_config.type_id.create("inst_agent_cfg", self)
         arr = []
@@ -163,6 +167,14 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         slave_seq7.data = 2181145347
         #slave_seq6.opcaode = "LCC"
 
+        slave_seq5 = read_single_sequence("slave_seq5")
+        slave_seq5.data = 714080495
+        #slave_seq5.opcaode = "JAL"
+        
+        slave_seq2 = read_single_sequence("slave_seq2")
+        slave_seq2.data = 2193720595
+        #slave_seq2.opcaode = "RII" 
+
         # Call the sequencer
         #await slave_seq0.start(slave_sqr)
         await slave_seq0.start(slave_sqr)
@@ -187,5 +199,12 @@ class orc_r32i_reg_test(orc_r32i_test_base):
 
         #await slave_seq7.start(slave_sqr)
         await slave_seq7.start(slave_sqr)
+
+
+    def read_hex(self):
+        f = open('dhry.hex', 'r+')
+        hex_string_list = [line.split(' ') for line in f.readlines()]
+        #f'{6:08b}'
+        
 
 uvm_component_utils(orc_r32i_reg_test)

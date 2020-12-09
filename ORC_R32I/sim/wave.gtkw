@@ -1,10 +1,10 @@
 [*]
 [*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Sat Dec  5 03:56:08 2020
+[*] Tue Dec  8 21:46:10 2020
 [*]
 [dumpfile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/dump.vcd"
-[dumpfile_mtime] "Sat Dec  5 03:36:02 2020"
-[dumpfile_size] 7903612
+[dumpfile_mtime] "Tue Dec  8 21:45:27 2020"
+[dumpfile_size] 7904151
 [savefile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/wave.gtkw"
 [timestart] 0
 [size] 1366 721
@@ -138,26 +138,26 @@ top.ORC_R32I_TOP.uut.i_clk
 top.ORC_R32I_TOP.uut.i_reset_sync
 top.ORC_R32I_TOP.uut.o_inst_read_stb
 top.ORC_R32I_TOP.uut.i_inst_read_ack
-@23
-top.ORC_R32I_TOP.uut.o_inst_read_addr[31:0]
 @22
+top.ORC_R32I_TOP.uut.o_inst_read_addr[31:0]
 top.ORC_R32I_TOP.uut.i_inst_read_data[31:0]
 top.ORC_R32I_TOP.uut.r_inst_data[31:0]
 top.ORC_R32I_TOP.uut.r_next_pc_fetch[31:0]
 top.ORC_R32I_TOP.uut.r_next_pc_decode[31:0]
-top.ORC_R32I_TOP.uut.r_pc[31:0]
 @28
 top.ORC_R32I_TOP.uut.r_program_counter_state[2:0]
+@29
+top.ORC_R32I_TOP.uut.r_program_counter_valid
+@28
+top.ORC_R32I_TOP.uut.w_jal
 top.ORC_R32I_TOP.uut.r_bcc
 top.ORC_R32I_TOP.uut.r_jalr
-top.ORC_R32I_TOP.uut.r_lcc
-top.ORC_R32I_TOP.uut.r_master_read_ready
-top.ORC_R32I_TOP.uut.r_master_write_ready
-top.ORC_R32I_TOP.uut.r_program_counter_valid
 top.ORC_R32I_TOP.uut.r_rii
 top.ORC_R32I_TOP.uut.r_rro
+top.ORC_R32I_TOP.uut.r_lcc
 top.ORC_R32I_TOP.uut.r_scc
-top.ORC_R32I_TOP.uut.w_jal
+top.ORC_R32I_TOP.uut.r_master_read_ready
+top.ORC_R32I_TOP.uut.r_master_write_ready
 top.ORC_R32I_TOP.uut.w_fct3[2:0]
 @22
 top.ORC_R32I_TOP.uut.w_fct7[6:0]

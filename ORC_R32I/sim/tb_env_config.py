@@ -33,7 +33,7 @@
 # File name     : tb_env_config.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/12/02 21:58:58
+# Last modified : 2020/12/08 10:14:09
 # Project Name  : UVM Python Verification Library
 # Module Name   : tb_env_config
 # Description   : Test Bench Configurations
@@ -63,16 +63,18 @@ class tb_env_config(UVMEnv):
         """         
            Function: new
           
-           Definition: Read slave agent constructor.
+           Definition: Test environment configuration object.
 
            Args:
              name: This agents name.
              parent: NONE
         """
         self.inst_agent_cfg = wb_master_config.type_id.create("inst_agent_cfg", self)
-        self.reg_block = reg_block.type_id.create("reg_block", self)
-        self.reg_block = reg_block.build  # passive
-        self.has_scoreboard = 0           # scoreboard on/off
+        # self.reg_block = reg_block.type_id.create("reg_block", self)
+        # self.reg_block = reg_block.build  # passive
+        self.has_scoreboard = False           # scoreboard on/off
+        self.has_predictor  = False          # predictor on/off
+        self.has_functional_coverage = False  # predictor on/off
         self.tag = "tb_env_config"
 
 

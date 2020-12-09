@@ -33,7 +33,7 @@
 # File name     : orc_r32i_tb_env.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/12/02 23:32:10
+# Last modified : 2020/12/08 14:06:01
 # Project Name  : UVM Python Verification Library
 # Module Name   : orc_r32i_tb_env
 # Description   : Memory Slave Interface  monitor.
@@ -43,10 +43,12 @@
 #################################################################################
 import cocotb
 from uvm.base import *
-from uvm.comps import UVMEnv
+from uvm.comps import *
 from uvm.macros import uvm_component_utils
 from uvm_externals.Wishbone_Pipeline_Master.wb_master_agent import *
 from mem_model import *
+from orc_r32i_predictor import *
+from scoreboard_simple import *
 
 class orc_r32i_tb_env(UVMEnv):
     """         
@@ -66,11 +68,11 @@ class orc_r32i_tb_env(UVMEnv):
              name: This agents name.
              parent: NONE
         """
-        self.inst_agent = None
+        self.inst_agent = None # WB Instruction agent
+        self.cfg = None        # tb_env_config
+        self.scoreboard = None # scoreboard
         self.predictor = None  # passive
-        self.cfg = None   # tb_env_config
-        self.scoreboard = None   # scoreboard
-        self.f_cov = None   # functional coverage
+        self.f_cov = None      # functional coverage
         self.tag = "orc_r32i_tb_env"
 
 
@@ -93,11 +95,11 @@ class orc_r32i_tb_env(UVMEnv):
         self.inst_agent = wb_master_agent.type_id.create("inst_agent", self)
         self.inst_agent.cfg = self.cfg.inst_agent_cfg
         
-        #self.predictor = orc_r32i_predictor.type_id.create("predictor", self)
+        self.predictor = orc_r32i_predictor.type_id.create("predictor", self)
         #self.predictor = UVMRegPredictor.type_id.create("predictor", self)
         
         if (self.cfg.has_scoreboard):
-            self.scoreboard = simple_scoreboard.type_id.create("scoreboard", self)
+            self.scoreboard = scoreboard_simple.type_id.create("scoreboard", self)
 
     
     def connect_phase(self, phase):
@@ -110,9 +112,14 @@ class orc_r32i_tb_env(UVMEnv):
            Args:
              phase: connect_phase
         """
-        #self.inst_agent.ap.connect(self.ap)
+
         if (self.cfg.has_scoreboard):
-            self.inst_agent.ap.connect(self.scoreboard.analysis_export)
+            self.inst_agent.ap.connect(self.scoreboard.received_export)
+            #self.predictor.ap.connect(self.scoreboard.analysis_export)
+        
+
+        if (self.cfg.has_predictor):
+            self.inst_agent.ap.connect(self.predictor.analysis_export)
         #self.cfg.reg_block.reg_map.set_sequencer( self.inst_agent.sqr, self.inst_agent.reg_adapter);
         #self.cfg.reg_block.reg_map.set_auto_predict(on=0)
         #self.predictor.map     = self.cfg.reg_block.reg_map  # passive
