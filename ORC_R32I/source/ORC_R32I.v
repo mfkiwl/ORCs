@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/05 00:20:08
+// Last modified : 2020/12/08 18:08:20
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -212,7 +212,7 @@ module ORC_R32I #(
       r_program_counter_valid <= 1'b0;
     end
     else begin
-      case (r_program_counter_state)
+      casez (r_program_counter_state)
         S_WAKEUP : begin
           // Fetch first instruction after reset.
           r_program_counter_valid <= 1'b1;
@@ -511,7 +511,7 @@ module ORC_R32I #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_master_write_ready <= 1'b0;
+      r_master_write_ready <= 1'b1;
     end
     else if (r_master_write_ready == 1'b1 && r_scc == 1'b1) begin
       // Store (write) data in external memory or device.
