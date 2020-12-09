@@ -3,7 +3,7 @@ PIN_DEF = hx8kboard
 DEVICE = hx8k
 PACKAGE = ct256
 PLACE_AND_ROUTE = nextpnr-ice40
-SEED_0 = 10
+SEED_0 = 607
 SEED_1 = 107
 SEED_2 = 207
 SEED_3 = 307
@@ -24,7 +24,7 @@ rpt: rpt_0 rpt_1 rpt_2 rpt_3 rpt_4 rpt_5 rpt_6 rpt_7 rpt_8 rpt_9 rpt_10 rpt_11
 
 
 blif:
-	yosys -ql $(PROJ)_$(DEVICE)_syn.log -p "synth_ice40 -abc2 -retime -device hx -json $(PROJ)_syn.json -top $(PROJ)" "../source/ORC_R32I.v" $^
+	yosys -ql $(PROJ)_$(DEVICE)_syn.log -p "synth_ice40 -abc2 -retime -relut -dsp -json $(PROJ)_syn.json -top $(PROJ)" "../source/ORC_R32I.v" $^
 
 
 asc_0: blif
