@@ -54,9 +54,9 @@ opt -undriven -fine
 
 ice40_wrapcarry
 techmap -map +/techmap.v -map +/ice40/arith_map.v
-opt -full -fine
-abc -dff
-ice40_opt -full
+opt -fine
+abc
+ice40_opt
 
 #if (nodffe)
 #dfflegalize -cell $_DFF_?_ 0 -cell $_DFF_?P?_ 0 -cell $_SDFF_?P?_ 0 -cell $_DLATCH_?_ x
@@ -65,9 +65,9 @@ dfflegalize -cell $_DFF_?_ 0 -cell $_DFFE_?P_ 0 -cell $_DFF_?P?_ 0 -cell $_DFFE_
 techmap -map +/ice40/ff_map.v
 opt_expr -mux_undef -fine
 simplemap
-ice40_opt -full
+ice40_opt
 
-abc
+abc -dff
 ice40_opt -full
 techmap -map +/ice40/latches_map.v
 
