@@ -21,7 +21,7 @@ The current code will not work for Anlogic FPGAs. The attempt to synthesize the 
 ## Performance
 
 ### Clocks Per Instructions
- _________\ Waits For <br> Instruction \ ________ | Fetch | Decode | Register | Response | Total Clocks
+ _________\ Pipeline Stage <br> Instruction \ ___________ | Fetch | Decode | Register | Response | Total Clocks
 :---------- | :---: | :----: | :------: | :------: | :----------:
 LUI         |   ✔️   |    ✔️   |          |          |      2
 AUIPC       |   ✔️   |    ✔️   |          |          |      2
