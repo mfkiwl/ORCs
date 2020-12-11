@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/10 20:50:28
+// Last modified : 2020/12/11 08:46:25
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -246,10 +246,6 @@ module ORC_R32I #(
               r_program_counter_state <= S_WAIT_FOR_ACK;
             end
           end
-          else begin
-            r_program_counter_valid <= 1'b0;
-            r_program_counter_state <= S_WAIT_FOR_ACK;
-          end
           // Update the program counter.
           r_next_pc_decode <= r_next_pc_fetch;
         end
@@ -265,14 +261,12 @@ module ORC_R32I #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_WRITE;
           end
-          else if (w_jump_request == 1'b1) begin
-            // Jump request by comparison (Branch or JALR).
-            r_next_pc_fetch         <= w_jump_value;
-            r_program_counter_valid <= 1'b1;
-            r_program_counter_state <= S_WAIT_FOR_ACK;
-          end
           else begin
             // Done with regular instruction.
+            if (w_jump_request == 1'b1) begin
+              // Jump request by comparison (Branch or JALR).
+              r_next_pc_fetch <= w_jump_value;
+            end
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
