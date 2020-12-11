@@ -9,27 +9,27 @@ _These results were generated using Yosys, NextPNR and the Icestorm tool chain t
 ### Synthesis Results
 | Resource                  | Usage Count | 
 | :------------------------ | ----------: |
-| Number of  wire           |          653|
-| Number of wire bits       |         3273|
-| Number of public wires    |          653|
-| Number of public wire bits|         3273|
+| Number of  wire           |          677|
+| Number of wire bits       |         3414|
+| Number of public wires    |          677|
+| Number of public wire bits|         3414|
 | Number of memories        |            0|
 | Number of memory bits     |            0|
 | Number of processes       |            0|
-| Number of cells<br> --- SB_CARRY <br> --- SB_DFF <br> --- SB_DFFE <br> --- SB_DFFESR <br> --- SB_DFFESS <br> --- SB_DFFSR <br> --- SB_LUT4 <br> --- SB_RAM40_4K |               1787<br>329<br>5<br>5<br>101<br>1<br>11<br>1366<br>4|
+| Number of cells<br> --- SB_CARRY <br> --- SB_DFF <br> --- SB_DFFE <br> --- SB_DFFESR <br> --- SB_DFFESS <br> --- SB_DFFSR <br> --- SB_LUT4 <br> --- SB_RAM40_4K |               1826<br>329<br>5<br>5<br>101<br>1<br>11<br>1375<br>4|
 
 
 ## Plance and Route
 NextPnR version: `(Version 868902fb)`
 
-nextpnr-ice40 flags : `--pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --seed 507`
+nextpnr-ice40 flags : `--pcf-allow-unconstrained --timing-allow-fail --ignore-loops --pre-pack pre_pack.py --opt-timing --seed 1107`
 
 
 ### Resources Utilization 
 
 |Device Resources |Device Utilization|Percentage|
 | --------------: | :--------------: | :------: |
-|ICESTORM_LC      |  1546 / 7680     |    20%   |
+|ICESTORM_LC      |  1556 / 7680     |    20%   |
 |ICESTORM_RAM     |     4 /   32     |    12%   |
 |SB_IO            |   204 /  256     |    79%   |
 |SB_GB            |     4 /    8     |    50%   |
@@ -37,46 +37,46 @@ nextpnr-ice40 flags : `--pcf-allow-unconstrained --timing-allow-fail --ignore-lo
 |SB_WARMBOOT      |     0 /    1     |     0%   |
 
 
-**Checksum:** 0x7b60bbdd
+**Checksum:** 0x2369e16d
 
 ### Slack
 
 |**Slack histogram** | Legend:<br> * represents 5 endpoint(s) + represents [1,5) endpoint(s)|
 | :--------------: | :-------------------------------------------------------- |
-| [ 63774,  64679) |***************+|
-| [ 64679,  65584) |********+|
-| [ 65584,  66489) |****+|
-| [ 66489,  67394) |********+|
-| [ 67394,  68299) |***************+|
-| [ 68299,  69204) |**************************+|
-| [ 69204,  70109) |****************+|
-| [ 70109,  71014) |****+|
-| [ 71014,  71919) |********+|
-| [ 71919,  72824) |***********************+|
-| [ 72824,  73729) |***********************+|
-| [ 73729,  74634) |***************+|
-| [ 74634,  75539) |************************+|
-| [ 75539,  76444) |*****************+|
-| [ 76444,  77349) |*******+|
-| [ 77349,  78254) |**************+|
-| [ 78254,  79159) |****+|
-| [ 79159,  80064) |********+|
-| [ 80064,  80969) |************************************************************ |
-| [ 80969,  81874) |********************+|
+| [ 64817,  65687) |************+|
+| [ 65687,  66557) |****+|
+| [ 66557,  67427) |*******************+|
+| [ 67427,  68297) |****************+|
+| [ 68297,  69167) |****************+|
+| [ 69167,  70037) |**************+|
+| [ 70037,  70907) |**************+|
+| [ 70907,  71777) |****+|
+| [ 71777,  72647) |**+|
+| [ 72647,  73517) |************************+|
+| [ 73517,  74387) |*******************************+|
+| [ 74387,  75257) |*****************+|
+| [ 75257,  76127) |******************+|
+| [ 76127,  76997) |*****************+|
+| [ 76997,  77867) |***************************+|
+| [ 77867,  78737) |*****+|
+| [ 78737,  79607) |******+|
+| [ 79607,  80477) |*************************+|
+| [ 80477,  81347) |************************************************************ |
+| [ 81347,  82217) |*******+|
 
 
 ### Clock slack
 
-    Max frequency for clock 'i_clk$SB_IO_IN_$glb_clk': 51.13 MHz (PASS at 12.00 MHz)
-   
-    Max delay <async>                         -> posedge i_clk$SB_IO_IN_$glb_clk: 16.74 ns
-    Max delay posedge i_clk$SB_IO_IN_$glb_clk -> <async>                        : 12.57 ns
+    Max frequency for clock 'i_clk$SB_IO_IN_$glb_clk': 54.01 MHz (PASS at 12.00 MHz)
+    
+    Max delay <async>                         -> posedge i_clk$SB_IO_IN_$glb_clk: 16.30 ns
+    Max delay posedge i_clk$SB_IO_IN_$glb_clk -> <async>                        : 11.19 ns
 
 ## IceTime timing Analysis
 
-Total number of logic levels: 41
+Total number of logic levels: 34
 
-Total path delay: 19.38 ns (51.60 MHz)
+Total path delay: 18.93 ns (52.82 MHz)
 
 # Running
 

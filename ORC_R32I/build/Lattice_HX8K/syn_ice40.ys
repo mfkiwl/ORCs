@@ -1,8 +1,7 @@
 
-#synth_ice40 -abc2 -retime -relut -dsp -json ORC_R32I_syn.json -top ORC_R32I
-
-#begin
 read_verilog "../../source/ORC_R32I.v"
+#synth_ice40 -abc2 -retime -dsp -json ORC_R32I_syn.json -top ORC_R32I
+
 #begin
 read_verilog -D ICE40_HX -lib -specify +/ice40/cells_sim.v
 hierarchy -check -top ORC_R32I
@@ -50,7 +49,7 @@ ice40_braminit
 
 opt -full -mux_undef -undriven -fine
 memory_map -iattr -attr !ram_block -attr !rom_block -attr logic_block -attr syn_ramstyle=auto -attr syn_ramstyle=registers -attr syn_romstyle=auto -attr syn_romstyle=logic
-opt -undriven -fine
+opt -full -undriven -fine
 
 ice40_wrapcarry
 techmap -map +/techmap.v -map +/ice40/arith_map.v
@@ -65,7 +64,7 @@ dfflegalize -cell $_DFF_?_ 0 -cell $_DFFE_?P_ 0 -cell $_DFF_?P?_ 0 -cell $_DFFE_
 techmap -map +/ice40/ff_map.v
 opt_expr -mux_undef -fine
 simplemap
-ice40_opt
+ice40_opt -full
 
 abc -dff
 ice40_opt -full
