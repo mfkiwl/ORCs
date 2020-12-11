@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/10 14:48:03
+// Last modified : 2020/12/11 09:00:37
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -112,8 +112,8 @@ module ORC_R32I #(
   reg         r_rii;                            // valid register-immediate flag
   reg         r_rro;                            // valid register-register flag
   // General Purpose Registers. BRAM array duplicated to index source 1 & 2 at same time.
-  //reg [31:0] general_registers1 [0:31];	// 32x32-bit registers
-  //reg [31:0] general_registers2 [0:31];	// 32x32-bit registers
+  wire [31:0] w_unsigned_rs1;
+  wire [31:0] w_unsigned_rs2;
   reg [4:0]  reset_index = 0;           // This means the reset needs to be held for at least 32 clocks
   // Memory Master Read and Write Process
   reg        r_master_read_ready;
@@ -246,10 +246,6 @@ module ORC_R32I #(
               r_program_counter_state <= S_WAIT_FOR_ACK;
             end
           end
-          else begin
-            r_program_counter_valid <= 1'b0;
-            r_program_counter_state <= S_WAIT_FOR_ACK;
-          end
           // Update the program counter.
           r_next_pc_decode <= r_next_pc_fetch;
         end
@@ -265,13 +261,11 @@ module ORC_R32I #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_WRITE;
           end
-          else if (w_jump_request == 1'b1) begin
-            // Jump request by comparison (Branch or JALR).
-            r_next_pc_fetch         <= w_jump_value;
-            r_program_counter_valid <= 1'b1;
-            r_program_counter_state <= S_WAIT_FOR_ACK;
-          end
           else begin
+            if (w_jump_request == 1'b1) begin
+              // Jump request by comparison (Branch or JALR).
+              r_next_pc_fetch <= w_jump_value;
+            end
             // Done with regular instruction.
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
@@ -405,10 +399,6 @@ module ORC_R32I #(
     end
   end
 
-
-  wire [31:0] w_unsigned_rs1;
-  wire [31:0] w_unsigned_rs2;
-
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Read Process
   // Description : Updates the contents of the general purpose registers.
@@ -432,22 +422,22 @@ module ORC_R32I #(
   wire [31:0] w_bram_data_input = i_reset_sync ? L_ALL_ZERO :
                            w_decoder_valid ? (r_jalr ? r_next_pc_decode + 4 :
                                              r_rii || r_rro ? w_rm_data : w_rm_data) :
-                           w_rd_not_zero && i_inst_read_ack ? (
+                           w_rd_not_zero & i_inst_read_ack ? (
                              w_opcode == L_LUI   ? { i_inst_read_data[31:12], L_ALL_ZERO[11:0] } :
                              w_opcode == L_AUIPC ? r_next_pc_fetch + { i_inst_read_data[31:12], L_ALL_ZERO[11:0] } :
                              w_opcode == L_JAL   ? r_next_pc_fetch + 4 : w_rm_data) :
-                           i_master_read_ack && !r_master_read_ready ? w_l_data : w_rm_data;
+                           i_master_read_ack & !r_master_read_ready ? w_l_data : w_rm_data;
   
   wire [4:0] w_bram_addr_input = i_reset_sync ? reset_index : 
                            w_decoder_valid ? w_destination_index :
-                           w_rd_not_zero && i_inst_read_ack ? w_rd :
-                           i_master_read_ack && !r_master_read_ready ? w_destination_index : w_rd;
+                           w_rd_not_zero & i_inst_read_ack ? w_rd :
+                           i_master_read_ack & !r_master_read_ready ? w_destination_index : w_rd;
 
   wire w_bram_enable_input = i_reset_sync    ? 1'b1 :
-                             w_decoder_valid && r_jalr && r_rii && r_rro ? 1'b1 : 
-                             w_rd_not_zero && i_inst_read_ack ? (
+                             w_decoder_valid & (r_jalr | r_rii | r_rro) ? 1'b1 : 
+                             w_rd_not_zero & i_inst_read_ack ? (
                                w_opcode == L_LUI || w_opcode == L_AUIPC || w_opcode == L_JAL ? 1'b1 : 1'b0) :
-                             i_master_read_ack && !r_master_read_ready ? 1'b1 : 1'b0;
+                             i_master_read_ack & !r_master_read_ready ? 1'b1 : 1'b0;
 
   BRAM general_registers1(
     // Write Side
