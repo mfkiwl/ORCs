@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/08 18:08:20
+// Last modified : 2020/12/10 20:50:28
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -114,7 +114,7 @@ module ORC_R32I #(
   // General Purpose Registers. BRAM array duplicated to index source 1 & 2 at same time.
   reg [31:0] general_registers1 [0:31];	// 32x32-bit registers
   reg [31:0] general_registers2 [0:31];	// 32x32-bit registers
-  reg [4:0]  reset_index = 0;           // This means the reset needs to be held for at least 32 clocks
+  reg [4:0]  reset_index;               // This means the reset needs to be held for at least 32 clocks
   // Memory Master Read and Write Process
   reg        r_master_read_ready;
   reg [31:0] r_master_read_addr;
@@ -418,12 +418,24 @@ module ORC_R32I #(
   end
   
   ///////////////////////////////////////////////////////////////////////////////
+  // Process     : General Purpose Registers Reset Index
+  // Description : 
+  ///////////////////////////////////////////////////////////////////////////////
+  always@(posedge i_clk) begin
+    if (i_reset_sync == 1'b1) begin
+      reset_index <= reset_index+1;
+    end
+    else begin
+      reset_index <= 0;
+    end
+  end
+
+  ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
   // Description : Updates the contents of the general purpose registers.
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      reset_index                     <= reset_index+1;
       general_registers1[reset_index] <= L_ALL_ZERO;
       general_registers2[reset_index] <= L_ALL_ZERO;
     end
