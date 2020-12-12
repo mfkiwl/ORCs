@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/12/12 10:15:22
+# Last modified : 2020/12/12 10:17:44
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -157,7 +157,7 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         super().__init__(name, parent)
         self.hex_instructions = []
         self.fetched_instruction = None
-        self.count = 10
+        self.count = 0
 
 
     async def run_phase(self, phase):
