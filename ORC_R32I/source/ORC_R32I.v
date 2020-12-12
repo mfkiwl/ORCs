@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/11 08:46:25
+// Last modified : 2020/12/11 11:06:41
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -279,7 +279,7 @@ module ORC_R32I #(
           end // else implement a timeout counter?
         end
         S_WAIT_FOR_WRITE : begin
-          if (i_master_write_ack ==1'b1) begin
+          if (i_master_write_ack == 1'b1) begin
             // Data write acknowledge. Trasition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
