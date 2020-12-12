@@ -33,7 +33,7 @@
 # File name     : tb_env_config.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/12/08 10:14:09
+# Last modified : 2020/12/12 00:58:16
 # Project Name  : UVM Python Verification Library
 # Module Name   : tb_env_config
 # Description   : Test Bench Configurations
@@ -70,6 +70,8 @@ class tb_env_config(UVMEnv):
              parent: NONE
         """
         self.inst_agent_cfg = wb_master_config.type_id.create("inst_agent_cfg", self)
+        self.mem_read_agent_cfg = wb_master_config.type_id.create("mem_read_agent_cfg", self)
+        self.mem_write_agent_cfg = wb_master_config.type_id.create("mem_write_agent_cfg", self)
         # self.reg_block = reg_block.type_id.create("reg_block", self)
         # self.reg_block = reg_block.build  # passive
         self.has_scoreboard = False           # scoreboard on/off
