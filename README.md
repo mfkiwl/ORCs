@@ -35,6 +35,12 @@ Store       |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4*
 
 _*minimum_
 
+### Simulation Waveform Output 
+
+This is a waveform snippet for reference 
+
+ ![ORC_R32I_Wave](wave_print.jpg)
+
 ## Tools Directory
 Collection of tools for compiling, synthesizing, building, simulating and verifying the implementations. **A recursive GIT clone takes about 7GB of disk space.**
 
