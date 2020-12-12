@@ -33,7 +33,7 @@
 // File name     : ORC_R32I_TOP_TOP.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/02 23:28:56
+// Last modified : 2020/12/12 10:05:03
 // Project Name  : ORCs
 // Module Name   : ORC_R32I_TOP
 // Description   : The ORC_R32I_TOP is a wrapper to include the missing signals
@@ -54,15 +54,15 @@ module ORC_R32I_TOP #(
   input         i_inst_read_ack,  // WB acknowledge 
   output [31:0] o_inst_read_addr, // WB address
   input  [31:0] i_inst_read_data, // WB data
-  output [31:0] dat_o,            // Added to close connections
-  output        we_o,             // Added to close connections
-  output        sel_o,            // Added to close connections
-  output        cyc_o,            // Added to close connections
-  input         stall_i,          // Added to close connections
-  output        tga_o,            // Added to close connections
-  input         tgd_i,            // Added to close connections
-  output        tgd_o,            // Added to close connections
-  output        tgc_o,            // Added to close connections
+  output [31:0] dat_o,            // Added to stub connections
+  output        we_o,             // Added to stub connections
+  output        sel_o,            // Added to stub connections
+  output        cyc_o,            // Added to stub connections
+  input         stall_i,          // Added to stub connections
+  output        tga_o,            // Added to stub connections
+  input         tgd_i,            // Added to stub connections
+  output        tgd_o,            // Added to stub connections
+  output        tgc_o,            // Added to stub connections
   // Wishbone(pipeline) Master Read Interface
   output        o_master_read_stb,  // WB read enable
   input         i_master_read_ack,  // WB acknowledge 

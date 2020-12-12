@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/12/08 17:45:13
+# Last modified : 2020/12/12 01:21:06
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -92,12 +92,39 @@ class orc_r32i_test_base(UVMTest):
             self.inst_agent_cfg.vif         = arr[0]
             self.inst_agent_cfg.has_driver  = 1
             self.inst_agent_cfg.has_monitor = 1
-            UVMConfigDb.set(self, "*", "cfg", self.inst_agent_cfg)
         else:
             uvm_fatal("NOVIF", "Could not get vif from config DB")
 
+        # Create the Mem Read agent
+        self.mem_read_agent_cfg = wb_master_config.type_id.create("mem_read_agent_cfg", self)
+        arr = []
+        # Get the instruction interface created at top
+        if UVMConfigDb.get(None, "*", "vif_read", arr) is True:
+            UVMConfigDb.set(self, "*", "vif_read", arr[0])
+            # Make this agent's interface the interface connected at top
+            self.mem_read_agent_cfg.vif         = arr[0]
+            self.mem_read_agent_cfg.has_driver  = 1
+            self.mem_read_agent_cfg.has_monitor = 1
+        else:
+            uvm_fatal("NOVIF", "Could not get vif_read from config DB")
+
+        # Create the Mem Write agent
+        self.mem_write_agent_cfg = wb_master_config.type_id.create("mem_write_agent_cfg", self)
+        arr = []
+        # Get the instruction interface created at top
+        if UVMConfigDb.get(None, "*", "vif_write", arr) is True:
+            UVMConfigDb.set(self, "*", "vif_write", arr[0])
+            # Make this agent's interface the interface connected at top
+            self.mem_write_agent_cfg.vif         = arr[0]
+            self.mem_write_agent_cfg.has_driver  = 1
+            self.mem_write_agent_cfg.has_monitor = 1
+        else:
+            uvm_fatal("NOVIF", "Could not get vif_write from config DB")
+
         # Make this instruction agent the test bench config agent
         self.tb_env_config.inst_agent_cfg = self.inst_agent_cfg
+        self.tb_env_config.mem_read_agent_cfg = self.mem_read_agent_cfg
+        self.tb_env_config.mem_write_agent_cfg = self.mem_write_agent_cfg
         UVMConfigDb.set(self, "*", "tb_env_config", self.tb_env_config)
         # Create the test bench environment 
         self.tb_env = orc_r32i_tb_env.type_id.create("tb_env", self)
@@ -128,51 +155,95 @@ class orc_r32i_reg_test(orc_r32i_test_base):
 
     def __init__(self, name="orc_r32i_reg_test", parent=None):
         super().__init__(name, parent)
+        self.hex_instructions = []
+        self.fetched_instruction = None
+        self.count = 112
 
 
     async def run_phase(self, phase):
-
+        # Initial setup
+        self.read_hex()
         slave_sqr = self.tb_env.inst_agent.sqr
         
+        # Fetch instruction
+        self.fetch_instruction(self.count)
+
+        #  Create seq0
         slave_seq0 = read_single_sequence("slave_seq0")
-        slave_seq0.data = 74135
+        slave_seq0.data = self.fetched_instruction # 74135
         #slave_seq0.opcaode = "AUIPC" 
 
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq1 = read_single_sequence("slave_seq1")
-        slave_seq1.data = 646021523
+        slave_seq1.data = self.fetched_instruction # 646021523
         #slave_seq1.opcaode = "RII"
 
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq2 = read_single_sequence("slave_seq2")
-        slave_seq2.data = 2193720595
+        slave_seq2.data = self.fetched_instruction # 2193720595
         #slave_seq2.opcaode = "RII" 
 
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq3 = read_single_sequence("slave_seq3")
-        slave_seq3.data = 83479
+        slave_seq3.data = self.fetched_instruction # 83479
         #slave_seq3.opcaode = "AUIPC"
 
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq4 = read_single_sequence("slave_seq4")
-        slave_seq4.data = 1166118409
+        slave_seq4.data = self.fetched_instruction # 1166118409
         #slave_seq4.opcaode = "JAL"
 
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq5 = read_single_sequence("slave_seq5")
-        slave_seq5.data = 714080495
+        slave_seq5.data = self.fetched_instruction # 714080495
         #slave_seq5.opcaode = "JAL"
 
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq6 = read_single_sequence("slave_seq6")
-        slave_seq6.data = 46351203
+        slave_seq6.data = self.fetched_instruction # 46351203
         #slave_seq6.data = 46363491
         #slave_seq6.opcaode = "BCC" 46351203
 
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq7 = read_single_sequence("slave_seq6")
-        slave_seq7.data = 2181145347
+        slave_seq7.data = self.fetched_instruction # 2181145347
         #slave_seq6.opcaode = "LCC"
 
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq5 = read_single_sequence("slave_seq5")
-        slave_seq5.data = 714080495
+        slave_seq5.data = self.fetched_instruction # 714080495
         #slave_seq5.opcaode = "JAL"
-        
+
+        # Fetch instruction
+        self.count = self.count + 1
+        self.fetch_instruction(self.count)
+
         slave_seq2 = read_single_sequence("slave_seq2")
-        slave_seq2.data = 2193720595
+        slave_seq2.data = self.fetched_instruction # 2193720595
         #slave_seq2.opcaode = "RII" 
 
         # Call the sequencer
@@ -203,8 +274,14 @@ class orc_r32i_reg_test(orc_r32i_test_base):
 
     def read_hex(self):
         f = open('dhry.hex', 'r+')
-        hex_string_list = [line.split(' ') for line in f.readlines()]
+        hex_inst_list = [line.split(' ') for line in f.readlines()]
         #f'{6:08b}'
-        
+        self.hex_instructions = []
+        for i,s in enumerate(hex_inst_list):
+            self.hex_instructions.append([i.strip() for i in s])
+
+    def fetch_instruction(self, count):
+        hex_string = self.hex_instructions[count][3] + self.hex_instructions[count][2] + self.hex_instructions[count][1] + self.hex_instructions[count][0]
+        self.fetched_instruction = int(hex_string, 16)
 
 uvm_component_utils(orc_r32i_reg_test)

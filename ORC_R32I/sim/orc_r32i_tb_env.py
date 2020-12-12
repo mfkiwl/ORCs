@@ -33,7 +33,7 @@
 # File name     : orc_r32i_tb_env.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/12/08 14:06:01
+# Last modified : 2020/12/12 00:57:23
 # Project Name  : UVM Python Verification Library
 # Module Name   : orc_r32i_tb_env
 # Description   : Memory Slave Interface  monitor.
@@ -69,6 +69,8 @@ class orc_r32i_tb_env(UVMEnv):
              parent: NONE
         """
         self.inst_agent = None # WB Instruction agent
+        self.mem_read_agent = None # WB Instruction agent
+        self.mem_write_agent = None # WB Instruction agent
         self.cfg = None        # tb_env_config
         self.scoreboard = None # scoreboard
         self.predictor = None  # passive
@@ -94,6 +96,12 @@ class orc_r32i_tb_env(UVMEnv):
 
         self.inst_agent = wb_master_agent.type_id.create("inst_agent", self)
         self.inst_agent.cfg = self.cfg.inst_agent_cfg
+
+        self.mem_read_agent = wb_master_agent.type_id.create("mem_read_agent", self)
+        self.mem_read_agent.cfg = self.cfg.mem_read_agent_cfg
+
+        self.mem_write_agent = wb_master_agent.type_id.create("mem_write_agent", self)
+        self.mem_write_agent.cfg = self.cfg.mem_write_agent_cfg
         
         self.predictor = orc_r32i_predictor.type_id.create("predictor", self)
         #self.predictor = UVMRegPredictor.type_id.create("predictor", self)
