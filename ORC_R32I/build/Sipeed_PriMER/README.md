@@ -74,12 +74,12 @@ mapping.rpt will contain the results.
 
 |Utilization Statistics|     |                  |       |
 | :------------------ | ---: | :--------------: | ----: |
-| #lut                | 1563 |   out of  19600  | 7.97% |
+| #lut                | 1575 |   out of  19600  | 8.04% |
 | #reg                |  167 |   out of  19600  | 0.85% |
-| #le                 | 1563 |        -         |  -    |
-|   #lut only         | 1396 |   out of   1563  | 89.32% |
-|   #reg only         |    0 |   out of   1563  |  0.00% |
-|   #lut&reg          |  167 |   out of   1563  | 10.68% |
+| #le                 | 1575 |        -         |  -    |
+|   #lut only         | 1408 |   out of   1575  | 89.40% |
+|   #reg only         |    0 |   out of   1575  |  0.00% |
+|   #lut&reg          |  167 |   out of   1575  | 10.60% |
 | #dsp                |    0 |   out of     29  |  0.00% |
 | #bram               |    4 |   out of     64  |  6.25% |
 |   #bram9k           |    4 |        -         |  -    |
@@ -95,7 +95,7 @@ mapping.rpt will contain the results.
 | Report Hierarchy Area: |  | |      |      |
 | :-------- | :------ | :---- |:-----| :--- |
 | Instance  |Module   | le    | lut  | seq  |
-| top       |ORC_R32I | 1563  | 1563 | 167  |
+| top       |ORC_R32I | 1575  | 1575 | 167  |
 
 
 ### Running
