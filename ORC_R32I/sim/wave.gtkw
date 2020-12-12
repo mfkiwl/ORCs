@@ -1,20 +1,20 @@
 [*]
-[*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
-[*] Tue Dec  8 21:46:10 2020
+[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
+[*] Sat Dec 12 14:58:53 2020
 [*]
 [dumpfile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/dump.vcd"
-[dumpfile_mtime] "Tue Dec  8 21:45:27 2020"
-[dumpfile_size] 7904151
+[dumpfile_mtime] "Sat Dec 12 14:58:09 2020"
+[dumpfile_size] 7897871
 [savefile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/wave.gtkw"
 [timestart] 0
-[size] 1366 721
-[pos] -1 -1
-*-16.064209 120001 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+[size] 1920 1029
+[pos] -553 -1
+*-17.239712 120001 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top.
 [sst_width] 207
 [signals_width] 375
 [sst_expanded] 1
-[sst_vpaned_height] 288
+[sst_vpaned_height] 446
 @22
 top.ORC_R32I_TOP.P_FETCH_COUNTER_RESET[31:0]
 top.ORC_R32I_TOP.uut.L_ALL_ONES[31:0]
@@ -101,38 +101,6 @@ top.ORC_R32I_TOP.uut.general_registers1(28)[31:0]
 top.ORC_R32I_TOP.uut.general_registers1(29)[31:0]
 top.ORC_R32I_TOP.uut.general_registers1(30)[31:0]
 top.ORC_R32I_TOP.uut.general_registers1(31)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(0)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(1)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(2)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(3)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(4)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(5)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(6)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(7)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(8)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(9)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(10)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(11)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(12)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(13)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(14)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(15)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(16)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(17)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(18)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(19)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(20)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(21)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(22)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(23)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(24)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(25)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(26)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(27)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(28)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(29)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(30)[31:0]
-top.ORC_R32I_TOP.uut.general_registers2(31)[31:0]
 @28
 top.ORC_R32I_TOP.uut.i_clk
 top.ORC_R32I_TOP.uut.i_reset_sync
@@ -146,9 +114,7 @@ top.ORC_R32I_TOP.uut.r_next_pc_fetch[31:0]
 top.ORC_R32I_TOP.uut.r_next_pc_decode[31:0]
 @28
 top.ORC_R32I_TOP.uut.r_program_counter_state[2:0]
-@29
 top.ORC_R32I_TOP.uut.r_program_counter_valid
-@28
 top.ORC_R32I_TOP.uut.w_jal
 top.ORC_R32I_TOP.uut.r_bcc
 top.ORC_R32I_TOP.uut.r_jalr

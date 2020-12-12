@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/12/12 01:21:06
+# Last modified : 2020/12/12 10:15:22
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -157,10 +157,41 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         super().__init__(name, parent)
         self.hex_instructions = []
         self.fetched_instruction = None
-        self.count = 112
+        self.count = 10
 
 
     async def run_phase(self, phase):
+        cocotb.fork(self.stimulate_inst_intfc())
+        cocotb.fork(self.stimulate_read_intfc())
+        cocotb.fork(self.stimulate_write_intfc())
+
+    
+    async def stimulate_read_intfc(self):
+        mem_read_sqr = self.tb_env.mem_read_agent.sqr
+        
+        #  Create seq0
+        mem_read_seq0 = read_single_sequence("mem_read_seq0")
+        mem_read_seq0.data = 0 # 74135
+        #
+        await mem_read_seq0.start(mem_read_sqr)
+        await mem_read_seq0.start(mem_read_sqr)
+        await mem_read_seq0.start(mem_read_sqr)
+        await mem_read_seq0.start(mem_read_sqr)
+
+
+    async def stimulate_write_intfc(self):
+        mem_write_sqr = self.tb_env.mem_write_agent.sqr
+        
+        #  Create seq0
+        mem_write_seq0 = write_single_sequence("mem_write_seq0")
+        #
+        await mem_write_seq0.start(mem_write_sqr)
+        await mem_write_seq0.start(mem_write_sqr)
+        await mem_write_seq0.start(mem_write_sqr)
+        await mem_write_seq0.start(mem_write_sqr)
+
+
+    async def stimulate_inst_intfc(self):
         # Initial setup
         self.read_hex()
         slave_sqr = self.tb_env.inst_agent.sqr
