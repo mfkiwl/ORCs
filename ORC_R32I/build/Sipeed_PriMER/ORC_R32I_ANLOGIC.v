@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/11 09:00:37
+// Last modified : 2020/12/12 10:30:55
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -480,7 +480,7 @@ module ORC_R32I #(
       r_master_read_ready <= 1'b0;
       r_master_read_addr  <= w_master_addr;
     end
-    else if (r_master_read_ready == 1'b0 &&  i_master_write_ack == 1'b1) begin
+    else if (r_master_read_ready == 1'b0 &&  i_master_read_ack == 1'b1) begin
       // Received valid data. Ready for new transaction on the next clock.
       r_master_read_ready <= 1'b1;
     end
