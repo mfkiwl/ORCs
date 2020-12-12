@@ -30,7 +30,7 @@
 	url = https://github.com/mciepluc/cocotb-coverage
 [submodule "tools/riscv-dv"]
 	path = tools/riscv-dv
-	url = https://github.com/google/riscv-dv
+	url = https://github.com/google/riscv-dv.git
 [submodule "tools/riscv-compliance"]
 	path = tools/riscv-compliance
 	url = https://github.com/riscv/riscv-compliance.git
