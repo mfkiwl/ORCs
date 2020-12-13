@@ -33,7 +33,7 @@
 # File name     : orc_r32i_test_lib.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 19:26:21
-# Last modified : 2020/12/12 10:17:44
+# Last modified : 2020/12/12 23:12:06
 # Project Name  : ORCs
 # Module Name   : orc_r32i_test_lib
 # Description   : ORC_R32I Test Library
@@ -171,12 +171,10 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         
         #  Create seq0
         mem_read_seq0 = read_single_sequence("mem_read_seq0")
-        mem_read_seq0.data = 0 # 74135
+        mem_read_seq0.data = 0 #
         #
-        await mem_read_seq0.start(mem_read_sqr)
-        await mem_read_seq0.start(mem_read_sqr)
-        await mem_read_seq0.start(mem_read_sqr)
-        await mem_read_seq0.start(mem_read_sqr)
+        while True:
+            await mem_read_seq0.start(mem_read_sqr)
 
 
     async def stimulate_write_intfc(self):
@@ -185,10 +183,8 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         #  Create seq0
         mem_write_seq0 = write_single_sequence("mem_write_seq0")
         #
-        await mem_write_seq0.start(mem_write_sqr)
-        await mem_write_seq0.start(mem_write_sqr)
-        await mem_write_seq0.start(mem_write_sqr)
-        await mem_write_seq0.start(mem_write_sqr)
+        while True:
+            await mem_write_seq0.start(mem_write_sqr)
 
 
     async def stimulate_inst_intfc(self):
@@ -196,111 +192,15 @@ class orc_r32i_reg_test(orc_r32i_test_base):
         self.read_hex()
         slave_sqr = self.tb_env.inst_agent.sqr
         
-        # Fetch instruction
-        self.fetch_instruction(self.count)
-
-        #  Create seq0
-        slave_seq0 = read_single_sequence("slave_seq0")
-        slave_seq0.data = self.fetched_instruction # 74135
-        #slave_seq0.opcaode = "AUIPC" 
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq1 = read_single_sequence("slave_seq1")
-        slave_seq1.data = self.fetched_instruction # 646021523
-        #slave_seq1.opcaode = "RII"
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq2 = read_single_sequence("slave_seq2")
-        slave_seq2.data = self.fetched_instruction # 2193720595
-        #slave_seq2.opcaode = "RII" 
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq3 = read_single_sequence("slave_seq3")
-        slave_seq3.data = self.fetched_instruction # 83479
-        #slave_seq3.opcaode = "AUIPC"
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq4 = read_single_sequence("slave_seq4")
-        slave_seq4.data = self.fetched_instruction # 1166118409
-        #slave_seq4.opcaode = "JAL"
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq5 = read_single_sequence("slave_seq5")
-        slave_seq5.data = self.fetched_instruction # 714080495
-        #slave_seq5.opcaode = "JAL"
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq6 = read_single_sequence("slave_seq6")
-        slave_seq6.data = self.fetched_instruction # 46351203
-        #slave_seq6.data = 46363491
-        #slave_seq6.opcaode = "BCC" 46351203
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq7 = read_single_sequence("slave_seq6")
-        slave_seq7.data = self.fetched_instruction # 2181145347
-        #slave_seq6.opcaode = "LCC"
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq5 = read_single_sequence("slave_seq5")
-        slave_seq5.data = self.fetched_instruction # 714080495
-        #slave_seq5.opcaode = "JAL"
-
-        # Fetch instruction
-        self.count = self.count + 1
-        self.fetch_instruction(self.count)
-
-        slave_seq2 = read_single_sequence("slave_seq2")
-        slave_seq2.data = self.fetched_instruction # 2193720595
-        #slave_seq2.opcaode = "RII" 
-
-        # Call the sequencer
-        #await slave_seq0.start(slave_sqr)
-        await slave_seq0.start(slave_sqr)
-
-        #await slave_seq1.start(slave_sqr)
-        await slave_seq1.start(slave_sqr)
-
-        #await slave_seq2.start(slave_sqr)
-        await slave_seq2.start(slave_sqr)
-        
-        #await slave_seq3.start(slave_sqr)
-        await slave_seq3.start(slave_sqr)
-
-        #await slave_seq4.start(slave_sqr)
-        #await slave_seq4.start(slave_sqr)
-
-        #await slave_seq5.start(slave_sqr)
-        await slave_seq5.start(slave_sqr)
-
-        #await slave_seq6.start(slave_sqr)
-        await slave_seq6.start(slave_sqr)
-
-        #await slave_seq7.start(slave_sqr)
-        await slave_seq7.start(slave_sqr)
+        while (self.count < 7600):
+            # Fetch instruction
+            self.fetch_instruction(self.count)
+            #  Create seq0
+            slave_seq0 = read_single_sequence("slave_seq0")
+            slave_seq0.data = self.fetched_instruction
+            # Call the sequencer
+            await slave_seq0.start(slave_sqr)
+            self.count = self.count + 1
 
 
     def read_hex(self):

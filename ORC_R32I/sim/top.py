@@ -88,10 +88,10 @@ async def top(dut):
     vif_read = wb_master_if(dut, bus_map_read)
     vif_write = wb_master_if(dut, bus_map_write)
 
-    # Create a 100Mhz clock
-    clock = Clock(dut.i_clk, 10, units="ns") 
+    # Create a 1000Mhz clock
+    clock = Clock(dut.i_clk, 1, units="ns") 
     cocotb.fork(clock.start())  # Start the clock
     cocotb.fork(initial_reset(vif, vif_read, vif_write, dut))
     #cocotb.fork(initial_run_test(dut, vif))
 
-    await Timer(999, "NS")
+    await Timer(5, "US")
