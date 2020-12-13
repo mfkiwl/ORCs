@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/12 10:20:55
+// Last modified : 2020/12/13 09:46:18
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -174,9 +174,7 @@ module ORC_R32I #(
                 w_fct3==1 ? r_unsigned_rs1 != r_unsigned_rs2 : // bne
                 0);
   wire        w_jump_request = r_jalr | w_bmux;
-  wire [31:0] w_jump_value   = w_bmux == 1'b1 ? r_simm + r_next_pc_decode : 
-                               r_jalr == 1'b1 ? r_simm + r_unsigned_rs1:
-                               r_next_pc_fetch;
+  wire [31:0] w_jump_value   = r_jalr == 1'b1 ? r_simm + r_unsigned_rs1 : r_simm + r_next_pc_decode;
   // Mem Process wires
   wire w_rd_not_zero = |w_rd; // or reduction of the destination register.
   // Qualifying signals
