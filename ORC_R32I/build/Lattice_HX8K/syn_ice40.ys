@@ -53,18 +53,15 @@ opt -full -undriven -fine
 
 ice40_wrapcarry
 techmap -map +/techmap.v -map +/ice40/arith_map.v
-opt -fine
-abc
-ice40_opt
+opt -full -fine
+abc -dff
+ice40_opt -full
 
-#if (nodffe)
-#dfflegalize -cell $_DFF_?_ 0 -cell $_DFF_?P?_ 0 -cell $_SDFF_?P?_ 0 -cell $_DLATCH_?_ x
-#else
 dfflegalize -cell $_DFF_?_ 0 -cell $_DFFE_?P_ 0 -cell $_DFF_?P?_ 0 -cell $_DFFE_?P?P_ 0 -cell $_SDFF_?P?_ 0 -cell $_SDFFCE_?P?P_ 0 -cell $_DLATCH_?_ x -mince -1
 techmap -map +/ice40/ff_map.v
 opt_expr -mux_undef -fine
 simplemap
-ice40_opt -full
+ice40_opt
 
 abc -dff
 ice40_opt -full
