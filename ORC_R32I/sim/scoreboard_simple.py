@@ -33,7 +33,7 @@
 # File name     : scoreboard_simple.py
 # Author        : Jose R Garcia
 # Created       : 2020/12/08 13:42:32
-# Last modified : 2020/12/08 17:25:49
+# Last modified : 2020/12/13 08:28:17
 # Project Name  : ORCs
 # Module Name   : scoreboard_simple
 # Description   : Scoreboard.
@@ -50,12 +50,20 @@ from uvm_externals.Wishbone_Pipeline_Master.wb_master_seq import *
 
 class scoreboard_simple(UVMScoreboard):
     """         
-       Class: Memory Interface Read Slave Monitor
+       Class: Scoreboard, Simple
         
-       Definition: Contains functions, tasks and methods of this agent's monitor.
+       Definition: Contains functions, tasks and methods of this Scoreboard.
     """
 
     def __init__(self, name, parent):
+        """         
+           Function: __init__, new
+          
+           Definition: Class constructor.
+
+           Args:
+             phase: 
+        """
         UVMScoreboard.__init__(self, name, parent)
         self.num_received = 0
         self.num_writes = 0
@@ -73,7 +81,7 @@ class scoreboard_simple(UVMScoreboard):
         """         
            Function: build_phase
           
-           Definition: Brings this agent's virtual interface.
+           Definition: .
 
            Args:
              phase: build_phase

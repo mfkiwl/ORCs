@@ -33,7 +33,7 @@
 # File name     : orc_r32i_tb_env.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/12/12 00:57:23
+# Last modified : 2020/12/13 09:00:00
 # Project Name  : UVM Python Verification Library
 # Module Name   : orc_r32i_tb_env
 # Description   : Memory Slave Interface  monitor.
@@ -107,7 +107,8 @@ class orc_r32i_tb_env(UVMEnv):
         #self.predictor = UVMRegPredictor.type_id.create("predictor", self)
         
         if (self.cfg.has_scoreboard):
-            self.scoreboard = scoreboard_simple.type_id.create("scoreboard", self)
+            #self.scoreboard = scoreboard_simple.type_id.create("scoreboard", self)
+            self.scoreboard = UVMInOrderBuiltInComparator.type_id.create("scoreboard", self)
 
     
     def connect_phase(self, phase):
@@ -122,16 +123,14 @@ class orc_r32i_tb_env(UVMEnv):
         """
 
         if (self.cfg.has_scoreboard):
-            self.inst_agent.ap.connect(self.scoreboard.received_export)
-            #self.predictor.ap.connect(self.scoreboard.analysis_export)
+            # self.inst_agent.ap.connect(self.scoreboard.received_export)
+            # self.predictor.ap.connect(self.scoreboard.analysis_export)
+            self.inst_agent.ap.connect(self.scoreboard.before_export)
+            self.predictor.ap.connect(self.scoreboard.after_export)
         
 
         if (self.cfg.has_predictor):
             self.inst_agent.ap.connect(self.predictor.analysis_export)
-        #self.cfg.reg_block.reg_map.set_sequencer( self.inst_agent.sqr, self.inst_agent.reg_adapter);
-        #self.cfg.reg_block.reg_map.set_auto_predict(on=0)
-        #self.predictor.map     = self.cfg.reg_block.reg_map  # passive
-        #self.predictor.adapter = self.inst_agent.reg_adapter # passive
         #self.inst_agent.ap.connect(self.predictor.bus_in)
 
 uvm_component_utils(orc_r32i_tb_env)

@@ -33,7 +33,7 @@
 # File name     : orc_r32i_predictor.py
 # Author        : Jose R Garcia
 # Created       : 2020/11/05 20:08:35
-# Last modified : 2020/12/08 17:28:24
+# Last modified : 2020/12/13 09:10:56
 # Project Name  : ORCs
 # Module Name   : orc_r32i_predictor
 # Description   : Non Time Consuming R32I model.
@@ -125,6 +125,7 @@ class orc_r32i_predictor(UVMSubscriber):
         #  Select the bit fields associate with the instruction's opcode
         #  and convert to interger
         self.opcode = int(self.instruction[26:32], 2)
+        uvm_info(self.tag, sv.sformatf("\n    OPCODE:  %d\n", self.opcode), UVM_LOW)
 
         if (self.opcode == LUI):
             #  Get rd and imm
@@ -140,6 +141,7 @@ class orc_r32i_predictor(UVMSubscriber):
             self.unsigned_imm = int(self.instruction[0:19] + '000000000000' , 2)
             self.regs[self.rd] = self.unsigned_imm + self.pc 
             uvm_info(self.tag, sv.sformatf("\n    OPCODE: AUIPC\n      Regs: %d", self.regs[self.rd]), UVM_LOW)
+
             
         if (self.opcode == JAL):
             #  Get rd and imm
@@ -148,6 +150,7 @@ class orc_r32i_predictor(UVMSubscriber):
             self.regs[self.rd] = self.pc + 4
             uvm_info(self.tag, '\n    Got JAL', UVM_LOW)
 
+
         if (self.opcode == JALR):
             #  Get rd and imm
             self.rd = int(self.instruction[21:25], 2)
@@ -155,20 +158,72 @@ class orc_r32i_predictor(UVMSubscriber):
             self.regs[self.rd] = self.pc + 4
             uvm_info(self.tag, '\n    Got JALR', UVM_LOW)
 
-        #if (self.opcode == BCC):
 
-        #    # uvm_reg.address(t.rd) = t.uimm + pc
+        if (self.opcode == BCC):
+            self.fct3 = int(self.instruction[17:19], 2)
+            uvm_info(self.tag, sv.sformatf("\n    OPCODE: BRANCH\n      FCT3: %d", self.fct3), UVM_LOW)
+
+            if (self.fct3 == 0):
+              if (self.regs[self.rs1] == self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got BRANCH, PASSED TEST EQ\n', UVM_LOW)
+
+            if (self.fct3 == 1):
+              if (self.regs[self.rs1] != self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got BRANCH, PASSED TEST NEQ\n', UVM_LOW)
+
+            if (self.fct3 == 4):
+              if (self.regs[self.rs1] < self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got BRANCH, PASSED TEST Less Than\n', UVM_LOW)
+
+            if (self.fct3 == 5):
+              if (self.regs[self.rs1] >= self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got BRANCH, PASSED TEST Greater or Equal\n', UVM_LOW)
+
+            if (self.fct3 == 6):
+              if (self.regs[self.rs1] < self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got BRANCH, PASSED Less Than UnSigned\n', UVM_LOW)
+
+            if (self.fct3 == 5):
+              if (self.regs[self.rs1] >= self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got BRANCH, PASSED TEST Greater or Equal UnSigned\n', UVM_LOW)
+
+
         if (self.opcode == RRO):
-            uvm_info(self.tag, '\n    Got RRO', UVM_LOW)
+            self.fct3 = int(self.instruction[12:14], 2)
+            if (self.fct3 == 0):
+              if (self.regs[self.rs1] == self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got RRO, PASSED TEST EQ', UVM_LOW)
+
+            if (self.fct3 == 1):
+              if (self.regs[self.rs1] != self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got RRO, PASSED TEST NEQ', UVM_LOW)
+
+            if (self.fct3 == 4):
+              if (self.regs[self.rs1] < self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got RRO, PASSED TEST Less Than', UVM_LOW)
+
+            if (self.fct3 == 5):
+              if (self.regs[self.rs1] >= self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got RRO, PASSED TEST Greater or Equal', UVM_LOW)
+
+            if (self.fct3 == 6):
+              if (self.regs[self.rs1] < self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got RRO, PASSED Less Than UnSigned', UVM_LOW)
+
+            if (self.fct3 == 5):
+              if (self.regs[self.rs1] >= self.regs[self.rs2]):
+                  uvm_info(self.tag, '\n    Got RRO, PASSED TEST Greater or Equal UnSigned', UVM_LOW)
 
         if (self.opcode == RII):
             uvm_info(self.tag, '\n    Got RII', UVM_LOW)
 
-        #if (self.opcode == LCC):
+        if (self.opcode == LCC):
+            uvm_info(self.tag, '\n    Got LCC', UVM_LOW)
 
-        #if (self.opcode == SCC):
+        if (self.opcode == SCC):
+            uvm_info(self.tag, '\n    Got SCC', UVM_LOW)
 
-        self.create_response(t)
+        #self.create_response(t)
 
    
     def create_response(self, t):
@@ -180,6 +235,10 @@ class orc_r32i_predictor(UVMSubscriber):
            Args:
              t: wb_master_seq (Sequence Item)
         """
+
+        tr = []
+        tr = t
+        self.ap.write(tr)
  
 
 uvm_component_utils(orc_r32i_predictor)
