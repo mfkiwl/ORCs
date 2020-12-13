@@ -10,5 +10,5 @@ Anlogic's EG4S20 td tool will identify inferred ram but does not map inferred ra
 
 Yosys support for the Anlogic EG4S20 FPGA present in this board is partially supported. It does not support the dsp and brams but it will convert the inferred ram code to lut rams. Therefore the orginal source code for the ORC_R32I can be pre-mapped with yosys and then fed to td for final mapping.
 
-## TODO:
-Create build folders and projects for Xilinx and Anlogic
+## Vivado
+Includes the project used to obtain synthesis results.
