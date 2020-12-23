@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/23 12:48:37
+// Last modified : 2020/12/23 14:58:40
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -80,22 +80,22 @@ module Goldschmidt_Convergence_Division #(
   localparam L_GCD_STEP_PRODUCT_MSB = (L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB;
   localparam L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
   // Program Counter FSM States
-  localparam [1:0] S_IDLE                 = 2'h0; // r_program_counter_state after reset
-  localparam [1:0] S_SHIFT_DIVIDEND_POINT = 2'h1; // multiply the dividend by minus powers of ten to shift the decimal point.
-  localparam [1:0] S_HALF_STEP_ONE        = 2'h2; // r_program_counter_state, waiting for valid instruction
-  localparam [1:0] S_HALF_STEP_TWO        = 2'h3; // r_program_counter_state, wait for Decoder process
+  localparam S_IDLE                 = 2'h0; // r_program_counter_state after reset
+  localparam S_SHIFT_DIVIDEND_POINT = 2'h1; // multiply the dividend by minus powers of ten to shift the decimal point.
+  localparam S_HALF_STEP_ONE        = 2'h2; // r_program_counter_state, waiting for valid instruction
+  localparam S_HALF_STEP_TWO        = 2'h3; // r_program_counter_state, wait for Decoder process
   //
   localparam [P_GCD_FACTORS_MSB:0] L_GCD_NUMBER_TWO  = 2;
   localparam [P_GCD_FACTORS_MSB:0] L_GCD_ZERO_FILLER = 0;
   //
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_E10 = 32'b00011001100110011001100110011010;
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_E100 = 32'b00011001100110011001100110011010;
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_E1000 = 32'b00011001100110011001100110011010;
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_E10000 = 32'b00011001100110011001100110011010;
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_E100000 = 32'b00011001100110011001100110011010;
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_E1000000 = 32'b00011001100110011001100110011010;
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_E10000000 = 32'b00011001100110011001100110011010;
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_E100000000 = 32'b00011001100110011001100110011010;
+  localparam L_GCD_E10 = 32'b00011001100110011001100110011010;
+  localparam L_GCD_E100 = 32'b00011001100110011001100110011010;
+  localparam L_GCD_E1000 = 32'b00011001100110011001100110011010;
+  localparam L_GCD_E10000 = 32'b00011001100110011001100110011010;
+  localparam L_GCD_E100000 = 32'b00011001100110011001100110011010;
+  localparam L_GCD_E1000000 = 32'b00011001100110011001100110011010;
+  localparam L_GCD_E10000000 = 32'b00011001100110011001100110011010;
+  localparam L_GCD_E100000000 = 32'b00011001100110011001100110011010;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
