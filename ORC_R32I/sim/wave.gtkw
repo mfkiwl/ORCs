@@ -1,21 +1,21 @@
 [*]
-[*] GTKWave Analyzer v3.3.104 (w)1999-2020 BSI
-[*] Sat Dec 12 17:52:52 2020
+[*] GTKWave Analyzer v3.3.107 (w)1999-2020 BSI
+[*] Sun Dec 13 04:43:48 2020
 [*]
 [dumpfile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/dump.vcd"
-[dumpfile_mtime] "Sat Dec 12 15:21:01 2020"
-[dumpfile_size] 7901724
+[dumpfile_mtime] "Sun Dec 13 04:38:49 2020"
+[dumpfile_size] 46009705
 [savefile] "/home/jota/Documents/HW/HDL_projects/ORCs/ORC_R32I/sim/wave.gtkw"
-[timestart] 281900
-[size] 1920 1029
+[timestart] 538350
+[size] 1366 721
 [pos] -1 -1
-*-15.239712 530001 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
+*-13.460642 558001 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1 -1
 [treeopen] top.
 [treeopen] top.ORC_R32I_TOP.
-[sst_width] 196
+[sst_width] 207
 [signals_width] 411
 [sst_expanded] 1
-[sst_vpaned_height] 446
+[sst_vpaned_height] 424
 @22
 top.ORC_R32I_TOP.uut.L_ALL_ONES[31:0]
 top.ORC_R32I_TOP.uut.L_ALL_ZERO[31:0]
@@ -80,26 +80,27 @@ top.ORC_R32I_TOP.uut.r_inst_data[31:0]
 @22
 top.ORC_R32I_TOP.uut.w_opcode[6:0]
 @28
+top.ORC_R32I_TOP.uut.w_jal
 top.ORC_R32I_TOP.uut.r_bcc
 top.ORC_R32I_TOP.uut.r_jalr
-top.ORC_R32I_TOP.uut.r_lcc
 top.ORC_R32I_TOP.uut.r_rii
 top.ORC_R32I_TOP.uut.r_rro
+top.ORC_R32I_TOP.uut.r_lcc
 top.ORC_R32I_TOP.uut.r_scc
 @22
 top.ORC_R32I_TOP.uut.r_simm[31:0]
 top.ORC_R32I_TOP.uut.r_uimm[31:0]
 @28
 top.ORC_R32I_TOP.uut.w_bmux
+@22
+top.ORC_R32I_TOP.uut.w_jump_value[31:0]
+top.ORC_R32I_TOP.uut.w_j_simm[31:0]
+@29
+top.ORC_R32I_TOP.uut.w_jump_request
+@28
 top.ORC_R32I_TOP.uut.w_fct3[2:0]
 @22
 top.ORC_R32I_TOP.uut.w_fct7[6:0]
-top.ORC_R32I_TOP.uut.w_j_simm[31:0]
-@28
-top.ORC_R32I_TOP.uut.w_jal
-top.ORC_R32I_TOP.uut.w_jump_request
-@22
-top.ORC_R32I_TOP.uut.w_jump_value[31:0]
 @28
 top.ORC_R32I_TOP.uut.w_rd_not_zero
 @22
@@ -192,7 +193,7 @@ top.ORC_R32I_TOP.uut.general_registers2(31)[31:0]
 @22
 top.ORC_R32I_TOP.uut.w_master_addr[31:0]
 top.ORC_R32I_TOP.uut.r_master_read_addr[31:0]
-@29
+@28
 top.ORC_R32I_TOP.uut.r_master_read_ready
 @22
 top.ORC_R32I_TOP.uut.w_s_data[31:0]
