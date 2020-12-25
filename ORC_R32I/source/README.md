@@ -5,12 +5,12 @@ Document        | Metadata
 _Version_       | v0.0.1
 _Prepared by_   | Jose R Garcia
 _Created_       | 2020/11/26 18:14:45
-_Last modified_ | 2020/11/26 23:18:53
+_Last modified_ | 2020/12/25 13:39:12
 _Project_       | ORCs
 
 ## Overview
 
-Verilog code for a FIR filter. As new values are fed through the input the filtered result goes out the streaming output synchronous to the input clock.
+The ORC_R32I is an implementation of the RISC-V 32I ISA. It is a single threaded _hart_ capable of a single profile, machine mode.
 
 ## Table Of Contents
 
@@ -40,10 +40,11 @@ Term        | Definition
 0x0000_0000 | Hexadecimal number syntax
 bit         | Single binary digit (0 or 1)
 BYTE        | 8-bits wide data unit
+WORD        | 16-bits wide data unit
 DWORD       | 32-bits wide data unit
 FPGA        | Field Programmable Gate Array
 HART        | Hardware thread
-HBI         | Handshake Bus Interface
+WB          | Wishbone Interface
 ISA         | Instruction Set Architecture
 LSB         | Least Significant bit
 MSB         | Most Significant bit
@@ -51,7 +52,9 @@ MSB         | Most Significant bit
 
 ## 2 Design
 
-The ORC_R32I is an implementation of the RISC-V 32I ISA. It is a single threaded _hart_ capable of a single profile, machine mode.
+The ORC_R32I uses a Harvard architecture, separating the interface used to access the instruction from the interface used to access external devices. The general purpose register are implemented in single port BRAMs. In order to access the rs1 and rs2 simultaneously to copies of the general purpose register are created. 
+
+The Program Counter process fetches the instructions by asserting the instruction interface strobe signal, thus validating the address signal and waits for the acknowledge to be asserted in response which validates the data signal. 
 
 The unit consumes instructions as portrayed by Figure 1.
 
