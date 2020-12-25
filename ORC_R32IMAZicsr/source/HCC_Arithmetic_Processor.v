@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/23 13:00:47
+// Last modified : 2020/12/25 16:12:12
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -43,18 +43,37 @@
 //   .
 /////////////////////////////////////////////////////////////////////////////////
 module HCC_Arithmetic_Processor #(
-  parameter P_HCC_FACTORS_MSB    = 8,
-  parameter P_HCC_RESULT_MSB     = 8,
-  parameter P_HCC_DIVISION_STEPS = 3
+  parameter P_HCC_FACTORS_MSB    = 7;
+  parameter P_HCC_MEM_ADDR_MSB   = 0,
+  parameter P_HCC_MUL_START_ADDR = 0,
+  parameter P_HCC_DIV_START_ADDR = 0,
+  parameter P_HCC_DIV_ACCURACY   = 2
 )(
-  input                        i_slave_hcc_processor_clk,
-  input                        i_slave_hcc_processor_reset_sync,
-  input                        i_slave_hcc_processor_stb,
-  output                       o_slave_hcc_processor_ack,
-  input                        i_slave_hcc_processor_addr,
-  input  [P_HCC_FACTORS_MSB:0] i_slave_hcc_processor_data,
-  output [P_HCC_RESULT_MSB:0]  o_slave_hcc_processor_data
-  );
+  // WB Interface
+  input                                   i_slave_hcc_processor_clk,
+  input                                   i_slave_hcc_processor_reset_sync,
+  input                                   i_slave_hcc_processor_stb,
+  output                                  o_slave_hcc_processor_ack,
+  input                                   i_slave_hcc_processor_addr,
+  input                                   i_slave_hcc_processor_tga,
+  input  [((P_HCC_MEM_ADDR_MSB+1)*2)-1:0] i_slave_hcc_processor_data,
+  // HCC Processor mem0 WB(pipeline) master Read Interface
+  output o_master_hcc0_read_stb,   // WB read enable
+  output o_master_hcc0_read_addr, // WB address
+  input  i_master_hcc0_read_data, // WB data
+  // HCC Processor mem0 WB(pipeline) master Write Interface
+  .o_master_hcc0_write_stb(w_hcc0_write_stb),   // WB write enable
+  .o_master_hcc0_write_addr(w_hcc0_write_addr), // WB address
+  .o_master_hcc0_write_data(w_hcc0_write_data), // WB data
+  // HCC Processor mem1 WB(pipeline) master Read Interface
+  .o_master_hcc1_read_stb(w_hcc1_read_stb),   // WB read enable
+  .o_master_hcc1_read_addr(w_hcc1_read_addr), // WB address
+  .i_master_hcc1_read_data(w_hcc1_read_data), // WB data
+  // HCC Processor mem1 WB(pipeline) master Write Interface
+  .o_master_hcc1_write_stb(w_hcc1_write_stb),   // WB write enable
+  .o_master_hcc1_write_addr(w_hcc1_write_addr), // WB address
+  .o_master_hcc1_write_data(w_hcc1_write_data)  // WB data
+);
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
@@ -130,7 +149,7 @@ module HCC_Arithmetic_Processor #(
   // Instance    : Integer Divider
   // Description : Instance of a Goldschmidt Division implementation.
   ///////////////////////////////////////////////////////////////////////////////
-  Goldschmidt_Convergence_Division #(L_HCC_FACTORS_MSB, P_HCC_DIVISION_STEPS) 
+  Goldschmidt_Convergence_Division #(L_HCC_FACTORS_MSB, P_HCC_ACCURACY) 
   div (
     // WB Interface
     .i_clk(i_slave_hcc_processor_clk),

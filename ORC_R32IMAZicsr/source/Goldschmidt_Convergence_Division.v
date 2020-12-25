@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/23 14:58:40
+// Last modified : 2020/12/25 15:17:14
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -49,11 +49,12 @@
 //   Reference: Synthesis og Arithmetic Circuits, FPGA, ASIC and Embedded Systems
 //     Authors: Jean-Pierre Deschamp; Gery Jean Antoine Bioul;Gustavo D. Sutter
 //
-// To Do : generate the remainder, set the look-up table of the powers of tens.
+//  The remainder calculation requires an extra which is why the address tag is
+//  used to make the decision on whether do the calculation or skip it.
 /////////////////////////////////////////////////////////////////////////////////
 module Goldschmidt_Convergence_Division #(
   parameter P_GCD_FACTORS_MSB = 8,
-  parameter P_GCD_STEPS       = 3
+  parameter P_GCD_ACCURACY    = 3
 )(
   input i_clk,
   input i_reset_sync,
@@ -61,41 +62,32 @@ module Goldschmidt_Convergence_Division #(
   input  i_slave_stb,
   output o_slave_ack,
   //
-  input  signed [P_GCD_FACTORS_MSB:0] i_dividend,
-  input  signed [P_GCD_FACTORS_MSB:0] i_divisor,
-  output signed [P_GCD_FACTORS_MSB:0] o_quotient,
-  output        [P_GCD_FACTORS_MSB:0] o_remainder,
+  input  [P_GCD_FACTORS_MSB:0] i_dividend,
+  input  [P_GCD_FACTORS_MSB:0] i_divisor,
+  output [P_GCD_FACTORS_MSB:0] o_quotient,
+  output [P_GCD_FACTORS_MSB:0] o_remainder,
 	//
-  output signed [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplicand,
-  output signed [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplier,
-  input  signed [((P_GCD_FACTORS_MSB+1)*4)-1:0] i_product
+  output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplicand,
+  output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplier,
+  input  [((P_GCD_FACTORS_MSB+1)*4)-1:0] i_product
 );
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
   ///////////////////////////////////////////////////////////////////////////////
   // OpCodes
-  localparam L_GCD_STEPS_MSB        = $clog2((P_GCD_STEPS));
+  localparam L_GCD_STEPS_MSB        = $clog2((P_GCD_ACCURACY));
   localparam L_GCD_MUL_FACTORS_MSB  = ((P_GCD_FACTORS_MSB+1)*2)-1;
   localparam L_GCD_STEP_PRODUCT_MSB = (L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB;
   localparam L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
   // Program Counter FSM States
-  localparam S_IDLE                 = 2'h0; // r_program_counter_state after reset
-  localparam S_SHIFT_DIVIDEND_POINT = 2'h1; // multiply the dividend by minus powers of ten to shift the decimal point.
-  localparam S_HALF_STEP_ONE        = 2'h2; // r_program_counter_state, waiting for valid instruction
-  localparam S_HALF_STEP_TWO        = 2'h3; // r_program_counter_state, wait for Decoder process
+  localparam [1:0] S_IDLE                 = 2'h0; // r_program_counter_state after reset
+  localparam [1:0] S_SHIFT_DIVIDEND_POINT = 2'h1; // multiply the dividend by minus powers of ten to shift the decimal point.
+  localparam [1:0] S_HALF_STEP_ONE        = 2'h2; // r_program_counter_state, waiting for valid instruction
+  localparam [1:0] S_HALF_STEP_TWO        = 2'h3; // r_program_counter_state, wait for Decoder process
   //
   localparam [P_GCD_FACTORS_MSB:0] L_GCD_NUMBER_TWO  = 2;
   localparam [P_GCD_FACTORS_MSB:0] L_GCD_ZERO_FILLER = 0;
-  //
-  localparam L_GCD_E10 = 32'b00011001100110011001100110011010;
-  localparam L_GCD_E100 = 32'b00011001100110011001100110011010;
-  localparam L_GCD_E1000 = 32'b00011001100110011001100110011010;
-  localparam L_GCD_E10000 = 32'b00011001100110011001100110011010;
-  localparam L_GCD_E100000 = 32'b00011001100110011001100110011010;
-  localparam L_GCD_E1000000 = 32'b00011001100110011001100110011010;
-  localparam L_GCD_E10000000 = 32'b00011001100110011001100110011010;
-  localparam L_GCD_E100000000 = 32'b00011001100110011001100110011010;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
@@ -109,22 +101,24 @@ module Goldschmidt_Convergence_Division #(
   //
   reg r_ack;
   //
-  reg  [L_GCD_STEPS_MSB:0]       r_steps_count;
   wire [L_GCD_MUL_FACTORS_MSB:0] w_number_two_extended = {L_GCD_NUMBER_TWO,L_GCD_ZERO_FILLER};
   //
   wire [L_GCD_MUL_FACTORS_MSB:0] w_dividend_extended = {i_dividend, L_GCD_ZERO_FILLER};
   wire [L_GCD_MUL_FACTORS_MSB:0] w_divisor_extended  = {i_divisor,  L_GCD_ZERO_FILLER};
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_dividend_extended;
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_divisor_extended;
-  reg  [P_GCD_FACTORS_MSB:0]     r_quotient;
-  reg  [P_GCD_FACTORS_MSB:0]     r_remainder;
   //
   wire [L_GCD_MUL_FACTORS_MSB:0] w_current_dividend = r_divider_state == S_HALF_STEP_ONE ? r_dividend_extended : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
   wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor  = r_divider_state == S_HALF_STEP_TWO ? r_divisor_extended  : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
   wire [L_GCD_MUL_FACTORS_MSB:0] two_minus_divisor = w_number_two_extended + ~w_current_divisor;
   //
-  wire w_dividend_not_zero = |i_dividend;
-  wire w_divisor_not_zero  = |i_divisor;
+  wire                       w_dividend_not_zero = |i_dividend;
+  wire                       w_divisor_not_zero  = |i_divisor;
+  wire [P_GCD_FACTORS_MSB:0] w_quotient = i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
+                                          i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b101 | 
+                                          i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b111 ? w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
+                                          w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
+  reg  [P_GCD_FACTORS_MSB:0] r_remainder;
   
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -136,7 +130,8 @@ module Goldschmidt_Convergence_Division #(
     for (ii=L_GCD_FACTORS_NIBBLES-1; ii>=0; ii=ii-1) begin
       ///////////////////////////////////////////////////////////////////////////////
       // Process     : Fixed Point Locator
-      // Description : 
+      // Description : Locates the the first hot nibble to determine by which power
+      //               of minus ten to multiply the divisor.
       ///////////////////////////////////////////////////////////////////////////////
 	    always @(*) begin
         if (i_reset_sync== 1'b1) begin
@@ -154,17 +149,15 @@ module Goldschmidt_Convergence_Division #(
   // Process     : Divider Accumulator
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-	always @(posedge i_clk) begin
+  always @(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_divider_state       <= S_IDLE;
-      r_ack                 <= 1'b0;
-      r_divisor_extended    <= 0;
-      r_dividend_extended   <= 0;
-      r_quotient            <= 0;
-      r_remainder           <= 0;
-      r_steps_count         <= 0;
-      r_multiplicand        <= 0; 
-      r_multiplier          <= 0;
+      r_divider_state     <= S_IDLE;
+      r_ack               <= 1'b0;
+      r_divisor_extended  <= 0;
+      r_dividend_extended <= 0;
+      r_remainder         <= 0;
+      r_multiplicand      <= 0; 
+      r_multiplier        <= 0;
     end
     else begin
       casez (r_divider_state)
@@ -172,31 +165,31 @@ module Goldschmidt_Convergence_Division #(
           if (i_slave_stb == 1'b1) begin
             if (w_dividend_not_zero == 1'b0 || w_divisor_not_zero == 1'b0) begin
               // If either is zero return zero
-              r_quotient      <= 0;
-              r_remainder     <= 0;
-              r_ack           <= 1'b1;
-              r_divider_state <= S_IDLE;
+              r_dividend_extended <= {L_GCD_ZERO_FILLER, L_GCD_ZERO_FILLER};
+              r_remainder         <= 0;
+              r_ack               <= 1'b1;
+              r_divider_state     <= S_IDLE;
             end
             else if (i_divisor == 1) begin
               // if denominator is 1 return numerator
-              r_quotient      <= i_dividend;
-              r_remainder     <= 0;
-              r_ack           <= 1'b1;
-              r_divider_state <= S_IDLE;
+              r_dividend_extended <= {L_GCD_ZERO_FILLER, i_dividend};
+              r_remainder         <= 0;
+              r_ack               <= 1'b1;
+              r_divider_state     <= S_IDLE;
             end
             else if ($signed(i_divisor) == -1) begin
               // if denominator is -1 return -1*numerator
-              r_quotient      <= ~i_dividend;
-              r_remainder     <= 0;
-              r_ack           <= 1'b1;
-              r_divider_state <= S_IDLE;
+              r_dividend_extended <= {L_GCD_ZERO_FILLER, ~i_dividend};
+              r_remainder         <= 0;
+              r_ack               <= 1'b1;
+              r_divider_state     <= S_IDLE;
             end
             else begin
               // Shift the decimal point in the divisor.
-              r_dividend_extended <= w_dividend_extended;    //
-              r_multiplicand      <= w_divisor_extended;     //
+              r_dividend_extended <= w_dividend_extended;            //
+              r_multiplicand      <= w_divisor_extended;             //
               r_multiplier        <= {L_GCD_ZERO_FILLER, L_GCD_E10}; //
-              r_divider_state     <= S_SHIFT_DIVIDEND_POINT; // 
+              r_divider_state     <= S_SHIFT_DIVIDEND_POINT;         // 
               r_ack               <= 1'b0;
             end
           end
@@ -217,15 +210,13 @@ module Goldschmidt_Convergence_Division #(
           r_multiplicand     <= w_current_divisor;
           r_multiplier       <= two_minus_divisor;
           
-          if (r_steps_count == P_GCD_STEPS) begin
+          if (&i_product[L_MUL_FACTORS_MSB:L_MUL_FACTORS_MSB-L_STEPS] == 1'b1) begin
             // When all steps are completed assert ack and return to idle.
-            r_steps_count   <= 0;
             r_ack           <= 1'b1;
             r_divider_state <= S_IDLE;
           end
           else begin
             // Increase count and start another division whole step.
-            r_steps_count   <= r_steps_count + 1;
             r_divider_state <= S_HALF_STEP_TWO;
           end
         end
@@ -247,7 +238,7 @@ module Goldschmidt_Convergence_Division #(
   assign o_slave_ack    = r_ack;
   assign o_multiplicand = r_multiplicand;
   assign o_multiplier   = r_multiplier;
-  assign o_quotient     = w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + |i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2];  // rounding up
+  assign o_quotient     = w_quotient;
   assign o_remainder    = r_remainder;
 
 endmodule // Goldschmidt_Convergence_Division
