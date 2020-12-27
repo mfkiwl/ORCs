@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2020/12/23 12:33:28
+// Last modified : 2020/12/27 00:16:45
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -44,7 +44,10 @@
 /////////////////////////////////////////////////////////////////////////////////
 module Hart_Core #(
   // Compile time configurable generic parameters
-  parameter P_FETCH_COUNTER_RESET = 32'h0000_0000 // First instruction address
+  parameter P_CORE_INITIAL_FETCH_ADDR = 0,  // First instruction address
+  parameter P_CORE_MEMORY_ADDR_MSB    = 5,  //
+  parameter P_CORE_MUL_START_ADDR     = 32, //
+  parameter P_CORE_DIV_START_ADDR     = 33  // 
 )(
   // Component's clocks and resets
   input i_clk,        // clock
@@ -54,6 +57,22 @@ module Hart_Core #(
   input         i_inst_read_ack,  // WB acknowledge 
   output [31:0] o_inst_read_addr, // WB address
   input  [31:0] i_inst_read_data, // WB data
+  // Core mem0 WB(pipeline) Slave Read Interface
+  output                            o_master_core0_read_stb,  // WB read enable
+  output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core0_read_addr, // WB address
+  input  [31:0]                     i_master_core0_read_data, // WB data
+  // Core mem0 WB(pipeline) master Write Interface
+  output                            o_master_core0_write_stb,  // WB write enable
+  output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core0_write_addr, // WB address
+  output [31:0]                     o_master_core0_write_data, // WB data
+  // Core mem1 WB(pipeline) master Read Interface
+  output                            o_master_core1_read_stb,  // WB read enable
+  output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core1_read_addr, // WB address
+  input  [31:0]                     i_master_core1_read_data, // WB data
+  // Core mem1 WB(pipeline) master Write Interface
+  output                            o_master_core1_write_stb,  // WB write enable
+  output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core1_write_addr, // WB address
+  output [31:0]                     o_master_core1_write_data, // WB data
   // Wishbone(pipeline) Master Read Interface
   output        o_master_read_stb,  // WB read enable
   input         i_master_read_ack,  // WB acknowledge 
@@ -65,12 +84,12 @@ module Hart_Core #(
   output [31:0] o_master_write_addr, // WB address
   output [31:0] o_master_write_data, // WB data
   output [3:0]  o_master_write_sel,  // WB byte enable
-  // Integer Multiplier Component
-  output        o_master_hcc_processor_stb,  //
-  input         i_master_hcc_processor_ack,  //
-  output        o_master_hcc_processor_addr, //
-  output [63:0] o_master_hcc_processor_data, //
-  input  [63:0] i_master_hcc_processor_data  //
+  // Integer Multiplication and Division Processor
+  output                                  o_master_hcc_processor_stb,  //
+  input                                   i_master_hcc_processor_ack,  //
+  output                                  o_master_hcc_processor_addr, //
+  input                                   o_master_hcc_processor_tga,  //
+  output [((P_HCC_MEM_ADDR_MSB+1)*2)-1:0] o_master_hcc_processor_data  // {rs2, rs1}
 );
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
@@ -102,9 +121,12 @@ module Hart_Core #(
   localparam [2:0] L_DIVU   = 3'b101; // DIVU
   localparam [2:0] L_REM    = 3'b110; // REM
   localparam [2:0] L_REMU   = 3'b111; // REMU
+  // Math results addressess
+  localparam [P_CORE_MEMORY_ADDR_MSB:0] L_PRODUCT_ADDR = P_CORE_MUL_START_ADDR;
+  localparam [P_CORE_MEMORY_ADDR_MSB:0] L_DIV_QR_ADDR  = P_CORE_DIV_START_ADDR;
   // Misc Definitions
-  localparam [31:0] L_ALL_ZERO = 32'h0000_0000;
-  localparam [31:0] L_ALL_ONES = 32'hFFFF_FFFF;
+  localparam [31:0] L_FILLER_ZERO = 32'h0000_0000;
+  localparam [31:0] L_FILLER_ONE  = 32'hFFFF_FFFF;
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
@@ -126,10 +148,6 @@ module Hart_Core #(
   reg         r_rro;                            // valid register-register flag
   reg         r_mul;                            // valid register-register flag
   reg         r_div;                            // valid register-register flag
-  // General Purpose Registers. BRAM array duplicated to index source 1 & 2 at same time.
-  reg [31:0] general_registers1 [0:31];	// 32x32-bit registers
-  reg [31:0] general_registers2 [0:31];	// 32x32-bit registers
-  reg [4:0]  reset_index;           // This means the reset needs to be held for at least 32 clocks
   // Memory Master Read and Write Process
   reg        r_master_read_ready;
   reg [31:0] r_master_read_addr;
@@ -142,26 +160,26 @@ module Hart_Core #(
   wire [2:0] w_fct3              = r_inst_data[14:12];      // fct3 field
   wire [6:0] w_fct7              = r_inst_data[31:25];      // fct7 field
   // source-1 and source-2 register selection
-  reg         [31:0] r_unsigned_rs1;                          // rs1 field
-  reg         [31:0] r_unsigned_rs2;                          // rs2 field
-  wire signed [31:0] w_signed_rs1  = $signed(r_unsigned_rs1); // signed rs1
-  wire signed [31:0] w_signed_rs2  = $signed(r_unsigned_rs2); // signed rs2
-  wire        [31:0] w_master_addr = r_unsigned_rs1 + r_simm; // address created by lcc and scc instructions
+  wire        [31:0] r_unsigned_rs1 = i_master_core0_read_data; // rs1 field
+  wire        [31:0] r_unsigned_rs2 = i_master_core1_read_data; // rs2 field
+  wire signed [31:0] w_signed_rs1   = $signed(r_unsigned_rs1);  // signed rs1
+  wire signed [31:0] w_signed_rs2   = $signed(r_unsigned_rs2);  // signed rs2
+  wire        [31:0] w_master_addr  = r_unsigned_rs1 + r_simm;  // address created by lcc and scc instructions
   // L-group of instructions (w_opcode==7'b0000011)
   wire [31:0] w_l_data = w_fct3==0||w_fct3==4 ? 
-                           (r_master_read_addr[1:0]==3 ? { w_fct3==0&&i_master_read_data[31] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[31:24] } :
-                            r_master_read_addr[1:0]==2 ? { w_fct3==0&&i_master_read_data[23] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[23:16] } :
-                            r_master_read_addr[1:0]==1 ? { w_fct3==0&&i_master_read_data[15] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[15:8] } :
-                              {w_fct3==0&&i_master_read_data[7] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[7:0]}):
-                         w_fct3==1||w_fct3==5 ? ( r_master_read_addr[1]==1 ? { w_fct3==1&&i_master_read_data[31] ? L_ALL_ONES[31:16]:L_ALL_ZERO[31:16], i_master_read_data[31:16] } :
-                           {w_fct3==1&&i_master_read_data[15] ? L_ALL_ONES[31:16]:L_ALL_ZERO[31:16], i_master_read_data[15:0]}) : i_master_read_data;
+                           (r_master_read_addr[1:0]==3 ? { w_fct3==0&&i_master_read_data[31]==1'b1 ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[31:24] } :
+                            r_master_read_addr[1:0]==2 ? { w_fct3==0&&i_master_read_data[23]==1'b1 ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[23:16] } :
+                            r_master_read_addr[1:0]==1 ? { w_fct3==0&&i_master_read_data[15]==1'b1 ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[15:8] } :
+                              {w_fct3==0&&i_master_read_data[7]==1'b1 ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[7:0]}):
+                         w_fct3==1||w_fct3==5 ? ( r_master_read_addr[1]==1'b1 ? { w_fct3==1&&i_master_read_data[31]==1'b1 ? L_FILLER_ONE[31:16]:L_FILLER_ZERO[31:16], i_master_read_data[31:16] } :
+                           {w_fct3==1&&i_master_read_data[15]==1'b1 ? L_FILLER_ONE[31:16]:L_FILLER_ZERO[31:16], i_master_read_data[15:0]}) : i_master_read_data;
   // S-group of instructions (w_opcode==7'b0100011)
-  wire [31:0] w_s_data = w_fct3==0 ? ( w_master_addr[1:0]==3 ? { r_unsigned_rs2[ 7: 0], L_ALL_ZERO [23:0] } : 
-                                       w_master_addr[1:0]==2 ? { L_ALL_ZERO [31:24], r_unsigned_rs2[7:0], L_ALL_ZERO[15:0] } : 
-                                       w_master_addr[1:0]==1 ? { L_ALL_ZERO [31:16], r_unsigned_rs2[7:0], L_ALL_ZERO[7:0] } :
-                                                  { L_ALL_ZERO [31: 8], r_unsigned_rs2[7:0] } ) :
-                         w_fct3==1 ? ( w_master_addr[1]  ==1 ? { r_unsigned_rs2[15: 0], L_ALL_ZERO [15:0] } :
-                                                  { L_ALL_ZERO [31:16], r_unsigned_rs2[15:0] } ) : r_unsigned_rs2;
+  wire [31:0] w_s_data = w_fct3==0 ? ( w_master_addr[1:0]==3 ? { r_unsigned_rs2[ 7: 0], L_FILLER_ZERO [23:0] } : 
+                                       w_master_addr[1:0]==2 ? { L_FILLER_ZERO [31:24], r_unsigned_rs2[7:0], L_FILLER_ZERO[15:0] } : 
+                                       w_master_addr[1:0]==1 ? { L_FILLER_ZERO [31:16], r_unsigned_rs2[7:0], L_FILLER_ZERO[7:0] } :
+                                                               { L_FILLER_ZERO [31: 8], r_unsigned_rs2[7:0] } ) :
+                         w_fct3==1 ? ( w_master_addr[1]==1'b1 ? { r_unsigned_rs2[15:0], L_FILLER_ZERO [15:0] } :
+                                                                { L_FILLER_ZERO [31:16], r_unsigned_rs2[15:0] } ) : r_unsigned_rs2;
   // RM-group of instructions (OPCODEs==7'b0010011/7'b0110011), merged! src=immediate(M)/register(R)
   wire signed [31:0] w_signed_rs2_extended   = r_rii ? r_simm : w_signed_rs2;
   wire        [31:0] w_unsigned_rs2_extended = r_rii ? r_uimm : r_unsigned_rs2;
@@ -177,9 +195,9 @@ module Hart_Core #(
                                                             r_unsigned_rs1 >> w_unsigned_rs2_extended[4:0];
   // Jump/Branch-group of instructions (w_opcode==7'b1100011)
   wire        w_jal    = w_opcode == L_JAL ? 1:0;
-  wire [31:0] w_j_simm = { i_inst_read_data[31] ? L_ALL_ONES[31:21]:L_ALL_ZERO[31:21],
+  wire [31:0] w_j_simm = { i_inst_read_data[31] ? L_FILLER_ONE[31:21]:L_FILLER_ZERO[31:21],
                            i_inst_read_data[31], i_inst_read_data[19:12],
-                           i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0] };
+                           i_inst_read_data[20], i_inst_read_data[30:21], L_FILLER_ZERO[0] };
   wire w_bmux = r_bcc & (
                 w_fct3==4 ? w_signed_rs1   <  w_signed_rs2 :   // blt
                 w_fct3==5 ? w_signed_rs1   >= w_signed_rs2 :   // bge
@@ -195,19 +213,78 @@ module Hart_Core #(
   // Qualifying signals
   // Decoder Process
   wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro;
-  // Program Counter Process
+  // Decoder Process valid/enable
   wire w_decoder_opcode = w_opcode == L_RII  ? 1:
                           w_opcode == L_RRO  ? 1:
                           w_opcode == L_LCC  ? 1:
                           w_opcode == L_SCC  ? 1:
                           w_opcode == L_BCC  ? 1:
                           w_opcode == L_JALR ? 1:0;
+  // MUL/DIV instructions decoded
+  wire w_fct3_0 = i_inst_data[31:25];
+  wire w_mul_l  = w_fct3_0 == L_MUL    ? 1'b1 : 1'b0;
+  wire w_mul_h  = w_fct3_0 == L_MULH   ? 1'b1 :
+                  w_fct3_0 == L_MULHSU ? 1'b1 :
+                  w_fct3_0 == L_MULHU  ? 1'b1 : 1'b0;
+  wire w_div    = w_fct3_0 == L_DIV ? 1'b1 :
+                  w_fct3_0 == L_DIVU ? 1'b1 : 1'b0; 
+  wire w_rem    = w_fct3_0 == L_REM ? 1'b1 :
+                  w_fct3_0 == L_REMU ? 1'b1 : 1'b0;
+  wire w_math   = i_inst_read_ack == 1'b1 ? ((w_opcode == L_MATH && i_inst_data[31:25] == 7'b0000001) ? 1'b1 : 1'b0) : 1'b0;
+  // Register Write Strobe Control
+  wire w_reg_write_stb  = i_reset_sync ? 1'b0 :
+                          (w_rd_not_zero & i_inst_read_ack) ? (
+                            w_opcode == L_LUI || w_opcode == L_AUIPC || w_opcode == L_JAL ? 1'b1 : 1'b0) :
+                          (w_decoder_valid & (r_jalr | r_rii | r_rro)) ? 1'b1 :
+                          (i_master_read_ack & !r_master_read_ready) ? 1'b1 :
+                          i_master_hcc_processor_ack == 1'b1 ? 1'b1 : 1'b0;
+  // Register write address Select
+  wire w_reg_write_addr = (w_decoder_valid | i_master_hcc_processor_ack | 
+                            (i_master_read_ack & !r_master_read_ready)) ? w_destination_index : w_rd;
+  // Registers Write Data select
+  wire w_reg_write_data = (w_rd_not_zero & i_inst_read_ack) ? (
+                            // Load Upper Immediate.
+                            // Used to build 32-bit constants and uses the U-type format. Places the
+                            // 32-bit U-immediate value into the destination register rd, filling in
+                            // the lowest 12 bits with zeros.
+                            w_opcode == L_LUI ? { i_inst_read_data[31:12], L_FILLER_ZERO[11:0] } :
+                            // Add Upper Immediate to Program Counter.
+                            // Is used to build pc-relative addresses and uses the U-type format. 
+                            // AUIPC forms a 32-bit offset from the U-immediate, filling in the 
+                            // lowest 12 bits with zeros, adds this offset to the address of the 
+                            // AUIPC instruction, then places the result in register rd.
+                            w_opcode == L_AUIPC ? r_next_pc_fetch + { i_inst_read_data[31:12], L_FILLER_ZERO[11:0] } :
+                            // Add Upper Immediate to Program Counter.
+                            // Is used to build pc-relative addresses and uses the U-type format. 
+                            // AUIPC forms a 32-bit offset from the U-immediate, filling in the 
+                            // lowest 12 bits with zeros, adds this offset to the address of the 
+                            // AUIPC instruction, then places the result in register rd.
+                            w_opcode == L_JAL ? r_next_pc_fetch + 4 : w_rm_data) :
+                          // If w_decoder_valid = 1 store into general registers data that
+                          // required data from rs1 or rs2.
+                          // Jump And Link Register(indirect jump instruction).
+                          (w_decoder_valid & r_jalr) ? r_next_pc_decode + 4 :
+                          // If w_decoder_valid = 1 store into general registers data that
+                          // required data from rs1 or rs2.
+                          // Stores the Register-Immediate instruction result in the general register
+                          // or store the Register-Register operation result in the general registers
+                          (w_decoder_valid & (r_rii | r_rro)) ? w_rm_data :
+                          // Data loaded from memory or I/O device.
+                          (i_master_read_ack & !r_master_read_ready) ? w_l_data :
+                          // Move/Store multiplication or division results(lower, stored in mem0) from
+                          //  their results register into the destination register. 
+                          (i_master_hcc_processor_ack & r_low_results) ? r_unsigned_rs1 :
+                          // Move/Store multiplication or division results(upper, stored in mem1) from 
+                          // their results register into the destination register.
+                          (i_master_hcc_processor_ack & r_high_results) ? r_unsigned_rs2 :
+                          // Default case, no change.
+                          w_rm_data;
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
   ///////////////////////////////////////////////////////////////////////////////
   
-  // Wishbone Strobe and address output assignments
+  // Wishbone Strobe and Address output assignments
   assign o_inst_read_stb  = r_program_counter_valid;
   assign o_inst_read_addr = r_next_pc_fetch;
   
@@ -219,9 +296,9 @@ module Hart_Core #(
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
       r_program_counter_state <= S_WAKEUP;
-      r_next_pc_fetch         <= P_FETCH_COUNTER_RESET;
-      r_next_pc_decode        <= L_ALL_ZERO;
-      r_inst_data             <= L_ALL_ZERO;
+      r_next_pc_fetch         <= P_CORE_INITIAL_FETCH_ADDR;
+      r_next_pc_decode        <= L_FILLER_ZERO;
+      r_inst_data             <= L_FILLER_ZERO;
       r_program_counter_valid <= 1'b0;
     end
     else begin
@@ -333,17 +410,18 @@ module Hart_Core #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_jalr <= 1'b0;
-      r_bcc  <= 1'b0;
-      r_lcc  <= 1'b0;
-      r_scc  <= 1'b0;
-      r_rii  <= 1'b0;
-      r_rro  <= 1'b0;
-      r_mul  <= 1'b0;
-      r_div  <= 1'b0;
-      r_rro  <= 1'b0;
-      r_simm <= L_ALL_ZERO;
-      r_uimm <= L_ALL_ZERO;
+      r_jalr         <= 1'b0;
+      r_bcc          <= 1'b0;
+      r_lcc          <= 1'b0;
+      r_scc          <= 1'b0;
+      r_rii          <= 1'b0;
+      r_rro          <= 1'b0;
+      r_mul          <= 1'b0;
+      r_div          <= 1'b0;
+      r_low_results  <= 1'b0;
+      r_high_results <= 1'b0;
+      r_simm         <= L_FILLER_ZERO;
+      r_uimm         <= L_FILLER_ZERO;
     end
     else begin
       if (i_inst_read_ack == 1'b1 && w_rd_not_zero == 1'b1) begin
@@ -352,8 +430,8 @@ module Hart_Core #(
           // Register-Immediate Instructions.
           // Performs ADDI, SLTI, ANDI, ORI, XORI, SLLI, SRLI, SRAI (I=immediate).
           r_rii  <= 1'b1;
-          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
-          r_uimm <= { L_ALL_ZERO[31:12], i_inst_read_data[31:20] };
+          r_simm <= { i_inst_read_data[31] ? L_FILLER_ONE[31:12]:L_FILLER_ZERO[31:12], i_inst_read_data[31:20] };
+          r_uimm <= { L_FILLER_ZERO[31:12], i_inst_read_data[31:20] };
         end
         else begin
           r_rii <= 1'b0;
@@ -376,7 +454,7 @@ module Hart_Core #(
           // (r_next_pc_fetch) is written to register rd. Register x0 can be
           // used as the destination if the result is not required.
           r_jalr <= 1'b1;
-          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12],
+          r_simm <= { i_inst_read_data[31] ? L_FILLER_ONE[31:12]:L_FILLER_ZERO[31:12],
                       i_inst_read_data[31:20] };
         end
         else begin
@@ -390,9 +468,9 @@ module Hart_Core #(
           // instruction to give the target address. Branch instructions compare 
           // two registers.
           r_bcc  <= 1'b1;
-          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], 
+          r_simm <= { i_inst_read_data[31] ? L_FILLER_ONE[31:13]:L_FILLER_ZERO[31:13], 
                      i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],
-                     i_inst_read_data[11:8],L_ALL_ZERO[0] };
+                     i_inst_read_data[11:8],L_FILLER_ZERO[0] };
         end
         else begin
           r_bcc <= 1'b0;
@@ -404,7 +482,7 @@ module Hart_Core #(
           // sign-extended 12-bit offset. Loads copy a value from memory to 
           // register rd.
           r_lcc  <= 1'b1;
-          r_simm <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+          r_simm <= { i_inst_read_data[31] ? L_FILLER_ONE[31:12]:L_FILLER_ZERO[31:12], 
                      i_inst_read_data[31:20] };
         end
         else begin
@@ -417,30 +495,27 @@ module Hart_Core #(
           // sign-extended 12-bit offset. Stores copy the value in register rs2 to
           // memory.
           r_scc   <= 1'b1;
-          r_simm  <= { i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+          r_simm  <= { i_inst_read_data[31] ? L_FILLER_ONE[31:12]:L_FILLER_ZERO[31:12], 
                        i_inst_read_data[31:25], i_inst_read_data[11:7] };
         end
         else begin
           r_scc <= 1'b0;
         end
 
-        if (w_opcode == L_MATH && w_fct7 == 'h1) begin
-          // Store, Conditional to Comparisons.
-          // The effective address is obtained by adding register rs1 to the 
-          // sign-extended 12-bit offset. Stores copy the value in register rs2 to
-          // memory.
-          r_mul <= w_fct3 == L_MUL    ? 1'b1 :
-                   w_fct3 == L_MULH   ? 1'b1 :
-                   w_fct3 == L_MULHSU ? 1'b1 :
-                   w_fct3 == L_MULHU  ? 1'b1 : 1'b0;
-
-          r_div <= w_fct3 == L_DIV ? 1'b1 :
-                   w_fct3 == L_DIVU ? 1'b1 :
-                   w_fct3 == L_REM ? 1'b1 :
-                   w_fct3 == L_REMU ? 1'b1 : 1'b0; 
+        if (w_opcode == L_MATH && w_fct7 == 7'b0000001) begin
+          // Store, Math Operation (Multiplication or Division)
+          // TBD
+          r_mul <= w_mul_l | w_mul_h;
+          r_div <= w_div | w_rem;
+          // Higher or lower 32bits
+          r_low_results  <= w_mul_l | w_rem;
+          r_high_results <= w_mul_h | w_div;
         end
         else begin
-          r_mul <= 1'b0;
+          r_mul          <= 1'b0;
+          r_div          <= 1'b0;
+          r_low_results  <= 1'b0;
+          r_high_results <= 1'b0;
         end
       end
       else begin
@@ -451,155 +526,47 @@ module Hart_Core #(
         r_bcc  <= 1'b0;
         r_lcc  <= 1'b0;
         r_scc  <= 1'b0;
-        r_mul  <= 1'b0;
-        r_div  <= 1'b0;
       end
     end
   end
 
   ///////////////////////////////////////////////////////////////////////////////
-  // Process     : General Purpose Registers Read Process
-  // Description : Updates the contents of the general purpose registers.
+  // Process     : General Purpose Registers Read Controls
+  // Description : Updates the contents of the read strobe and address.
   ///////////////////////////////////////////////////////////////////////////////
-  always@(posedge i_clk) begin
-    if (i_inst_read_ack == 1'b1) begin
-      // Get rs1 and rs2
-      r_unsigned_rs1 <= general_registers1[w_source1_pointer];
-      r_unsigned_rs2 <= general_registers2[w_source2_pointer];
-    end
-  end
-
-  ///////////////////////////////////////////////////////////////////////////////
-  // Process     : General Purpose Registers Reset Index
-  // Description : While in reset, increment the index.
-  ///////////////////////////////////////////////////////////////////////////////
-  always@(posedge i_clk) begin
-    if (i_reset_sync == 1'b1) begin
-      reset_index <= reset_index+1;
-    end
-    else begin
-      reset_index <= 0;
-    end
-  end
+  // Strobe Control
+  assign o_master_core0_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack&r_low_results);
+  assign o_master_core1_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack&r_high_results);
+  // Address Select
+  assign o_master_core0_read_addr = i_inst_read_ack == 1'b1 ? {1'b0, w_source1_pointer} :
+                                              r_mul == 1'b1 ? L_PRODUCT_ADDR :
+                                              r_div == 1'b1 ? L_DIV_QR_ADDR : {1'b0, w_source1_pointer};
+  assign o_master_core1_read_addr = i_inst_read_ack == 1'b1 ? {1'b0, w_source2_pointer} :
+                                              r_mul == 1'b1 ? L_PRODUCT_ADDR :
+                                              r_div == 1'b1 ? L_DIV_QR_ADDR : {1'b0, w_source2_pointer};
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
-  // Description : Updates the contents of the general purpose registers.
+  // Description : Updates the write strobe, addr, and data.
   ///////////////////////////////////////////////////////////////////////////////
-  always@(posedge i_clk) begin
-    if (i_reset_sync == 1'b1) begin
-      general_registers1[reset_index] <= L_ALL_ZERO;
-      general_registers2[reset_index] <= L_ALL_ZERO;
-    end
-    else if (w_decoder_valid == 1'b1) begin
-      // If w_decoder_valid = 1 store into general registers data that required date
-      // from rs1 or rs2.
-      if (r_jalr == 1'b1) begin
-        // Jump And Link Register(indirect jump instruction).
-        general_registers1[w_destination_index] <= r_next_pc_decode + 4;
-        general_registers2[w_destination_index] <= r_next_pc_decode + 4;
-      end
-      if (r_rii == 1'b1) begin
-        // Stores the Register-Immediate instruction result in the general register
-        general_registers1[w_destination_index] <= w_rm_data;
-        general_registers2[w_destination_index] <= w_rm_data;
-      end
-      if (r_rro == 1'b1) begin
-        // Store the Register-Register operation result in the general registers
-        general_registers1[w_destination_index] <= w_rm_data;
-        general_registers2[w_destination_index] <= w_rm_data;
-      end
-    end
-    else if (w_rd_not_zero == 1'b1 && i_inst_read_ack == 1'b1) begin
-      if (w_opcode == L_LUI) begin
-        // Load Upper Immediate.
-        // Used to build 32-bit constants and uses the U-type format. Places the
-        // 32-bit U-immediate value into the destination register rd, filling in
-        // the lowest 12 bits with zeros.
-        general_registers1[w_rd] <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        general_registers2[w_rd] <= { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-      end
-      if (w_opcode == L_AUIPC) begin
-        // Add Upper Immediate to Program Counter.
-        // Is used to build pc-relative addresses and uses the U-type format. 
-        // AUIPC forms a 32-bit offset from the U-immediate, filling in the 
-        // lowest 12 bits with zeros, adds this offset to the address of the 
-        // AUIPC instruction, then places the result in register rd.
-        general_registers1[w_rd] <= r_next_pc_fetch + { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-        general_registers2[w_rd] <= r_next_pc_fetch + { i_inst_read_data[31:12], L_ALL_ZERO[11:0] };
-      end
-      if (w_opcode == L_JAL) begin
-        // Jump And Link Operation.
-        // The offset is sign-extended and added to the address of the jump 
-        // instruction to form the jump target address. JAL stores the address of
-        // the instruction following the jump (r_next_pc_decode) into 
-        // register rd.
-        general_registers1[w_rd] <= r_next_pc_fetch + 4;
-        general_registers2[w_rd] <= r_next_pc_fetch + 4;
-      end
-    end
-    else begin
-      if (i_master_read_ack == 1'b1 && r_master_read_ready == 1'b0) begin
-        // Data loaded from memory or I/O device.
-        general_registers1[w_destination_index] <= w_l_data;
-        general_registers2[w_destination_index] <= w_l_data;
-      end
-      if (i_master_hcc_processor_ack == 1'b1) begin
-        case (w_fct3)
-          L_MUL : begin
-            //  Data loaded Math Processor
-            general_registers1[w_destination_index] <= i_master_hcc_processor_data[31:0];
-            general_registers2[w_destination_index] <= i_master_hcc_processor_data[31:0];
-          end
-          L_MULH : begin
-            // Data loaded Math Processor
-            general_registers1[w_destination_index] <= i_master_hcc_processor_data[31:0];
-            general_registers2[w_destination_index] <= i_master_hcc_processor_data[31:0];
-          end
-          L_MULHSU : begin
-            // Data loaded Math Processor
-            general_registers1[w_destination_index] <= i_master_hcc_processor_data[63:32];
-            general_registers2[w_destination_index] <= i_master_hcc_processor_data[63:32];
-          end
-          L_MULHU : begin
-            // Data loaded from memory or I/O device.
-            general_registers1[w_destination_index] <= i_master_hcc_processor_data[63:32];
-            general_registers2[w_destination_index] <= i_master_hcc_processor_data[63:32];
-          end
-          L_DIV : begin
-            // Data loaded from memory or I/O device.
-            general_registers1[w_destination_index] <= i_master_hcc_processor_data[31:0];
-            general_registers2[w_destination_index] <= i_master_hcc_processor_data[31:0];
-          end
-          L_DIVU : begin
-            // Data loaded from memory or I/O device.
-            general_registers1[w_destination_index] <= i_master_hcc_processor_data[63:32];
-            general_registers2[w_destination_index] <= i_master_hcc_processor_data[63:32];
-          end
-          L_REM : begin
-            // Data loaded from memory or I/O device.
-            general_registers1[w_destination_index] <= i_master_hcc_processor_data[31:0];
-            general_registers2[w_destination_index] <= i_master_hcc_processor_data[31:0];
-          end
-          L_REMU : begin
-            // Data loaded from memory or I/O device.
-            general_registers1[w_destination_index] <= i_master_hcc_processor_data[63:32];
-            general_registers2[w_destination_index] <= i_master_hcc_processor_data[63:32];
-          end
-        endcase
-      end
-    end
-  end
+  // mem0
+  assign o_master_core0_write_stb  = w_reg_write_stb;
+  assign o_master_core0_write_addr = w_reg_write_addr;
+  assign o_master_core0_write_data = w_reg_write_data;
+  // mem1
+  assign o_master_core1_write_stb  = w_reg_write_stb;
+  assign o_master_core1_write_addr = w_reg_write_addr;
+  assign o_master_core1_write_data = w_reg_write_data;
 
   ///////////////////////////////////////////////////////////////////////////////
-  // Process     : Read Process
+  // Process     : I/O Read Process
   // Description : Registers the signals that create the read interface
   //               transaction.
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
       r_master_read_ready <= 1'b1;
-      r_master_read_addr  <= L_ALL_ZERO;
+      r_master_read_addr  <= L_FILLER_ZERO;
     end
     else if (r_master_read_ready == 1'b1 &&  r_lcc == 1'b1) begin
       // Load the decode data to an external mem or I/O device.
@@ -615,7 +582,7 @@ module Hart_Core #(
   assign o_master_read_stb  = r_lcc;
 
   ///////////////////////////////////////////////////////////////////////////////
-  // Process     : Write Process
+  // Process     : I/O Write Process
   // Description : Registers the signals used to create a write interface
   //               transaction.
   ///////////////////////////////////////////////////////////////////////////////
@@ -645,11 +612,12 @@ module Hart_Core #(
                                                          4'b1111;
 
   ///////////////////////////////////////////////////////////////////////////////
-  // Assignment  : HCC Connections
+  // Assignment  : HCC Processor Connections
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-  assign o_master_hcc_processor_stb  = r_mul ^ r_div;
-  assign o_master_hcc_processor_addr = r_div;
-  assign o_master_hcc_processor_data = {r_unsigned_rs1, r_unsigned_rs2};
+  assign o_master_hcc_processor_stb  = w_math;
+  assign o_master_hcc_processor_addr = w_div | w_rem;
+  assign o_master_hcc_processor_tga  = w_rem;
+  assign o_master_hcc_processor_data = {w_source2_pointer, w_source1_pointer};
 
 endmodule

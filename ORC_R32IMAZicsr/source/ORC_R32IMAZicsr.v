@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/25 16:11:46
+// Last modified : 2020/12/27 00:42:34
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -45,9 +45,9 @@ module ORC_R32IMAZicsr #(
   // Compile time configurable generic parameters
   parameter P_INITIAL_FETCH_ADDR = 0,  // First instruction address
   parameter P_MEMORY_ADDR_MSB    = 5,  //
-  parameter P_MEMORY_DEPTH       = 37, //
+  parameter P_MEMORY_DEPTH       = 38, //
   parameter P_MUL_START_ADDR     = 32, //
-  parameter P_DIV_START_ADDR     = 32, // 
+  parameter P_DIV_START_ADDR     = 33, // 
   parameter P_DIV_ACCURACY       = 3   // 1e10^-P_DIVISION_ACCURACY
 )(
   // Processor's clocks and resets
@@ -121,7 +121,6 @@ module ORC_R32IMAZicsr #(
   Hart_Core #(
     P_INITIAL_FETCH_ADDR, //
     P_MEMORY_ADDR_MSB,    //
-    P_MEMORY_DEPTH,       //
     P_MUL_START_ADDR,     //
     P_DIV_START_ADDR      //  
   ) core (
@@ -134,21 +133,21 @@ module ORC_R32IMAZicsr #(
     .o_inst_read_addr(o_inst_read_addr), // WB address
     .i_inst_read_data(i_inst_read_data), // WB data
     // Core mem0 WB(pipeline) Slave Read Interface
-    .i_master_core0_read_stb(w_core0_read_stb),   // WB read enable
-    .i_master_core0_read_addr(w_core0_read_addr), // WB address
-    .o_master_core0_read_data(w_core0_read_data), // WB data
+    .o_master_core0_read_stb(w_core0_read_stb),   // WB read enable
+    .o_master_core0_read_addr(w_core0_read_addr), // WB address
+    .i_master_core0_read_data(w_core0_read_data), // WB data
     // Core mem0 WB(pipeline) master Write Interface
-    .i_master_core0_write_stb(w_core0_write_stb),   // WB write enable
-    .i_master_core0_write_addr(w_core0_write_addr), // WB address
-    .i_master_core0_write_data(w_core0_write_data), // WB data
+    .o_master_core0_write_stb(w_core0_write_stb),   // WB write enable
+    .o_master_core0_write_addr(w_core0_write_addr), // WB address
+    .o_master_core0_write_data(w_core0_write_data), // WB data
     // Core mem1 WB(pipeline) master Read Interface
-    .i_master_core1_read_stb(w_core1_read_stb),   // WB read enable
-    .i_master_core1_read_addr(w_core1_read_addr), // WB address
-    .o_master_core1_read_data(w_core1_read_data), // WB data
+    .o_master_core1_read_stb(w_core1_read_stb),   // WB read enable
+    .o_master_core1_read_addr(w_core1_read_addr), // WB address
+    .i_master_core1_read_data(w_core1_read_data), // WB data
     // Core mem1 WB(pipeline) master Write Interface
-    .i_master_core1_write_stb(w_core1_write_stb),   // WB write enable
-    .i_master_core1_write_addr(w_core1_write_addr), // WB address
-    .i_master_core1_write_data(w_core1_write_data), // WB data
+    .o_master_core1_write_stb(w_core1_write_stb),   // WB write enable
+    .o_master_core1_write_addr(w_core1_write_addr), // WB address
+    .o_master_core1_write_data(w_core1_write_data), // WB data
     // I/O Wishbone(pipeline) Master Read Interface
     .o_master_read_stb(o_master_read_stb),   // WB read enable
     .i_master_read_ack(i_master_read_ack),   // WB acknowledge 
@@ -174,10 +173,10 @@ module ORC_R32IMAZicsr #(
   //               multiplication and division operations.
   ///////////////////////////////////////////////////////////////////////////////
   HCC_Arithmetic_Processor #(
-    31,                // P_HCC_FACTORS_MSB   
-    P_MEMORY_ADDR_MSB, // P_HCC_MEM_ADDR_MSB  
-    P_MUL_START_ADDR,  // P_HCC_MUL_START_ADDR 
-    P_DIV_START_ADDR,  // P_HCC_DIV_START_ADDR 
+    31,                // P_HCC_FACTORS_MSB
+    P_MEMORY_ADDR_MSB, // P_HCC_MEM_ADDR_MSB
+    P_MUL_START_ADDR,  // P_HCC_MUL_START_ADDR
+    P_DIV_START_ADDR,  // P_HCC_DIV_START_ADDR
     P_DIV_ACCURACY     // P_HCC_DIV_ACCURACY  
   ) mul_div_processor (
     // HCC Arithmetic Processor WB Interface

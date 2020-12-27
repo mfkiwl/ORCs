@@ -33,7 +33,7 @@
 // File name     : Integer_Multiplier.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/23 12:48:09
+// Last modified : 2020/12/27 00:18:45
 // Project Name  : ORCs
 // Module Name   : Integer_Multiplier
 // Description   : The Integer_Multiplier is a .
@@ -42,9 +42,9 @@
 //   .
 /////////////////////////////////////////////////////////////////////////////////
 module Integer_Multiplier #(
-  parameter P_MUL_MULTIPLICAND_MSB = 8,
-  parameter P_MUL_MULTIPLIER_MSB   = 8,
-  parameter P_MUL_PRODUCT_MSB      = 16
+  parameter P_MUL_MULTIPLICAND_MSB = 7,
+  parameter P_MUL_MULTIPLIER_MSB   = 7,
+  parameter P_MUL_PRODUCT_MSB      = 15
 )(
   input                             i_clk,
   input  [P_MUL_MULTIPLICAND_MSB:0] i_multiplicand,

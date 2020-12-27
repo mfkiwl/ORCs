@@ -33,12 +33,13 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/25 15:17:14
+// Last modified : 2020/12/27 00:18:19
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
 //                 to approximate the division result. This implementation
-//                 targets integer numbers.
+//                 targets integer numbers. It is specifically designed to work
+//                 with the ORC_R32IM* processors.
 //
 // Additional Comments:
 //   This code implementation is based on the description of the Goldschmidt
@@ -47,26 +48,42 @@
 //                          and
 //                 D(i) = D[i-1].(2-d[i-1])
 //   Reference: Synthesis og Arithmetic Circuits, FPGA, ASIC and Embedded Systems
-//     Authors: Jean-Pierre Deschamp; Gery Jean Antoine Bioul;Gustavo D. Sutter
+//              by Jean-Pierre Deschamp; Gery Jean Antoine Bioul; 
+//              Gustavo D. Sutter
 //
 //  The remainder calculation requires an extra which is why the address tag is
 //  used to make the decision on whether do the calculation or skip it.
 /////////////////////////////////////////////////////////////////////////////////
 module Goldschmidt_Convergence_Division #(
-  parameter P_GCD_FACTORS_MSB = 8,
-  parameter P_GCD_ACCURACY    = 3
+  parameter P_GCD_FACTORS_MSB    = 7,
+  parameter P_GCD_ACCURACY       = 2,
+  parameter P_GCD_MEM_ADDR_MSB   = 0,
+  parameter P_GCD_DIV_START_ADDR = 0
 )(
   input i_clk,
   input i_reset_sync,
-  // 
-  input  i_slave_stb,
-  output o_slave_ack,
-  //
-  input  [P_GCD_FACTORS_MSB:0] i_dividend,
-  input  [P_GCD_FACTORS_MSB:0] i_divisor,
-  output [P_GCD_FACTORS_MSB:0] o_quotient,
-  output [P_GCD_FACTORS_MSB:0] o_remainder,
-	//
+  // WB Interface
+  input                                   i_slave_stb,
+  input  [((P_GCD_MEM_ADDR_MSB+1)*2)-1:0] i_slave_data, // {rs2. rs1}
+  input                                   i_slave_tga,
+  output                                  o_slave_ack,
+  // HCC Processor mem0 WB(pipeline) master Read Interface
+  output                        o_master_hcc0_read_stb,  // WB read enable
+  output [P_GCD_MEM_ADDR_MSB:0] o_master_hcc0_read_addr, // WB address
+  input  [P_GCD_FACTORS_MSB:0]  i_master_hcc0_read_data, // WB data
+  // HCC Processor mem0 WB(pipeline) master Write Interface
+  output                        o_master_hcc0_write_stb,  // WB write enable
+  output [P_GCD_MEM_ADDR_MSB:0] o_master_hcc0_write_addr, // WB address
+  output [P_GCD_FACTORS_MSB:0]  o_master_hcc0_write_data, // WB data
+  // HCC Processor mem1 WB(pipeline) master Read Interface
+  output                        o_master_hcc1_read_stb,  // WB read enable
+  output [P_GCD_MEM_ADDR_MSB:0] o_master_hcc1_read_addr, // WB address
+  input  [P_GCD_FACTORS_MSB:0]  i_master_hcc1_read_data, // WB data
+  // HCC Processor mem1 WB(pipeline) master Write Interface
+  output                        o_master_hcc1_write_stb,  // WB write enable
+  output [P_GCD_MEM_ADDR_MSB:0] o_master_hcc1_write_addr, // WB address
+  output [P_GCD_FACTORS_MSB:0]  o_master_hcc1_write_data  // WB data
+	// Multiplier interface
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplicand,
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplier,
   input  [((P_GCD_FACTORS_MSB+1)*4)-1:0] i_product
@@ -76,7 +93,7 @@ module Goldschmidt_Convergence_Division #(
   // Internal Parameter Declarations
   ///////////////////////////////////////////////////////////////////////////////
   // OpCodes
-  localparam L_GCD_STEPS_MSB        = $clog2((P_GCD_ACCURACY));
+  localparam L_GCD_ACCURACY_BITS    = P_GCD_ACCURACY*4;
   localparam L_GCD_MUL_FACTORS_MSB  = ((P_GCD_FACTORS_MSB+1)*2)-1;
   localparam L_GCD_STEP_PRODUCT_MSB = (L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB;
   localparam L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
@@ -210,7 +227,7 @@ module Goldschmidt_Convergence_Division #(
           r_multiplicand     <= w_current_divisor;
           r_multiplier       <= two_minus_divisor;
           
-          if (&i_product[L_MUL_FACTORS_MSB:L_MUL_FACTORS_MSB-L_STEPS] == 1'b1) begin
+          if (&i_product[L_MUL_FACTORS_MSB:L_MUL_FACTORS_MSB-L_GCD_ACCURACY_BITS] == 1'b1) begin
             // When all steps are completed assert ack and return to idle.
             r_ack           <= 1'b1;
             r_divider_state <= S_IDLE;
