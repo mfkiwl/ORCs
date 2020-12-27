@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/27 00:18:19
+// Last modified : 2020/12/27 01:17:50
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -67,22 +67,22 @@ module Goldschmidt_Convergence_Division #(
   input  [((P_GCD_MEM_ADDR_MSB+1)*2)-1:0] i_slave_data, // {rs2. rs1}
   input                                   i_slave_tga,
   output                                  o_slave_ack,
-  // HCC Processor mem0 WB(pipeline) master Read Interface
-  output                        o_master_hcc0_read_stb,  // WB read enable
-  output [P_GCD_MEM_ADDR_MSB:0] o_master_hcc0_read_addr, // WB address
-  input  [P_GCD_FACTORS_MSB:0]  i_master_hcc0_read_data, // WB data
-  // HCC Processor mem0 WB(pipeline) master Write Interface
-  output                        o_master_hcc0_write_stb,  // WB write enable
-  output [P_GCD_MEM_ADDR_MSB:0] o_master_hcc0_write_addr, // WB address
-  output [P_GCD_FACTORS_MSB:0]  o_master_hcc0_write_data, // WB data
-  // HCC Processor mem1 WB(pipeline) master Read Interface
-  output                        o_master_hcc1_read_stb,  // WB read enable
-  output [P_GCD_MEM_ADDR_MSB:0] o_master_hcc1_read_addr, // WB address
-  input  [P_GCD_FACTORS_MSB:0]  i_master_hcc1_read_data, // WB data
-  // HCC Processor mem1 WB(pipeline) master Write Interface
-  output                        o_master_hcc1_write_stb,  // WB write enable
-  output [P_GCD_MEM_ADDR_MSB:0] o_master_hcc1_write_addr, // WB address
-  output [P_GCD_FACTORS_MSB:0]  o_master_hcc1_write_data  // WB data
+  // GDC mem0 WB(pipeline) master Read Interface
+  output                        o_master_div0_read_stb,  // WB read enable
+  output [P_GCD_MEM_ADDR_MSB:0] o_master_div0_read_addr, // WB address
+  input  [P_GCD_FACTORS_MSB:0]  i_master_div0_read_data, // WB data
+  // GDC mem0 WB(pipeline) master Write Interface
+  output                        o_master_div0_write_stb,  // WB write enable
+  output [P_GCD_MEM_ADDR_MSB:0] o_master_div0_write_addr, // WB address
+  output [P_GCD_FACTORS_MSB:0]  o_master_div0_write_data, // WB data
+  // GDC mem1 WB(pipeline) master Read Interface
+  output                        o_master_div1_read_stb,  // WB read enable
+  output [P_GCD_MEM_ADDR_MSB:0] o_master_div1_read_addr, // WB address
+  input  [P_GCD_FACTORS_MSB:0]  i_master_div1_read_data, // WB data
+  // GDC mem1 WB(pipeline) master Write Interface
+  output                        o_master_div1_write_stb,  // WB write enable
+  output [P_GCD_MEM_ADDR_MSB:0] o_master_div1_write_addr, // WB address
+  output [P_GCD_FACTORS_MSB:0]  o_master_div1_write_data,  // WB data
 	// Multiplier interface
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplicand,
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplier,
@@ -113,8 +113,8 @@ module Goldschmidt_Convergence_Division #(
   //
   reg [L_GCD_FACTORS_NIBBLES-1:0] r_first_hot_nibble;
   //
-	reg [L_GCD_MUL_FACTORS_MSB:0] r_multiplicand;
-	reg [L_GCD_MUL_FACTORS_MSB:0] r_multiplier;
+  reg [L_GCD_MUL_FACTORS_MSB:0] r_multiplicand;
+  reg [L_GCD_MUL_FACTORS_MSB:0] r_multiplier;
   //
   reg r_ack;
   //
