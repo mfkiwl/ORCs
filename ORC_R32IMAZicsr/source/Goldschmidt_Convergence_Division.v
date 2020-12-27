@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/27 01:17:50
+// Last modified : 2020/12/27 08:54:48
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -63,10 +63,10 @@ module Goldschmidt_Convergence_Division #(
   input i_clk,
   input i_reset_sync,
   // WB Interface
-  input                                   i_slave_stb,
+  input                                   i_slave_stb,  // valid
   input  [((P_GCD_MEM_ADDR_MSB+1)*2)-1:0] i_slave_data, // {rs2. rs1}
-  input                                   i_slave_tga,
-  output                                  o_slave_ack,
+  input                                   i_slave_tga,  // 0=div, 1=rem
+  output                                  o_slave_ack,  // ready
   // GDC mem0 WB(pipeline) master Read Interface
   output                        o_master_div0_read_stb,  // WB read enable
   output [P_GCD_MEM_ADDR_MSB:0] o_master_div0_read_addr, // WB address
@@ -82,7 +82,7 @@ module Goldschmidt_Convergence_Division #(
   // GDC mem1 WB(pipeline) master Write Interface
   output                        o_master_div1_write_stb,  // WB write enable
   output [P_GCD_MEM_ADDR_MSB:0] o_master_div1_write_addr, // WB address
-  output [P_GCD_FACTORS_MSB:0]  o_master_div1_write_data,  // WB data
+  output [P_GCD_FACTORS_MSB:0]  o_master_div1_write_data, // WB data
 	// Multiplier interface
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplicand,
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplier,
@@ -92,24 +92,28 @@ module Goldschmidt_Convergence_Division #(
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
   ///////////////////////////////////////////////////////////////////////////////
-  // OpCodes
-  localparam L_GCD_ACCURACY_BITS    = P_GCD_ACCURACY*4;
-  localparam L_GCD_MUL_FACTORS_MSB  = ((P_GCD_FACTORS_MSB+1)*2)-1;
-  localparam L_GCD_STEP_PRODUCT_MSB = (L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB;
-  localparam L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
+  // Misc.
+  localparam [P_GCD_FACTORS_MSB:0] L_GCD_NUMBER_TWO       = 2;
+  localparam [P_GCD_FACTORS_MSB:0] L_GCD_ZERO_FILLER      = 0;
+  localparam                       L_GCD_ACCURACY_BITS    = P_GCD_ACCURACY*4;
+  localparam                       L_GCD_MUL_FACTORS_MSB  = ((P_GCD_FACTORS_MSB+1)*2)-1;
+  localparam                       L_GCD_STEP_PRODUCT_MSB = (L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB;
+  localparam                       L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
   // Program Counter FSM States
   localparam [1:0] S_IDLE                 = 2'h0; // r_program_counter_state after reset
   localparam [1:0] S_SHIFT_DIVIDEND_POINT = 2'h1; // multiply the dividend by minus powers of ten to shift the decimal point.
   localparam [1:0] S_HALF_STEP_ONE        = 2'h2; // r_program_counter_state, waiting for valid instruction
   localparam [1:0] S_HALF_STEP_TWO        = 2'h3; // r_program_counter_state, wait for Decoder process
-  //
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_NUMBER_TWO  = 2;
-  localparam [P_GCD_FACTORS_MSB:0] L_GCD_ZERO_FILLER = 0;
+  // LookUp Table Initial Address
+  localparam [P_GCD_MEM_ADDR_MSB:0] L_GDC_LUT_ADDR = P_GCD_DIV_START_ADDR+1;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
-  reg [1:0] r_divider_state;
+  // Divider Accumulator signals
+  reg [1:0]                  r_divider_state;
+  reg [P_GCD_MEM_ADDR_MSB:0] r_dividend_addr; // rs1
+  reg [P_GCD_MEM_ADDR_MSB:0] r_divisor_addr;  // rs2
   //
   reg [L_GCD_FACTORS_NIBBLES-1:0] r_first_hot_nibble;
   //
@@ -131,12 +135,15 @@ module Goldschmidt_Convergence_Division #(
   //
   wire                       w_dividend_not_zero = |i_dividend;
   wire                       w_divisor_not_zero  = |i_divisor;
-  wire [P_GCD_FACTORS_MSB:0] w_quotient = i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
-                                          i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b101 | 
-                                          i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b111 ? w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
-                                          w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
-  reg  [P_GCD_FACTORS_MSB:0] r_remainder;
-  
+  wire [P_GCD_FACTORS_MSB:0] w_quotient          = i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
+                                                   i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b101 | 
+                                                   i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b111 ? w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
+                                                     w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
+  reg  [P_GCD_FACTORS_MSB:0] r_remainder         = i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
+                                                   i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b101 | 
+                                                   i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b111 ? w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
+                                                     w_current_dividend[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
+
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
   ///////////////////////////////////////////////////////////////////////////////
