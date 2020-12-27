@@ -44,19 +44,16 @@ DWORD       | 32-bits wide data unit
 FPGA        | Field Programmable Gate Array
 GCD         | Goldschmidt Convergence Division
 HART        | Hardware thread
-HBI         | Handshake Bus Interface
 HCC         | High Computational Cost
 ISA         | Instruction Set Architecture
 LSB         | Least Significant bit
 MSB         | Most Significant bit
+WB          | Wishbone Interface
 
 
 ## 2 Design
 
-The ORC_R32IMAZicsr is an implementation of the RISC-V 32-bit I,M,A,Z and CSR ISA extensions. It is a single threaded _hart_ capable of booting modern operating systems.
-
-The ORC_R32I uses a Harvard architecture, separating the interface used to access the instruction from the interface used to access external devices. The general purpose register are implemented in single port BRAMs. In order to access the rs1 and rs2 simultaneously to copies of the general purpose register are created. 
-The unit consumes instructions as portrayed by Figure 1.
+The ORC_R32I uses a Harvard architecture, separating the interface used to access the instructions from the interface used to access external devices. The general purpose register are implemented in single port BRAMs. In order to access the rs1 and rs2 simultaneously to copies of the general purpose register are created. 
 
 |      ![Top_Level](top_level.png)
 | :------------------------------------:
@@ -70,6 +67,8 @@ The unit consumes instructions as portrayed by Figure 1.
 | :------------------------------------:
 | Figure 2 : Instruction HBI Read Timing
 
+HCC Processor : TBD
+
 ## 3 Clocks and Resets
 
 Signals        | Initial State | Direction | Definition
@@ -81,7 +80,7 @@ Signals        | Initial State | Direction | Definition
 
 The ORC_R32I employs independent interfaces for reading the memory containing the instructions to be decoded and reading and writing to other devices such as memories and I/O devices.
 
-### 4.1 Instruction HBI Master Read
+### 4.1 Instruction WB Master Read
 
 Signals            | Initial State | Dimension | Direction | Definition
 :----------------- | :-----------: | :-------: | :-------: | :-----------------------
@@ -90,7 +89,7 @@ Signals            | Initial State | Dimension | Direction | Definition
 `o_inst_read_addr` |  0x0000_0000  | `[31:0]`  |    Out    | Read Address signal.
 `i_inst_read_data` |      N/A      | `[31:0]`  |    In     | Read response data.
 
-### 4.2 Memory and I/O HBI Master Read
+### 4.2 Memory and I/O WB Master Read
 
 Signals              | Initial State | Dimension | Direction | Definition
 :------------------- | :-----------: | :-------: | :-------: | :-----------------------
@@ -99,7 +98,7 @@ Signals              | Initial State | Dimension | Direction | Definition
 `o_master_read_addr` |  0x0000_0000  | `[31:0]`  |    Out    | Read Address signal.
 `i_master_read_data` |      N/A      | `[31:0]`  |    In     | Read response data.
 
-### 4.3 Memory and I/O HBI Master Write
+### 4.3 Memory and I/O WB Master Write
 
 Signals                | Initial State | Dimension | Direction | Definition
 :--------------------- | :-----------: | :-------: | :-------: | :------------------------
@@ -113,20 +112,59 @@ Signals                | Initial State | Dimension | Direction | Definition
 
 Parameters              |   Default   | Description
 :---------------------- | :---------: | :---------------------------------------------------
+`P_FETCH_COUNTER_RESET` | 0x0000_0000 | Initial address fetched by the Instruction WB Read.
+`P_FETCH_COUNTER_RESET` | 0x0000_0000 | Initial address fetched by the Instruction HBI Read.
+`P_FETCH_COUNTER_RESET` | 0x0000_0000 | Initial address fetched by the Instruction HBI Read.
 `P_FETCH_COUNTER_RESET` | 0x0000_0000 | Initial address fetched by the Instruction HBI Read.
 
 ## 6 Memory Map
 
- Memory Space | Address Range | Description
-:-----------: | :-----------: | :-----------------
- mem0         |      [0:31]   | General Registers.
- mem0         |     [32:37]   | General Registers.
+| Memory Space | Address Range | Description
+|:-----------: | :-----------: | :------------------------
+| mem0         |      [0:31]   | General Registers.
+| mem0         |        [32]   | Multiplication Registers.
+| mem0         |     [33:37]   | Division Registers.
+| mem1         |      [0:31]   | General Registers.
+| mem1         |        [32]   | Multiplication Registers.
+| mem1         |     [33:37]   | Division Registers.
 
-### 6.1 General Register _n_
+### 6.1 General Register, mem0 and mem1
 
-Bits | Access |    Reset    | Description
-:--: | :----: | :---------: | :----------------
-31:0 |   RW   | 0x0000_0000 | General register.
+|          Address          | Bits | Access |    Reset    | Description
+|:------------------------: | :--: | :----: | :---------: | :----------------
+| [0x0000_0000:0x0000_001F] | 31:0 |   RW   | 0x0000_0000 | General register.
+
+### 6.2 Multiplication Registers, mem0
+
+|   Address   | Bits | Access | Reset | Description
+| :---------: | :--: | :----: | :---: | :---------------------------------
+| 0x0000_0020 | 31:0 |    R   |  N/A  | Multiplication Results Lower bits.
+
+### 6.3 Multiplication Registers, mem1
+
+|   Address   | Bits | Access |    Reset    | Description
+| :---------: | :--: | :----: | :---------: | :---------------------------------
+| 0x0000_0020 | 31:0 |    R   |     N/A     | Multiplication Results Upper bits.
+
+### 6.4 Division Registers, mem0
+
+|   Address   | Bits | Access |   Reset   | Description
+| :---------: | :--: | :----: | :-------: | :----------------------
+| 0x0000_0021 | 31:0 |    R   |    N/A    | Division Quotient bits.
+| 0x0000_0022 | 31:0 |    R   | 429496730 | Binary 0.1
+| 0x0000_0023 | 31:0 |    R   |  42949673 | Binary 0.01
+| 0x0000_0024 | 31:0 |    R   |  4294967  | Binary 0.001
+| 0x0000_0025 | 31:0 |    R   |   429497  | Binary 0.0001
+
+### 6.4 Division Registers, mem1
+
+|   Address   | Bits | Access | Reset | Description
+| :---------: | :--: | :----: | :---: | :----------------------
+| 0x0000_0021 | 31:0 |    R   |  N/A  | Division Remainder bits.
+| 0x0000_0022 | 31:0 |    R   | 42950 | Binary 0.00001
+| 0x0000_0023 | 31:0 |    R   |  4295 | Binary 0.000001
+| 0x0000_0024 | 31:0 |    R   |  429  | Binary 0.0000001
+| 0x0000_0025 | 31:0 |    R   |   43  | Binary 0.00000001
 
 ## 7 Directory Structure
 
