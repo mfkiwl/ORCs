@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/28 15:28:27
+// Last modified : 2020/12/28 15:48:05
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -83,7 +83,7 @@ module Goldschmidt_Convergence_Division #(
   output                        o_master_div1_write_stb,  // WB write enable
   output [P_GCD_MEM_ADDR_MSB:0] o_master_div1_write_addr, // WB address
   output [P_GCD_FACTORS_MSB:0]  o_master_div1_write_data, // WB data
-	// Multiplier interface
+  // Multiplier interface
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplicand,
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplier,
   input  [((P_GCD_FACTORS_MSB+1)*4)-1:0] i_product
