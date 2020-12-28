@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2020/12/27 00:16:45
+// Last modified : 2020/12/28 15:43:22
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -87,8 +87,8 @@ module Hart_Core #(
   // Integer Multiplication and Division Processor
   output                                  o_master_hcc_processor_stb,  //
   input                                   i_master_hcc_processor_ack,  //
-  output                                  o_master_hcc_processor_addr, //
-  input                                   o_master_hcc_processor_tga,  //
+  output                                  o_master_hcc_processor_addr, // 0=mul, 1=div/rem
+  output                                  o_master_hcc_processor_tga,  // 0=div, 1=rem
   output [((P_HCC_MEM_ADDR_MSB+1)*2)-1:0] o_master_hcc_processor_data  // {rs2, rs1}
 );
   ///////////////////////////////////////////////////////////////////////////////
@@ -219,7 +219,8 @@ module Hart_Core #(
                           w_opcode == L_LCC  ? 1:
                           w_opcode == L_SCC  ? 1:
                           w_opcode == L_BCC  ? 1:
-                          w_opcode == L_JALR ? 1:0;
+                          w_opcode == L_JALR ? 1:
+                          w_opcode == L_MATH ? 1:0;
   // MUL/DIV instructions decoded
   wire w_fct3_0 = i_inst_data[31:25];
   wire w_mul_l  = w_fct3_0 == L_MUL    ? 1'b1 : 1'b0;
@@ -313,21 +314,25 @@ module Hart_Core #(
           // is ready to consume the valid instruction.
           if (i_inst_read_ack == 1'b1) begin
             if (w_decoder_opcode == 1'b1) begin
-              // Increment the address and pre-load the program counter.
+              // Instructions that require accessing registers and/or external 
+              // devices.
+              // Increment the address and pre-load the program counter. Register
+              // the instruction.
               r_next_pc_fetch <= r_next_pc_fetch+4;
-              // If a valid instruction was just received.
-              r_inst_data <= i_inst_read_data;
+              r_inst_data     <= i_inst_read_data;
               // Transition
               r_program_counter_valid <= 1'b0;
               r_program_counter_state <= S_WAIT_FOR_DECODER;
             end
             else begin
+              // Instructions that are executed in one clock
               if (w_jal == 1'b1) begin
                 // Is an immediate jump request. Update the program counter with the 
                 // jump value.
                 r_next_pc_fetch <= w_j_simm + r_next_pc_fetch;
               end
               else begin
+                // LUI, AUIPC, FENCE, ECALL and BREAK
                 // Increment the program counter. Ignore this instruction
                 r_next_pc_fetch <= r_next_pc_fetch+4;
               end
@@ -346,17 +351,17 @@ module Hart_Core #(
         S_WAIT_FOR_DECODER : begin
           // Wait one clock cycle to allow data to be stored in the registers.
           if (r_mul == 1'b1) begin
-            // Fetch external data
+            // Fetch Fetch next instruction
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
           else if (r_div == 1'b1) begin
-            // Fetch external data
+            // Transition to wait for division to finish
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_DIV;
           end
           else if (r_lcc == 1'b1) begin
-            // Fetch external data
+            // Load external data
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_READ;
           end
@@ -366,7 +371,7 @@ module Hart_Core #(
             r_program_counter_state <= S_WAIT_FOR_WRITE;
           end
           else begin
-            // Done with regular instruction.
+            // Done with two cycle instructions.
             if (w_jump_request == 1'b1) begin
               // Jump request by comparison (Branch or JALR).
               r_next_pc_fetch <= w_jump_value;
@@ -384,20 +389,19 @@ module Hart_Core #(
         end
         S_WAIT_FOR_WRITE : begin
           if (i_master_write_ack == 1'b1) begin
-            // Data write acknowledge. Trasition to fetch new instruction.
+            // Data write acknowledge. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end // else implement a timeout counter?
         end
         S_WAIT_FOR_DIV : begin
           if (i_master_hcc_processor_ack == 1'b1) begin
-            // Data write acknowledge. Trasition to fetch new instruction.
+            // Data write acknowledge. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
         end
         default : begin
-          // Error condition caused by SEU? re-fetch instruction
           r_program_counter_state <= S_WAIT_FOR_ACK;
         end
       endcase

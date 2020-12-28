@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/27 00:17:33
+// Last modified : 2020/12/28 15:31:11
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -87,18 +87,18 @@ module HCC_Arithmetic_Processor #(
   reg r_wait_ack;
   reg r_select;
   // HCC Processor to Memory_Backplane connecting wires.
-  wire                       w_hcc0_read_stb;   // WB read enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc0_read_addr;  // WB address
-  wire [31:0]                w_hcc0_read_data;  // WB data
-  wire                       w_hcc0_write_stb;  // WB write enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc0_write_addr; // WB address
-  wire [31:0]                w_hcc0_write_data; // WB data
-  wire                       w_hcc1_read_stb;   // WB read enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc1_read_addr;  // WB address
-  wire [31:0]                w_hcc1_read_data;  // WB data
-  wire                       w_hcc1_write_stb;  // WB write enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc1_write_addr; // WB address
-  wire [31:0]                w_hcc1_write_data; // WB data
+  wire                        w_hcc0_read_stb;   // WB read enable
+  wire [P_HCC_MEM_ADDR_MSB:0] w_hcc0_read_addr;  // WB address
+  wire [31:0]                 w_hcc0_read_data;  // WB data
+  wire                        w_hcc0_write_stb;  // WB write enable
+  wire [P_HCC_MEM_ADDR_MSB:0] w_hcc0_write_addr; // WB address
+  wire [31:0]                 w_hcc0_write_data; // WB data
+  wire                        w_hcc1_read_stb;   // WB read enable
+  wire [P_HCC_MEM_ADDR_MSB:0] w_hcc1_read_addr;  // WB address
+  wire [31:0]                 w_hcc1_read_data;  // WB data
+  wire                        w_hcc1_write_stb;  // WB write enable
+  wire [P_HCC_MEM_ADDR_MSB:0] w_hcc1_write_addr; // WB address
+  wire [31:0]                 w_hcc1_write_data; // WB data
   // Divider
   wire                       w_div_stb = i_slave_hcc_processor_stb & i_slave_hcc_processor_addr;
   wire                       w_div_ack;
@@ -141,16 +141,17 @@ module HCC_Arithmetic_Processor #(
 
   assign o_slave_hcc_processor_ack  = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 :
                                       (r_select==1'b1 && r_wait_ack==1'b1) ? w_div_ack : 1'b0;
-  assign o_slave_hcc_processor_data = r_select ? {w_remainder, w_quotient} : w_product[P_HCC_RESULT_MSB:0];
+  // assign o_slave_hcc_processor_data = r_select ? {w_remainder, w_quotient} : w_product[P_HCC_RESULT_MSB:0];
 
   ///////////////////////////////////////////////////////////////////////////////
   // Instance    : Integer Multiplier
   // Description : A High Computational Cost Arithmetic Processor that handles
   //               multiplication and division operations.
   ///////////////////////////////////////////////////////////////////////////////
-  Integer_Multiplier #(P_HCC_FACTORS_MSB, 
-                       P_HCC_FACTORS_MSB, 
-                       L_HCC_PRODUCT_MSB
+  Integer_Multiplier #(
+    P_HCC_FACTORS_MSB, 
+    P_HCC_FACTORS_MSB, 
+    L_HCC_PRODUCT_MSB
   ) mul (
     .i_clk(i_slave_hcc_processor_clk), //
     .i_multiplicand(w_multiplicand),   // 
@@ -163,9 +164,9 @@ module HCC_Arithmetic_Processor #(
   // Description : Instance of a Goldschmidt Division implementation.
   ///////////////////////////////////////////////////////////////////////////////
   Goldschmidt_Convergence_Division #(
-    L_HCC_FACTORS_MSB, 
-    P_HCC_ACCURACY,
-    P_HCC_MEM_ADDR_MSB,  // P_HCC_MUL_START_ADDR 
+    L_HCC_FACTORS_MSB,   // 
+    P_HCC_DIV_ACCURACY,  //
+    P_HCC_MEM_ADDR_MSB,  // 
     P_HCC_DIV_START_ADDR // P_HCC_DIV_START_ADDR
   ) div (
     // Clock and Reset

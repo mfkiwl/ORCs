@@ -33,10 +33,10 @@
 // File name     : Integer_Multiplier.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/27 00:18:45
+// Last modified : 2020/12/28 15:44:41
 // Project Name  : ORCs
 // Module Name   : Integer_Multiplier
-// Description   : The Integer_Multiplier is a .
+// Description   : The Integer_Multiplier
 //
 // Additional Comments:
 //   .
