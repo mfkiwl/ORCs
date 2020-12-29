@@ -119,7 +119,7 @@ module HCC_Arithmetic_Processor #(
   // Process     : Control Process
   // Description : Controls the access to the multiplier
   ///////////////////////////////////////////////////////////////////////////////
-	always @(posedge i_slave_hcc_processor_clk)	begin
+  always @(posedge i_slave_hcc_processor_clk) begin
     if (i_slave_hcc_processor_reset_sync == 1'b1) begin
       r_select   <= 1'b1;
       r_addr     <= 0;
@@ -144,7 +144,7 @@ module HCC_Arithmetic_Processor #(
         r_wait_ack <= !w_div_ack;
       end
     end
-	end
+  end
   assign o_slave_hcc_processor_ack = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 :
                                      (r_select==1'b1 && r_wait_ack==1'b1) ? w_div_ack : 1'b0;
   // HCC Processor mem0 WB(pipeline) master Read access control
@@ -175,7 +175,7 @@ module HCC_Arithmetic_Processor #(
     .i_clk(i_slave_hcc_processor_clk), //
     .i_multiplicand(w_multiplicand),   //
     .i_multiplier(w_multiplier),       //
-  	.o_product(w_product)              //
+    .o_product(w_product)              //
   );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -204,16 +204,16 @@ module HCC_Arithmetic_Processor #(
     .o_master_div0_write_stb(w_div0_write_stb),   // WB write enable
     .o_master_div0_write_data(w_div0_write_data), // WB data
     // mem1 WB(pipeline) master Read Interface
-    .o_master_div1_read_stb(w_div1_read_stb),   // WB read enable
-    .o_master_div1_read_addr(w_div1_read_addr), // WB address
+    .o_master_div1_read_stb(w_div1_read_stb),          // WB read enable
+    .o_master_div1_read_addr(w_div1_read_addr),        // WB address
     .i_master_div1_read_data(i_master_hcc1_read_data), // WB data
     // mem1 WB(pipeline) master Write Interface
     .o_master_div1_write_stb(w_div1_write_stb),   // WB write enable
-    .o_master_div1_write_data(w_div1_write_data),  // WB data
+    .o_master_div1_write_data(w_div1_write_data), // WB data
     // Connection to multiplier
     .o_multiplicand(w_div_multiplicand),
     .o_multiplier(w_div_multiplier),
-  	.i_product(w_product)
+    .i_product(w_product)
   );
 
 endmodule // HCC_Arithmetic_Processor
