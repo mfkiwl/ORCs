@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr_TOP.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/28 20:11:55
+// Last modified : 2020/12/29 11:01:17
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr_TOP
 // Description   : The ORC_R32IMAZicsr_TOP is a wrapper to include the missing signals
@@ -47,9 +47,8 @@ module ORC_R32IMAZicsr_TOP #(
   // Compile time configurable generic parameters
   parameter P_INITIAL_FETCH_ADDR = 0,  // First instruction address
   parameter P_MEMORY_ADDR_MSB    = 5,  //
-  parameter P_MEMORY_DEPTH       = 38, //
-  parameter P_MUL_START_ADDR     = 32, //
-  parameter P_DIV_START_ADDR     = 33, // 
+  parameter P_MEMORY_DEPTH       = 36, //
+  parameter P_DIV_START_ADDR     = 32, // 
   parameter P_DIV_ACCURACY       = 3   // 1e10^-P_DIVISION_ACCURACY
 )(
   // Component's clocks and resets
@@ -96,7 +95,6 @@ module ORC_R32IMAZicsr_TOP #(
     P_INITIAL_FETCH_ADDR,
     P_MEMORY_ADDR_MSB,
     P_MEMORY_DEPTH,
-    P_MUL_START_ADDR,
     P_DIV_START_ADDR,
     P_DIV_ACCURACY
   ) uut (
