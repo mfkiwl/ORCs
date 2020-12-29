@@ -1,5 +1,5 @@
 
-read_verilog "../source/Integer_Multiplier.v" "../source/Goldschmidt_Convergence_Division.v" "../source/HCC_Arithmetic_Processor.v" "../source/Hart_Core.v" "../source/ORC_R32IMAZicsr.v"
+read_verilog "../source/Integer_Multiplier.v" "../source/Goldschmidt_Convergence_Division.v" "../source/HCC_Arithmetic_Processor.v" "../source/Memory_Backplane.v" "../source/Hart_Core.v" "../source/ORC_R32IMAZicsr.v"
 synth_ice40 -abc2 -retime -dsp -json ORC_R32I_syn.json -top ORC_R32IMAZicsr
 
 #begin
