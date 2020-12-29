@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/29 10:36:36
+// Last modified : 2020/12/29 15:06:47
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -143,12 +143,12 @@ module Goldschmidt_Convergence_Division #(
   reg  [P_GCD_MEM_ADDR_MSB:0] r_div1_write_addr;
   reg  [P_GCD_FACTORS_MSB:0]  r_div1_write_data;
   wire [P_GCD_FACTORS_MSB:0]  w_quotient  = r_divider_state==S_IDLE ? r_div1_write_data : 
-                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b100 |
                                             i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b101 | 
                                             i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
                                               i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
   wire [P_GCD_FACTORS_MSB:0]  w_remainder = r_divider_state==S_IDLE ? L_GCD_ZERO_FILLER :
-                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b100 |
                                             i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b101 | 
                                             i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
                                               i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
@@ -272,20 +272,22 @@ module Goldschmidt_Convergence_Division #(
           end
           else begin
             //
-            r_ack <= 1'b0;
+            r_div0_write_stb      <= 1'b0;
+            r_div1_write_stb      <= 1'b0;
+            r_calculate_remainder <= 1'b0;
+            r_ack                 <= 1'b0;
+            r_divider_state       <= S_IDLE;
           end
         end
         S_SHIFT_DIVISOR_POINT : begin
           // 
           r_multiplicand  <= {r_divisor, L_GCD_ZERO_FILLER};
-          casez (r_lut_half_select)
-            1'b0 : begin
-              r_multiplier <= {L_GCD_ZERO_FILLER, i_master_div0_read_data};
-            end
-            1'b1 : begin
-              r_multiplier <= {L_GCD_ZERO_FILLER, i_master_div1_read_data};
-            end
-          endcase
+          if (r_lut_half_select == 1'b0) begin
+            r_multiplier <= {L_GCD_ZERO_FILLER, i_master_div0_read_data};
+          end
+          if (r_lut_half_select == 1'b1) begin
+            r_multiplier <= {L_GCD_ZERO_FILLER, i_master_div1_read_data};
+          end
           r_divider_state <= S_HALF_STEP_ONE;
         end
         S_SHIFT_DIVIDEND_POINT : begin
@@ -296,7 +298,7 @@ module Goldschmidt_Convergence_Division #(
         end
         S_HALF_STEP_ONE : begin
           //          
-          if (&i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-L_GCD_ACCURACY_BITS] == 1'b1) begin
+          if (i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-L_GCD_ACCURACY_BITS] == -1) begin
             // When the divisor converges to 1.0 (actually 0.999...).
             if (r_calculate_remainder == 1'b1) begin
               r_multiplicand  <= {L_GCD_ZERO_FILLER, i_product[P_GCD_FACTORS_MSB:0]};
@@ -330,10 +332,11 @@ module Goldschmidt_Convergence_Division #(
           r_divider_state  <= S_IDLE;
         end
         default : begin
-          r_div0_write_stb <= 1'b0;
-          r_div1_write_stb <= 1'b0;
-          r_ack            <= 1'b0;
-          r_divider_state  <= S_IDLE;
+          r_div0_write_stb      <= 1'b0;
+          r_div1_write_stb      <= 1'b0;
+          r_calculate_remainder <= 1'b0;
+          r_ack                 <= 1'b0;
+          r_divider_state       <= S_IDLE;
         end
       endcase
     end

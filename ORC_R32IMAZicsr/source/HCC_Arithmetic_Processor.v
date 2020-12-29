@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/29 10:30:36
+// Last modified : 2020/12/29 14:57:36
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -56,7 +56,7 @@ module HCC_Arithmetic_Processor #(
   input                                   i_slave_hcc_processor_addr,
   input                                   i_slave_hcc_processor_tga,
   input  [((P_HCC_MEM_ADDR_MSB+1)*3)-1:0] i_slave_hcc_processor_data, // {rd, rs2, rs1}
-  input                                   i_slave_hcc_processor_tgd, // 0=low, 1=high bits
+  input                                   i_slave_hcc_processor_tgd,  // 0=low, 1=high bits
   // HCC Processor mem0 WB(pipeline) master Read Interface
   output                        o_master_hcc0_read_stb,  // WB read enable
   output [P_HCC_MEM_ADDR_MSB:0] o_master_hcc0_read_addr, // WB address
@@ -78,7 +78,7 @@ module HCC_Arithmetic_Processor #(
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
   ///////////////////////////////////////////////////////////////////////////////
-  localparam L_HCC_FACTORS_NUM_BITS = P_HCC_FACTORS_MSB+1;
+  localparam L_HCC_FACTORS_NUM_BITS     = P_HCC_FACTORS_MSB+1;
   localparam L_HCC_FACTORS_EXTENDED_MSB = ((P_HCC_FACTORS_MSB+1)*2)-1;
   localparam L_HCC_PRODUCT_EXTENDED_MSB = ((L_HCC_FACTORS_EXTENDED_MSB+1)*2)-1;
   ///////////////////////////////////////////////////////////////////////////////
@@ -107,9 +107,9 @@ module HCC_Arithmetic_Processor #(
   wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplier;
   wire [P_HCC_FACTORS_MSB:0]          w_div_bits_select = r_tgd==1'b1 ? w_div1_write_data : w_div0_write_data;
   // Multiplier
-  wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = r_select == 1'b1 ? $signed(w_div_multiplicand) :
+  wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = r_select==1'b1 ? $signed(w_div_multiplicand) :
                                                                 {{L_HCC_FACTORS_NUM_BITS{i_master_hcc0_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc0_read_data[P_HCC_FACTORS_MSB:0]};
-  wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = r_select == 1'b1 ? $signed(w_div_multiplier) :
+  wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = r_select==1'b1 ? $signed(w_div_multiplier) :
                                                                 {{L_HCC_FACTORS_NUM_BITS{i_master_hcc1_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc1_read_data[P_HCC_FACTORS_MSB:0]};
   wire        [L_HCC_PRODUCT_EXTENDED_MSB:0] w_product;
   wire        [P_HCC_FACTORS_MSB:0]          w_product_bits_select = r_tgd==1'b1 ? w_product[L_HCC_FACTORS_EXTENDED_MSB:P_HCC_FACTORS_MSB+1] : w_product[P_HCC_FACTORS_MSB:0];

@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2020/12/29 13:57:44
+// Last modified : 2020/12/29 15:16:00
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -195,8 +195,8 @@ module Hart_Core #(
                            i_inst_read_data[31], i_inst_read_data[19:12],
                            i_inst_read_data[20], i_inst_read_data[30:21], L_FILLER_ZERO[0] };
   wire w_bmux = r_bcc & (
-                w_fct3==3'h4 ? w_signed_rs1   <  w_signed_rs2 :   // blt
-                w_fct3==3'h5 ? w_signed_rs1   >= w_signed_rs2 :   // bge
+                w_fct3==3'h4 ? w_signed_rs1 <  w_signed_rs2 :   // blt
+                w_fct3==3'h5 ? w_signed_rs1 >= w_signed_rs2 :   // bge
                 w_fct3==3'h6 ? r_unsigned_rs1 <  r_unsigned_rs2 : // bltu
                 w_fct3==3'h7 ? r_unsigned_rs1 >= r_unsigned_rs2 : // bgeu
                 w_fct3==3'h0 ? r_unsigned_rs1 == r_unsigned_rs2 : // beq
@@ -357,7 +357,7 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_READ;
           end
-          else if(r_scc == 1'b1) begin
+          else if (r_scc == 1'b1) begin
             // Store data in external.
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_WRITE;
@@ -377,14 +377,22 @@ module Hart_Core #(
             // Data received. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
-          end // else implement a timeout counter?
+          end
+          else begin
+            r_program_counter_valid <= 1'b0;
+            r_program_counter_state <= S_WAIT_FOR_READ;
+          end
         end
         S_WAIT_FOR_WRITE : begin
           if (i_master_write_ack == 1'b1) begin
             // Data write acknowledge. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
-          end // else implement a timeout counter?
+          end
+          else begin
+            r_program_counter_valid <= 1'b0;
+            r_program_counter_state <= S_WAIT_FOR_WRITE;
+          end
         end
         S_WAIT_FOR_DIV : begin
           if (i_master_hcc_processor_ack == 1'b1) begin
@@ -392,8 +400,13 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
+          else begin
+            r_program_counter_valid <= 1'b0;
+            r_program_counter_state <= S_WAIT_FOR_DIV;
+          end
         end
         default : begin
+          r_program_counter_valid <= 1'b0;
           r_program_counter_state <= S_WAIT_FOR_ACK;
         end
       endcase
@@ -433,10 +446,12 @@ module Hart_Core #(
           r_rii <= 1'b0;
         end
   
-        if ( w_opcode == L_RRO) begin
+        if (w_opcode == L_RRO) begin
           // Register-Register Operations
           // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
-          r_rro <= 1'b1;
+          r_rro  <= 1'b1;
+          r_simm <= L_FILLER_ZERO;
+          r_uimm <= L_FILLER_ZERO;
         end
         else begin
           r_rro <= 1'b0;
@@ -452,6 +467,7 @@ module Hart_Core #(
           r_jalr <= 1'b1;
           r_simm <= { i_inst_read_data[31]==1'b1 ? L_FILLER_ONE[31:12]:L_FILLER_ZERO[31:12],
                       i_inst_read_data[31:20] };
+          r_uimm <= L_FILLER_ZERO;
         end
         else begin
           r_jalr <= 1'b0;
@@ -467,12 +483,13 @@ module Hart_Core #(
           r_simm <= { i_inst_read_data[31]==1'b1 ? L_FILLER_ONE[31:13]:L_FILLER_ZERO[31:13], 
                      i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],
                      i_inst_read_data[11:8],L_FILLER_ZERO[0] };
+          r_uimm <= L_FILLER_ZERO;
         end
         else begin
           r_bcc <= 1'b0;
         end
   
-        if ( w_opcode == L_LCC) begin
+        if (w_opcode == L_LCC) begin
           // Load, Conditional to Comparisons.
           // The effective address is obtained by adding register rs1 to the 
           // sign-extended 12-bit offset. Loads copy a value from memory to 
@@ -480,6 +497,7 @@ module Hart_Core #(
           r_lcc  <= 1'b1;
           r_simm <= { i_inst_read_data[31]==1'b1 ? L_FILLER_ONE[31:12]:L_FILLER_ZERO[31:12], 
                      i_inst_read_data[31:20] };
+          r_uimm <= L_FILLER_ZERO;
         end
         else begin
           r_lcc <= 1'b0;
@@ -490,9 +508,10 @@ module Hart_Core #(
           // The effective address is obtained by adding register rs1 to the 
           // sign-extended 12-bit offset. Stores copy the value in register rs2 to
           // memory.
-          r_scc   <= 1'b1;
-          r_simm  <= { i_inst_read_data[31]==1'b1 ? L_FILLER_ONE[31:12]:L_FILLER_ZERO[31:12], 
+          r_scc  <= 1'b1;
+          r_simm <= { i_inst_read_data[31]==1'b1 ? L_FILLER_ONE[31:12]:L_FILLER_ZERO[31:12], 
                        i_inst_read_data[31:25], i_inst_read_data[11:7] };
+          r_uimm <= L_FILLER_ZERO;
         end
         else begin
           r_scc <= 1'b0;
@@ -506,6 +525,9 @@ module Hart_Core #(
           // Higher or lower 32bits
           r_low_results  <= w_mul_l | w_rem;
           r_high_results <= w_mul_h | w_div;
+          //
+          r_simm <= L_FILLER_ZERO;
+          r_uimm <= L_FILLER_ZERO;
         end
         else begin
           r_mul          <= 1'b0;
@@ -522,6 +544,8 @@ module Hart_Core #(
         r_bcc  <= 1'b0;
         r_lcc  <= 1'b0;
         r_scc  <= 1'b0;
+        r_mul  <= 1'b0;
+        r_div  <= 1'b0;
       end
     end
   end
@@ -594,10 +618,10 @@ module Hart_Core #(
   assign o_master_write_addr = w_master_addr;
   assign o_master_write_data = w_s_data;
   assign o_master_write_sel  = (w_fct3==3'h0 || w_fct3==3'h4) ? (
-                                 w_master_addr[1:0]==2'h3 ? 4'b1000 :
-                                 w_master_addr[1:0]==2'h2 ? 4'b0100 :
-                                 w_master_addr[1:0]==2'h1 ? 4'b0010 :
-                                                            4'b0001) :
+                                 w_master_addr[1:0]==3 ? 4'b1000 :
+                                 w_master_addr[1:0]==2 ? 4'b0100 :
+                                 w_master_addr[1:0]==1 ? 4'b0010 :
+                                                         4'b0001) :
                                (w_fct3==3'h1 || w_fct3==3'h5) ? (
                                  w_master_addr[1]==1'b1 ? 4'b1100 :
                                                           4'b0011) :
@@ -608,9 +632,9 @@ module Hart_Core #(
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
   assign o_master_hcc_processor_stb  = w_math;
-  assign o_master_hcc_processor_addr = (w_div | w_rem);
+  assign o_master_hcc_processor_addr = (w_div==1'b1 || w_rem==1'b1) ? 1'b1 : 1'b0;
   assign o_master_hcc_processor_tga  = w_rem;
   assign o_master_hcc_processor_data = {{1'b0, w_rd}, {1'b0, w_source2_pointer}, {1'b0, w_source1_pointer}};
-  assign o_master_hcc_processor_tgd  = (w_mul_h | w_div);
+  assign o_master_hcc_processor_tgd  = (w_mul_h== 1'b1 || w_div==1'b1) ? 1'b1 : 1'b0;
 
 endmodule
