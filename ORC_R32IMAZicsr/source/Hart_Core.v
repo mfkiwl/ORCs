@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2020/12/29 13:54:35
+// Last modified : 2020/12/29 13:57:44
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -594,9 +594,9 @@ module Hart_Core #(
   assign o_master_write_addr = w_master_addr;
   assign o_master_write_data = w_s_data;
   assign o_master_write_sel  = (w_fct3==3'h0 || w_fct3==3'h4) ? (
-                                 w_master_addr[1:0]==3'h3 ? 4'b1000 :
-                                 w_master_addr[1:0]==3'h2 ? 4'b0100 :
-                                 w_master_addr[1:0]==3'h1 ? 4'b0010 :
+                                 w_master_addr[1:0]==2'h3 ? 4'b1000 :
+                                 w_master_addr[1:0]==2'h2 ? 4'b0100 :
+                                 w_master_addr[1:0]==2'h1 ? 4'b0010 :
                                                             4'b0001) :
                                (w_fct3==3'h1 || w_fct3==3'h5) ? (
                                  w_master_addr[1]==1'b1 ? 4'b1100 :
