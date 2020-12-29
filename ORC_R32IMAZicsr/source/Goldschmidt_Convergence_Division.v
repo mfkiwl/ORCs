@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/29 10:34:41
+// Last modified : 2020/12/29 10:36:36
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -131,16 +131,6 @@ module Goldschmidt_Convergence_Division #(
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_multiplier;
   wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor     = r_divider_state==S_HALF_STEP_TWO ? r_multiplicand : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
   wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor   = w_number_two_extended + ~w_current_divisor;
-  wire [P_GCD_FACTORS_MSB:0]     w_quotient            = r_divider_state==S_IDLE ? r_div1_write_data : 
-                                                           i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
-                                                           i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b101 | 
-                                                           i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
-                                                             i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
-  wire [P_GCD_FACTORS_MSB:0]     w_remainder           = r_divider_state==S_IDLE ? L_GCD_ZERO_FILLER :
-                                                           i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
-                                                           i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b101 | 
-                                                           i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
-                                                             i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
   // MEMx Factors and LookUp Table Read Signals
   wire                        w_div0_read_stb  = |r_first_hot_nibble[(L_GCD_FACTORS_NIBBLES/2)-1:0];
   wire [P_GCD_MEM_ADDR_MSB:0] w_div0_read_addr = (L_GDC_LUT_ADDR+r_lut0_offset);
@@ -152,6 +142,16 @@ module Goldschmidt_Convergence_Division #(
   reg                         r_div1_write_stb;
   reg  [P_GCD_MEM_ADDR_MSB:0] r_div1_write_addr;
   reg  [P_GCD_FACTORS_MSB:0]  r_div1_write_data;
+  wire [P_GCD_FACTORS_MSB:0]  w_quotient  = r_divider_state==S_IDLE ? r_div1_write_data : 
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b101 | 
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
+                                              i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
+  wire [P_GCD_FACTORS_MSB:0]  w_remainder = r_divider_state==S_IDLE ? L_GCD_ZERO_FILLER :
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2] == 3'b100 |
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b101 | 
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
+                                              i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
