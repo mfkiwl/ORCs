@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/29 15:06:47
+// Last modified : 2020/12/29 16:29:27
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -131,6 +131,7 @@ module Goldschmidt_Convergence_Division #(
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_multiplier;
   wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor     = r_divider_state==S_HALF_STEP_TWO ? r_multiplicand : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
   wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor   = w_number_two_extended + ~w_current_divisor;
+  wire                           w_converged           = &i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-L_GCD_ACCURACY_BITS];
   // MEMx Factors and LookUp Table Read Signals
   wire                        w_div0_read_stb  = |r_first_hot_nibble[(L_GCD_FACTORS_NIBBLES/2)-1:0];
   wire [P_GCD_MEM_ADDR_MSB:0] w_div0_read_addr = (L_GDC_LUT_ADDR+r_lut0_offset);
@@ -298,7 +299,7 @@ module Goldschmidt_Convergence_Division #(
         end
         S_HALF_STEP_ONE : begin
           //          
-          if (i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-L_GCD_ACCURACY_BITS] == -1) begin
+          if (w_converged == 1'b1) begin
             // When the divisor converges to 1.0 (actually 0.999...).
             if (r_calculate_remainder == 1'b1) begin
               r_multiplicand  <= {L_GCD_ZERO_FILLER, i_product[P_GCD_FACTORS_MSB:0]};
