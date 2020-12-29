@@ -65,10 +65,10 @@ module Integer_Multiplier #(
   // Process     : Multiplication Process
   // Description : Generates the product by performing the multiplication.
   /////////////////////////////////////////////////////////////////////////////
-	always @(posedge i_clk)	begin
+  always @(posedge i_clk) begin
     //	Multiply any time the inputs changes.
-		r_product <= $signed(i_multiplicand) * $signed(i_multiplier);
-	end
+    r_product <= $signed(i_multiplicand) * $signed(i_multiplier);
+  end
 
   assign o_product = r_product;
 
