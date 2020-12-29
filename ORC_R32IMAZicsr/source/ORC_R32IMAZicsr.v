@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/27 00:42:34
+// Last modified : 2020/12/29 11:02:30
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -45,9 +45,8 @@ module ORC_R32IMAZicsr #(
   // Compile time configurable generic parameters
   parameter P_INITIAL_FETCH_ADDR = 0,  // First instruction address
   parameter P_MEMORY_ADDR_MSB    = 5,  //
-  parameter P_MEMORY_DEPTH       = 38, //
-  parameter P_MUL_START_ADDR     = 32, //
-  parameter P_DIV_START_ADDR     = 33, // 
+  parameter P_MEMORY_DEPTH       = 36, //
+  parameter P_DIV_START_ADDR     = 32, // 
   parameter P_DIV_ACCURACY       = 3   // 1e10^-P_DIVISION_ACCURACY
 )(
   // Processor's clocks and resets
@@ -104,11 +103,12 @@ module ORC_R32IMAZicsr #(
   wire [P_MEMORY_ADDR_MSB:0] w_hcc1_write_addr; // WB address
   wire [31:0]                w_hcc1_write_data; // WB data
   // Hart_Core to HCC Processor connecting wires.
-  wire        w_hcc_processor_stb;
-  wire        w_hcc_processor_ack;
-  wire        w_hcc_processor_addr;
-  wire        w_hcc_processor_tga;
-  wire [11:0] w_hcc_processor_factors;
+  wire                                   w_hcc_processor_stb;
+  wire                                   w_hcc_processor_ack;
+  wire                                   w_hcc_processor_addr;
+  wire                                   w_hcc_processor_tga;
+  wire [(((P_MEMORY_ADDR_MSB+1)*3)-1):0] w_hcc_processor_factors;
+  wire                                   w_hcc_processor_tgd;
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -120,9 +120,7 @@ module ORC_R32IMAZicsr #(
   ///////////////////////////////////////////////////////////////////////////////
   Hart_Core #(
     P_INITIAL_FETCH_ADDR, //
-    P_MEMORY_ADDR_MSB,    //
-    P_MUL_START_ADDR,     //
-    P_DIV_START_ADDR      //  
+    P_MEMORY_ADDR_MSB     //
   ) core (
     // Component's clocks and resets
     .i_clk(i_clk),               // clock
@@ -164,7 +162,8 @@ module ORC_R32IMAZicsr #(
     .i_master_hcc_processor_ack(w_hcc_processor_ack),     // WB acknowledge
     .o_master_hcc_processor_addr(w_hcc_processor_addr),   // WB address
     .o_master_hcc_processor_tga(w_hcc_processor_tga),     // WB address
-    .o_master_hcc_processor_data(w_hcc_processor_factors) // WB output data
+    .o_master_hcc_processor_data(w_hcc_processor_factors), // WB output data
+    .o_master_hcc_processor_tgd(w_hcc_processor_tgd)      // WB data tag
   );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -175,7 +174,6 @@ module ORC_R32IMAZicsr #(
   HCC_Arithmetic_Processor #(
     31,                // P_HCC_FACTORS_MSB
     P_MEMORY_ADDR_MSB, // P_HCC_MEM_ADDR_MSB
-    P_MUL_START_ADDR,  // P_HCC_MUL_START_ADDR
     P_DIV_START_ADDR,  // P_HCC_DIV_START_ADDR
     P_DIV_ACCURACY     // P_HCC_DIV_ACCURACY  
   ) mul_div_processor (
@@ -187,6 +185,7 @@ module ORC_R32IMAZicsr #(
     .i_slave_hcc_processor_addr(w_hcc_processor_addr),    // WB address used to indicate mul or div
     .i_slave_hcc_processor_tga(w_hcc_processor_tga),      // WB address tag used to indicate quotient or remainder
     .i_slave_hcc_processor_data(w_hcc_processor_factors), // WB data, factors location in memory
+    .i_slave_hcc_processor_tgd(w_hcc_processor_tgd),      // WB data tag, indicates low or high bits of data
     // HCC Processor mem0 WB(pipeline) master Read Interface
     .o_master_hcc0_read_stb(w_hcc0_read_stb),   // WB read enable
     .o_master_hcc0_read_addr(w_hcc0_read_addr), // WB address

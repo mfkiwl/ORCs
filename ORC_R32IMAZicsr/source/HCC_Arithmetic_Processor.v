@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/29 07:24:26
+// Last modified : 2020/12/29 11:05:40
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -45,7 +45,6 @@
 module HCC_Arithmetic_Processor #(
   parameter P_HCC_FACTORS_MSB    = 7,
   parameter P_HCC_MEM_ADDR_MSB   = 0,
-  parameter P_HCC_MUL_START_ADDR = 0,
   parameter P_HCC_DIV_START_ADDR = 0,
   parameter P_HCC_DIV_ACCURACY   = 2
 )(
@@ -56,23 +55,24 @@ module HCC_Arithmetic_Processor #(
   output                                  o_slave_hcc_processor_ack,
   input                                   i_slave_hcc_processor_addr,
   input                                   i_slave_hcc_processor_tga,
-  input  [((P_HCC_MEM_ADDR_MSB+1)*2)-1:0] i_slave_hcc_processor_data, // {rs2, rs1}
+  input  [((P_HCC_MEM_ADDR_MSB+1)*3)-1:0] i_slave_hcc_processor_data, // {rd, rs2, rs1}
+  input                                   i_slave_hcc_processor_tgd, // 0=low, 1=high bits
   // HCC Processor mem0 WB(pipeline) master Read Interface
   output                        o_master_hcc0_read_stb,  // WB read enable
   output [P_HCC_MEM_ADDR_MSB:0] o_master_hcc0_read_addr, // WB address
-  input  [31:0]                 i_master_hcc0_read_data, // WB data
+  input  [P_HCC_FACTORS_MSB:0]  i_master_hcc0_read_data, // WB data
   // HCC Processor mem0 WB(pipeline) master Write Interface
   output                        o_master_hcc0_write_stb,  // WB write enable
   output [P_HCC_MEM_ADDR_MSB:0] o_master_hcc0_write_addr, // WB address
-  output [31:0]                 o_master_hcc0_write_data, // WB data
+  output [P_HCC_FACTORS_MSB:0]  o_master_hcc0_write_data, // WB data
   // HCC Processor mem1 WB(pipeline) master Read Interface
   output                        o_master_hcc1_read_stb,  // WB read enable
   output [P_HCC_MEM_ADDR_MSB:0] o_master_hcc1_read_addr, // WB address
-  input  [31:0]                 i_master_hcc1_read_data, // WB data
+  input  [P_HCC_FACTORS_MSB:0]  i_master_hcc1_read_data, // WB data
   // HCC Processor mem1 WB(pipeline) master Write Interface
   output                        o_master_hcc1_write_stb,  // WB write enable
   output [P_HCC_MEM_ADDR_MSB:0] o_master_hcc1_write_addr, // WB address
-  output [31:0]                 o_master_hcc1_write_data  // WB data
+  output [P_HCC_FACTORS_MSB:0]  o_master_hcc1_write_data  // WB data
 );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -84,28 +84,32 @@ module HCC_Arithmetic_Processor #(
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
   // HCC Controls
-  reg r_wait_ack;
-  reg r_select;
+  reg                        r_wait_ack;
+  reg                        r_select;
+  reg [P_HCC_MEM_ADDR_MSB:0] r_addr;
+  reg                        r_tgd;
   // HCC Processor to Memory_Backplane connecting wires.
   wire                        w_div0_read_stb;   // WB read enable
   wire [P_HCC_MEM_ADDR_MSB:0] w_div0_read_addr;  // WB address
   wire                        w_div0_write_stb;  // WB write enable
   wire [P_HCC_MEM_ADDR_MSB:0] w_div0_write_addr; // WB address
-  wire [31:0]                 w_div0_write_data; // WB data
+  wire [P_HCC_FACTORS_MSB:0]  w_div0_write_data; // WB data
   wire                        w_div1_read_stb;   // WB read enable
   wire [P_HCC_MEM_ADDR_MSB:0] w_div1_read_addr;  // WB address
   wire                        w_div1_write_stb;  // WB write enable
   wire [P_HCC_MEM_ADDR_MSB:0] w_div1_write_addr; // WB address
-  wire [31:0]                 w_div1_write_data; // WB data
+  wire [P_HCC_FACTORS_MSB:0]  w_div1_write_data; // WB data
   // Divider
   wire                                w_div_stb = i_slave_hcc_processor_stb & i_slave_hcc_processor_addr;
   wire                                w_div_ack;
   wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplicand;
   wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplier;
+  wire [P_HCC_FACTORS_MSB:0]          w_div_bits_select = r_tgd==1'b1 ? w_div1_write_data : w_div0_write_data;
   // Multiplier
   wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = r_select == 1'b1 ? $signed(w_div_multiplicand) : $signed(i_master_hcc0_read_data);
   wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = r_select == 1'b1 ? $signed(w_div_multiplier) : $signed(i_master_hcc1_read_data);
   wire        [L_HCC_PRODUCT_EXTENDED_MSB:0] w_product;
+  wire        [P_HCC_FACTORS_MSB:0]          w_product_bits_select = r_tgd==1'b1 ? w_product[L_HCC_FACTORS_EXTENDED_MSB:P_HCC_FACTORS_MSB+1] : w_product[P_HCC_FACTORS_MSB:0];
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -118,12 +122,16 @@ module HCC_Arithmetic_Processor #(
 	always @(posedge i_slave_hcc_processor_clk)	begin
     if (i_slave_hcc_processor_reset_sync == 1'b1) begin
       r_select   <= 1'b1;
+      r_addr     <= 0;
+      r_tgd      <= 0;
       r_wait_ack <= 1'b0;
     end
     else begin
       if (i_slave_hcc_processor_stb == 1'b1) begin
         // Received valid factors index.
         r_select   <= i_slave_hcc_processor_addr;
+        r_addr     <= i_slave_hcc_processor_data[((P_HCC_MEM_ADDR_MSB+1)*3)-1:((P_HCC_MEM_ADDR_MSB+1)*3)-1-P_HCC_MEM_ADDR_MSB];
+        r_tgd      <= i_slave_hcc_processor_tgd;
         r_wait_ack <= 1'b1;
       end
       if (r_select == 1'b0 && r_wait_ack == 1'b1) begin
@@ -143,16 +151,16 @@ module HCC_Arithmetic_Processor #(
   assign o_master_hcc0_read_stb  = w_div0_read_stb;  // WB read enable
   assign o_master_hcc0_read_addr = w_div1_read_addr; // WB address
   // HCC Processor mem0 WB(pipeline) master Write access control
-  assign o_master_hcc0_write_stb  = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 : w_div0_write_stb;      // WB write enable
-  assign o_master_hcc0_write_addr = r_select==1'b0 ? P_HCC_MUL_START_ADDR : w_div0_write_addr;           // WB address
-  assign o_master_hcc0_write_data = r_select==1'b0 ? w_product[P_HCC_FACTORS_MSB:0] : w_div0_write_data; // WB data
+  assign o_master_hcc0_write_stb  = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 : w_div0_write_stb; // WB write enable
+  assign o_master_hcc0_write_addr = r_addr;                                                         // WB address
+  assign o_master_hcc0_write_data = r_select==1'b0 ? w_product_bits_select : w_div_bits_select;     // WB data
   // HCC Processor mem1 WB(pipeline) master Read access control
   assign o_master_hcc1_read_stb  = w_div1_read_stb;  // WB read enable
   assign o_master_hcc1_read_addr = w_div1_read_addr; // WB address
   // HCC Processor mem1 WB(pipeline) master Write access control
-  assign o_master_hcc1_write_stb  = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 : w_div0_write_stb;                        // WB write enable
-  assign o_master_hcc1_write_addr = r_select==1'b0 ? P_HCC_MUL_START_ADDR : w_div0_write_addr;                             // WB address
-  assign o_master_hcc1_write_data = r_select==1'b0 ? w_product[L_HCC_FACTORS_EXTENDED_MSB:P_HCC_FACTORS_MSB+1] : w_div1_write_data; // WB data
+  assign o_master_hcc1_write_stb  = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 : w_div0_write_stb; // WB write enable
+  assign o_master_hcc1_write_addr = r_addr;                                                         // WB address
+  assign o_master_hcc1_write_data = r_select==1'b0 ? w_product_bits_select : w_div_bits_select;     // WB data
 
   ///////////////////////////////////////////////////////////////////////////////
   // Instance    : Integer Multiplier
@@ -185,7 +193,7 @@ module HCC_Arithmetic_Processor #(
     .i_reset_sync(i_slave_hcc_processor_reset_sync),
     // WB Interface
     .i_slave_stb(w_div_stb),                   // valid
-    .i_slave_data(i_slave_hcc_processor_data), // {rs2, rs1}
+    .i_slave_data(i_slave_hcc_processor_data[((P_HCC_MEM_ADDR_MSB+1)*2)-1:0]), // {rd, rs2, rs1}
     .i_slave_tga(i_slave_hcc_processor_tga),   // quotient=0, remainder=1
     .o_slave_ack(w_div_ack),                   // ready
     // mem0 WB(pipeline) master Read Interface
@@ -194,7 +202,6 @@ module HCC_Arithmetic_Processor #(
     .i_master_div0_read_data(i_master_hcc0_read_data), // WB data
     // mem0 WB(pipeline) master Write Interface
     .o_master_div0_write_stb(w_div0_write_stb),   // WB write enable
-    .o_master_div0_write_addr(w_div0_write_addr), // WB address
     .o_master_div0_write_data(w_div0_write_data), // WB data
     // mem1 WB(pipeline) master Read Interface
     .o_master_div1_read_stb(w_div1_read_stb),   // WB read enable
@@ -202,7 +209,6 @@ module HCC_Arithmetic_Processor #(
     .i_master_div1_read_data(i_master_hcc1_read_data), // WB data
     // mem1 WB(pipeline) master Write Interface
     .o_master_div1_write_stb(w_div1_write_stb),   // WB write enable
-    .o_master_div1_write_addr(w_div1_write_addr), // WB address
     .o_master_div1_write_data(w_div1_write_data),  // WB data
     // Connection to multiplier
     .o_multiplicand(w_div_multiplicand),

@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2020/12/29 08:16:31
+// Last modified : 2020/12/29 11:00:07
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -44,10 +44,8 @@
 /////////////////////////////////////////////////////////////////////////////////
 module Hart_Core #(
   // Compile time configurable generic parameters
-  parameter P_CORE_INITIAL_FETCH_ADDR = 0,  // First instruction address
-  parameter P_CORE_MEMORY_ADDR_MSB    = 5,  //
-  parameter P_CORE_MUL_START_ADDR     = 32, //
-  parameter P_CORE_DIV_START_ADDR     = 33  // 
+  parameter P_CORE_INITIAL_FETCH_ADDR = 0, // First instruction address
+  parameter P_CORE_MEMORY_ADDR_MSB    = 5  //
 )(
   // Component's clocks and resets
   input i_clk,        // clock
@@ -89,7 +87,8 @@ module Hart_Core #(
   input                                       i_master_hcc_processor_ack,  // done
   output                                      o_master_hcc_processor_addr, // 0=mul, 1=div/rem
   output                                      o_master_hcc_processor_tga,  // 0=div, 1=rem
-  output [((P_CORE_MEMORY_ADDR_MSB+1)*2)-1:0] o_master_hcc_processor_data  // {rs2, rs1}
+  output [((P_CORE_MEMORY_ADDR_MSB+1)*3)-1:0] o_master_hcc_processor_data, // {rs2, rs1}
+  output                                      o_master_hcc_processor_tgd   // 0=lower bits, 1=higher bits
 );
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
@@ -121,9 +120,6 @@ module Hart_Core #(
   localparam [2:0] L_DIVU   = 3'b101; // DIVU
   localparam [2:0] L_REM    = 3'b110; // REM
   localparam [2:0] L_REMU   = 3'b111; // REMU
-  // Math results addressess
-  localparam [P_CORE_MEMORY_ADDR_MSB:0] L_PRODUCT_ADDR = P_CORE_MUL_START_ADDR;
-  localparam [P_CORE_MEMORY_ADDR_MSB:0] L_DIV_QR_ADDR  = P_CORE_DIV_START_ADDR;
   // Misc Definitions
   localparam [31:0] L_FILLER_ZERO = 32'h0000_0000;
   localparam [31:0] L_FILLER_ONE  = 32'hFFFF_FFFF;
@@ -546,12 +542,8 @@ module Hart_Core #(
   assign o_master_core0_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack & r_low_results);
   assign o_master_core1_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack & r_high_results);
   // Address Select
-  assign o_master_core0_read_addr = i_inst_read_ack == 1'b1 ? {1'b0, w_source1_pointer} :
-                                              r_mul == 1'b1 ? L_PRODUCT_ADDR :
-                                              r_div == 1'b1 ? L_DIV_QR_ADDR : {1'b0, w_source1_pointer};
-  assign o_master_core1_read_addr = i_inst_read_ack == 1'b1 ? {1'b0, w_source2_pointer} :
-                                              r_mul == 1'b1 ? L_PRODUCT_ADDR :
-                                              r_div == 1'b1 ? L_DIV_QR_ADDR : {1'b0, w_source2_pointer};
+  assign o_master_core0_read_addr = {1'b0, w_source1_pointer};
+  assign o_master_core1_read_addr = {1'b0, w_source2_pointer};
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
@@ -624,8 +616,9 @@ module Hart_Core #(
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
   assign o_master_hcc_processor_stb  = w_math;
-  assign o_master_hcc_processor_addr = w_div | w_rem;
+  assign o_master_hcc_processor_addr = (w_div | w_rem);
   assign o_master_hcc_processor_tga  = w_rem;
-  assign o_master_hcc_processor_data = {{1'b0, w_source2_pointer}, {1'b0, w_source1_pointer}};
+  assign o_master_hcc_processor_data = {{1'b0, w_rd}, {1'b0, w_source2_pointer}, {1'b0, w_source1_pointer}};
+  assign o_master_hcc_processor_tgd  = (w_mul_h | w_div);
 
 endmodule

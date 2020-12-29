@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/29 08:19:11
+// Last modified : 2020/12/29 10:34:41
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -73,7 +73,6 @@ module Goldschmidt_Convergence_Division #(
   input  [P_GCD_FACTORS_MSB:0]  i_master_div0_read_data, // WB data
   // GDC mem0 WB(pipeline) master Write Interface
   output                        o_master_div0_write_stb,  // WB write enable
-  output [P_GCD_MEM_ADDR_MSB:0] o_master_div0_write_addr, // WB address
   output [P_GCD_FACTORS_MSB:0]  o_master_div0_write_data, // WB data
   // GDC mem1 WB(pipeline) master Read Interface
   output                        o_master_div1_read_stb,  // WB read enable
@@ -81,7 +80,6 @@ module Goldschmidt_Convergence_Division #(
   input  [P_GCD_FACTORS_MSB:0]  i_master_div1_read_data, // WB data
   // GDC mem1 WB(pipeline) master Write Interface
   output                        o_master_div1_write_stb,  // WB write enable
-  output [P_GCD_MEM_ADDR_MSB:0] o_master_div1_write_addr, // WB address
   output [P_GCD_FACTORS_MSB:0]  o_master_div1_write_data, // WB data
   // Multiplier interface
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplicand,
@@ -107,7 +105,7 @@ module Goldschmidt_Convergence_Division #(
   localparam [2:0] S_HALF_STEP_TWO        = 3'h4; // d[i] * (2-d[i]); were i is the iteration.
   localparam [2:0] S_REMAINDER_TO_NATURAL = 3'h5; // Convert remainder from decimal fraction to a natural number.
   // LookUp Table Initial Address
-  localparam [P_GCD_MEM_ADDR_MSB:0] L_GDC_LUT_ADDR = P_GCD_DIV_START_ADDR+1;
+  localparam [P_GCD_MEM_ADDR_MSB:0] L_GDC_LUT_ADDR = P_GCD_DIV_START_ADDR;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
@@ -186,15 +184,8 @@ module Goldschmidt_Convergence_Division #(
   // Description : Count until the hot bit is detected to determine which value
   //               from the lookup table to get.
   ///////////////////////////////////////////////////////////////////////////////
-	always @(*) begin
-    if (i_slave_stb == 1'b0) begin
-      // Reset to zero.
-      r_lut0_offset    = 0;
-      r_lut1_offset    = 0;
-      r_found0_hot_bit = 1'b0;
-      r_found1_hot_bit = 1'b0;
-    end
-    else begin
+	always @(posedge i_clk) begin
+    if (i_slave_stb == 1'b1) begin
       //
       for (jj=0; jj<(L_GCD_FACTORS_NIBBLES/2); jj=jj+1) begin
         if (r_first_hot_nibble[jj] == 1'b0 && r_found0_hot_bit == 1'b0) begin
@@ -214,6 +205,13 @@ module Goldschmidt_Convergence_Division #(
           r_found1_hot_bit = 1'b1;
         end
       end
+    end
+    else begin
+      // Reset to zero.
+      r_lut0_offset    = 0;
+      r_lut1_offset    = 0;
+      r_found0_hot_bit = 1'b0;
+      r_found1_hot_bit = 1'b0;
     end
   end
 
@@ -347,10 +345,8 @@ module Goldschmidt_Convergence_Division #(
   assign o_master_div1_read_addr = w_div1_read_addr;
   // MEMx Result Registers Write Access
   assign o_master_div0_write_stb  = r_div0_write_stb;
-  assign o_master_div0_write_addr = P_GCD_DIV_START_ADDR;
   assign o_master_div0_write_data = w_remainder;
   assign o_master_div1_write_stb  = r_div1_write_stb;
-  assign o_master_div1_write_addr = P_GCD_DIV_START_ADDR;
   assign o_master_div1_write_data = w_quotient;
   // Multiplication Processor Access
   assign o_multiplicand = r_multiplicand;
