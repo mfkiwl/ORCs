@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr_TOP.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/23 13:03:38
+// Last modified : 2020/12/28 20:11:55
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr_TOP
 // Description   : The ORC_R32IMAZicsr_TOP is a wrapper to include the missing signals
@@ -44,8 +44,13 @@
 /////////////////////////////////////////////////////////////////////////////////
 module ORC_R32IMAZicsr_TOP #(
   // Compile time configurable generic parameters
-  parameter P_FETCH_COUNTER_RESET = 32'h0000_0000, // First instruction address
-  parameter P_DIVISION_STEPS      = 4              // Num of divider iterations
+  // Compile time configurable generic parameters
+  parameter P_INITIAL_FETCH_ADDR = 0,  // First instruction address
+  parameter P_MEMORY_ADDR_MSB    = 5,  //
+  parameter P_MEMORY_DEPTH       = 38, //
+  parameter P_MUL_START_ADDR     = 32, //
+  parameter P_DIV_START_ADDR     = 33, // 
+  parameter P_DIV_ACCURACY       = 3   // 1e10^-P_DIVISION_ACCURACY
 )(
   // Component's clocks and resets
   input i_clk,        // clock
@@ -87,28 +92,34 @@ module ORC_R32IMAZicsr_TOP #(
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
   ///////////////////////////////////////////////////////////////////////////////
-  ORC_R32IMAZicsr #(P_FETCH_COUNTER_RESET, P_DIVISION_STEPS) 
-  uut (
-  // Component's clocks and resets
-  .i_clk(i_clk),
-  .i_reset_sync(i_reset_sync),
-  // Instruction Wishbone(pipeline) Master Read Interface
-  .o_inst_read_stb(o_inst_read_stb),
-  .i_inst_read_ack(i_inst_read_ack),
-  .o_inst_read_addr(o_inst_read_addr),
-  .i_inst_read_data(i_inst_read_data),
-  // Wishbone(pipeline) Master Read Interface
-  .o_master_read_stb(o_master_read_stb),
-  .i_master_read_ack(i_master_read_ack),
-  .o_master_read_addr(o_master_read_addr),
-  .i_master_read_data(i_master_read_data),
-  // Wishbone(pipeline) Master Write Interface
-  .o_master_write_stb(o_master_write_stb),  
-  .i_master_write_ack(i_master_write_ack),
-  .o_master_write_addr(o_master_write_addr),
-  .o_master_write_data(o_master_write_data),
-  .o_master_write_sel(o_master_write_sel)
-);
+  ORC_R32IMAZicsr #(
+    P_INITIAL_FETCH_ADDR,
+    P_MEMORY_ADDR_MSB,
+    P_MEMORY_DEPTH,
+    P_MUL_START_ADDR,
+    P_DIV_START_ADDR,
+    P_DIV_ACCURACY
+  ) uut (
+    // Component's clocks and resets
+    .i_clk(i_clk),
+    .i_reset_sync(i_reset_sync),
+    // Instruction Wishbone(pipeline) Master Read Interface
+    .o_inst_read_stb(o_inst_read_stb),
+    .i_inst_read_ack(i_inst_read_ack),
+    .o_inst_read_addr(o_inst_read_addr),
+    .i_inst_read_data(i_inst_read_data),
+    // Wishbone(pipeline) Master Read Interface
+    .o_master_read_stb(o_master_read_stb),
+    .i_master_read_ack(i_master_read_ack),
+    .o_master_read_addr(o_master_read_addr),
+    .i_master_read_data(i_master_read_data),
+    // Wishbone(pipeline) Master Write Interface
+    .o_master_write_stb(o_master_write_stb),  
+    .i_master_write_ack(i_master_write_ack),
+    .o_master_write_addr(o_master_write_addr),
+    .o_master_write_data(o_master_write_data),
+    .o_master_write_sel(o_master_write_sel)
+  );
 
 assign we_o  = 0;
 assign sel_o = 0;
