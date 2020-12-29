@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/28 20:06:27
+// Last modified : 2020/12/29 07:24:26
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -78,7 +78,8 @@ module HCC_Arithmetic_Processor #(
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
   ///////////////////////////////////////////////////////////////////////////////
-  localparam L_HCC_PRODUCT_MSB = ((P_HCC_FACTORS_MSB+1)*2)-1;
+  localparam L_HCC_FACTORS_EXTENDED_MSB = ((P_HCC_FACTORS_MSB+1)*2)-1;
+  localparam L_HCC_PRODUCT_EXTENDED_MSB = ((L_HCC_FACTORS_EXTENDED_MSB+1)*2)-1;
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
@@ -97,14 +98,14 @@ module HCC_Arithmetic_Processor #(
   wire [P_HCC_MEM_ADDR_MSB:0] w_div1_write_addr; // WB address
   wire [31:0]                 w_div1_write_data; // WB data
   // Divider
-  wire                       w_div_stb = i_slave_hcc_processor_stb & i_slave_hcc_processor_addr;
-  wire                       w_div_ack;
-  wire [P_HCC_FACTORS_MSB:0] w_div_multiplicand;
-  wire [P_HCC_FACTORS_MSB:0] w_div_multiplier;
+  wire                                w_div_stb = i_slave_hcc_processor_stb & i_slave_hcc_processor_addr;
+  wire                                w_div_ack;
+  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplicand;
+  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplier;
   // Multiplier
-  wire signed [P_HCC_FACTORS_MSB:0] w_multiplicand = r_select == 1'b1 ? $signed(w_div_multiplicand) : $signed(i_master_hcc0_read_data);
-  wire signed [P_HCC_FACTORS_MSB:0] w_multiplier   = r_select == 1'b1 ? $signed(w_div_multiplier) : $signed(i_master_hcc1_read_data);
-  wire        [L_HCC_PRODUCT_MSB:0] w_product;
+  wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = r_select == 1'b1 ? $signed(w_div_multiplicand) : $signed(i_master_hcc0_read_data);
+  wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = r_select == 1'b1 ? $signed(w_div_multiplier) : $signed(i_master_hcc1_read_data);
+  wire        [L_HCC_PRODUCT_EXTENDED_MSB:0] w_product;
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -151,7 +152,7 @@ module HCC_Arithmetic_Processor #(
   // HCC Processor mem1 WB(pipeline) master Write access control
   assign o_master_hcc1_write_stb  = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 : w_div0_write_stb;                        // WB write enable
   assign o_master_hcc1_write_addr = r_select==1'b0 ? P_HCC_MUL_START_ADDR : w_div0_write_addr;                             // WB address
-  assign o_master_hcc1_write_data = r_select==1'b0 ? w_product[L_HCC_PRODUCT_MSB:P_HCC_FACTORS_MSB+1] : w_div1_write_data; // WB data
+  assign o_master_hcc1_write_data = r_select==1'b0 ? w_product[L_HCC_FACTORS_EXTENDED_MSB:P_HCC_FACTORS_MSB+1] : w_div1_write_data; // WB data
 
   ///////////////////////////////////////////////////////////////////////////////
   // Instance    : Integer Multiplier
@@ -159,9 +160,9 @@ module HCC_Arithmetic_Processor #(
   //               multiplication and division operations.
   ///////////////////////////////////////////////////////////////////////////////
   Integer_Multiplier #(
-    P_HCC_FACTORS_MSB, 
-    P_HCC_FACTORS_MSB, 
-    L_HCC_PRODUCT_MSB
+    L_HCC_FACTORS_EXTENDED_MSB, 
+    L_HCC_FACTORS_EXTENDED_MSB, 
+    L_HCC_PRODUCT_EXTENDED_MSB
   ) mul (
     .i_clk(i_slave_hcc_processor_clk), //
     .i_multiplicand(w_multiplicand),   //

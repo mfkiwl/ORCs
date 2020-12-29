@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2020/12/28 20:34:01
+// Last modified : 2020/12/29 08:16:31
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -214,13 +214,14 @@ module Hart_Core #(
   // Decoder Process
   wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro;
   // Decoder Process valid/enable
-  wire w_decoder_opcode = w_opcode == L_RII  ? 1:
-                          w_opcode == L_RRO  ? 1:
-                          w_opcode == L_LCC  ? 1:
-                          w_opcode == L_SCC  ? 1:
-                          w_opcode == L_BCC  ? 1:
-                          w_opcode == L_JALR ? 1:
-                          w_opcode == L_MATH ? 1:0;
+  wire w_decoder_opcode = w_opcode==L_RII  ? 1'b1 :
+                          w_opcode==L_RRO  ? 1'b1 :
+                          w_opcode==L_LCC  ? 1'b1 :
+                          w_opcode==L_SCC  ? 1'b1 :
+                          w_opcode==L_BCC  ? 1'b1 :
+                          w_opcode==L_JALR ? 1'b1 :
+                          w_opcode==L_MATH ? 1'b1 : 1'b0;
+                         //  w_opcode==L_MATH && |i_inst_read_data[31:24]==1'b0 && i_inst_read_data[25]==1'b1 ? 1'b1 : 1'b0;
   // MUL/DIV instructions decoded
   reg        r_low_results;
   reg        r_high_results;
@@ -229,12 +230,12 @@ module Hart_Core #(
   wire       w_mul_h  = w_fct3_0==L_MULH   ? 1'b1 :
                         w_fct3_0==L_MULHSU ? 1'b1 :
                         w_fct3_0==L_MULHU  ? 1'b1 : 1'b0;
-  wire       w_div    = w_fct3_0==L_DIV ? 1'b1 :
-                        w_fct3_0==L_DIVU ? 1'b1 : 1'b0; 
-  wire       w_rem    = w_fct3_0==L_REM ? 1'b1 :
-                        w_fct3_0==L_REMU ? 1'b1 : 1'b0;
-  wire       w_math   = i_inst_read_ack == 1'b1 ? 
-                          ((w_opcode==L_MATH && i_inst_read_data[31:25]==7'b0000001) ? 1'b1 : 1'b0) : 1'b0;
+  wire       w_div    = w_fct3_0==L_DIV    ? 1'b1 :
+                        w_fct3_0==L_DIVU   ? 1'b1 : 1'b0; 
+  wire       w_rem    = w_fct3_0==L_REM    ? 1'b1 :
+                        w_fct3_0==L_REMU   ? 1'b1 : 1'b0;
+  wire       w_math   = i_inst_read_ack==1'b1 && w_opcode==L_MATH ? 1'b1 : 1'b0;
+  // wire       w_math   = i_inst_read_ack==1'b1 && w_opcode==L_MATH && |i_inst_read_data[31:24]==1'b0 && i_inst_read_data[25]==1'b1 ? 1'b1 : 1'b0;
   // Register Write Strobe Control
   wire w_reg_write_stb  = i_reset_sync ? 1'b0 :
                           (w_rd_not_zero & i_inst_read_ack) ? (
@@ -509,7 +510,7 @@ module Hart_Core #(
           r_scc <= 1'b0;
         end
 
-        if (w_opcode == L_MATH && w_fct7 == 7'b0000001) begin
+        if (w_opcode == L_MATH) begin
           // Store, Math Operation (Multiplication or Division)
           // TBD
           r_mul <= w_mul_l | w_mul_h;
@@ -542,8 +543,8 @@ module Hart_Core #(
   // Description : Updates the contents of the read strobe and address.
   ///////////////////////////////////////////////////////////////////////////////
   // Strobe Control
-  assign o_master_core0_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack&r_low_results);
-  assign o_master_core1_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack&r_high_results);
+  assign o_master_core0_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack & r_low_results);
+  assign o_master_core1_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack & r_high_results);
   // Address Select
   assign o_master_core0_read_addr = i_inst_read_ack == 1'b1 ? {1'b0, w_source1_pointer} :
                                               r_mul == 1'b1 ? L_PRODUCT_ADDR :
@@ -625,6 +626,6 @@ module Hart_Core #(
   assign o_master_hcc_processor_stb  = w_math;
   assign o_master_hcc_processor_addr = w_div | w_rem;
   assign o_master_hcc_processor_tga  = w_rem;
-  assign o_master_hcc_processor_data = { {1'b0, w_source2_pointer}, {1'b0, w_source1_pointer}};
+  assign o_master_hcc_processor_data = {{1'b0, w_source2_pointer}, {1'b0, w_source1_pointer}};
 
 endmodule

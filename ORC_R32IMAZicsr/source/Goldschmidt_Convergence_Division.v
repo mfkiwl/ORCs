@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/28 20:17:41
+// Last modified : 2020/12/29 08:19:11
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method

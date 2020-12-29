@@ -33,7 +33,7 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2020/12/28 20:30:26
+// Last modified : 2020/12/29 07:43:26
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
 // Description   : The Memory_Backplane controls access to the BRAMs.
@@ -135,19 +135,14 @@ module Memory_Backplane #(
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
-    casez (w_read0_cases)
-      2'b01 : begin
-        // HCC Processor read access
-        r_slave_read0_data <= mem_space0[i_slave_hcc0_read_addr];
-      end
-      2'b10 : begin
-        // Core read access
-        r_slave_read0_data <= mem_space0[i_slave_core0_read_addr];
-      end
-      default : begin
-        r_slave_read0_data <= r_slave_read0_data;
-      end
-    endcase
+    if (w_read0_cases == 2'b01) begin
+      // HCC Processor read access
+      r_slave_read0_data <= mem_space0[i_slave_hcc0_read_addr];
+    end
+    if (w_read0_cases == 2'b10) begin
+      // Core read access
+      r_slave_read0_data <= mem_space0[i_slave_core0_read_addr];
+    end
   end
   // 
   assign o_slave_core0_read_data = r_slave_read0_data;
@@ -162,19 +157,14 @@ module Memory_Backplane #(
       mem_space0[reset_index] <= 32'h0000_0000;
     end
     else begin
-      casez (w_write0_cases)
-        2'b01 : begin
-          // HCC Processor write access
-          mem_space1[i_slave_hcc0_write_addr] <= i_slave_hcc0_write_data;
-        end
-        2'b10 : begin
-          // Core write access
-          mem_space1[i_slave_core0_write_addr] <= i_slave_core0_write_data;
-        end
-        default : begin
-          // null
-        end
-      endcase
+      if (w_write0_cases == 2'b01) begin
+        // HCC Processor write access
+        mem_space0[i_slave_hcc0_write_addr] <= i_slave_hcc0_write_data;
+      end
+      if (w_write0_cases == 2'b10) begin
+        // Core write access
+        mem_space0[i_slave_core0_write_addr] <= i_slave_core0_write_data;
+      end
     end
   end
 
@@ -183,20 +173,14 @@ module Memory_Backplane #(
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
-    casez (w_read1_cases)
-      2'b01 : begin
-        // HCC Processor read access
-        r_slave_read1_data <= mem_space1[i_slave_hcc1_read_addr];
-      end
-      2'b10 : begin
-        // Core read access
-        r_slave_read1_data <= mem_space1[i_slave_core1_read_addr];
-      end
-      default : begin
-        // idle
-        r_slave_read1_data <= r_slave_read1_data;
-      end
-    endcase
+    if (w_read1_cases == 2'b01) begin
+      // HCC Processor read access
+      r_slave_read1_data <= mem_space1[i_slave_hcc1_read_addr];
+    end
+    if (w_read1_cases == 2'b10) begin
+      // Core read access
+      r_slave_read1_data <= mem_space1[i_slave_core1_read_addr];
+    end
   end
   // 
   assign o_slave_core1_read_data = r_slave_read1_data;
@@ -211,19 +195,14 @@ module Memory_Backplane #(
       mem_space1[reset_index] <= 32'h0000_0000;
     end
     else begin
-      casez (w_write1_cases)
-        2'b01 : begin
-          // HCC Processor write access
-          mem_space1[i_slave_hcc1_write_addr] <= i_slave_hcc1_write_data;
-        end
-        2'b10 : begin
-          // Core write access
-          mem_space1[i_slave_core1_write_addr] <= i_slave_core1_write_data;
-        end
-        default : begin
-          // null
-        end
-      endcase
+      if (w_write1_cases == 2'b01) begin
+        // HCC Processor write access
+        mem_space1[i_slave_hcc1_write_addr] <= i_slave_hcc1_write_data;
+      end
+      if (w_write1_cases == 2'b10) begin
+        // Core write access
+        mem_space1[i_slave_core1_write_addr] <= i_slave_core1_write_data;
+      end
     end
   end
 
