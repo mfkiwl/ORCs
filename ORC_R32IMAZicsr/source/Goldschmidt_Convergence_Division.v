@@ -184,7 +184,7 @@ module Goldschmidt_Convergence_Division #(
   // Description : Count until the hot bit is detected to determine which value
   //               from the lookup table to get.
   ///////////////////////////////////////////////////////////////////////////////
-	always @(posedge i_clk) begin
+  always @(posedge i_clk) begin
     if (i_slave_stb == 1'b1) begin
       //
       for (jj=0; jj<(L_GCD_FACTORS_NIBBLES/2); jj=jj+1) begin
@@ -337,7 +337,7 @@ module Goldschmidt_Convergence_Division #(
         end
       endcase
     end
-	end
+  end
   // MEMx Factors and LookUp Table Read Access
   assign o_master_div0_read_stb  = w_div0_read_stb;
   assign o_master_div0_read_addr = w_div0_read_addr;
