@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/28 17:37:13
+// Last modified : 2020/12/28 20:06:27
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -121,15 +121,17 @@ module HCC_Arithmetic_Processor #(
     end
     else begin
       if (i_slave_hcc_processor_stb == 1'b1) begin
+        // Received valid factors index.
         r_select   <= i_slave_hcc_processor_addr;
         r_wait_ack <= 1'b1;
       end
       if (r_select == 1'b0 && r_wait_ack == 1'b1) begin
-        
+        // Multiplication done after one clock.
         r_wait_ack <= 1'b0;
         r_select   <= 1'b1;
       end
       if (r_select == 1'b1 && r_wait_ack == 1'b1) begin
+        // Wait for Division to finish.
         r_wait_ack <= !w_div_ack;
       end
     end

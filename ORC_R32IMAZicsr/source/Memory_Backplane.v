@@ -33,10 +33,10 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2020/12/25 16:00:33
+// Last modified : 2020/12/28 20:30:26
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
-// Description   : The Memory_Backplane
+// Description   : The Memory_Backplane controls access to the BRAMs.
 //
 // Additional Comments:
 //   
@@ -136,11 +136,11 @@ module Memory_Backplane #(
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
     casez (w_read0_cases)
-      3'b01 : begin
+      2'b01 : begin
         // HCC Processor read access
         r_slave_read0_data <= mem_space0[i_slave_hcc0_read_addr];
       end
-      3'b10 : begin
+      2'b10 : begin
         // Core read access
         r_slave_read0_data <= mem_space0[i_slave_core0_read_addr];
       end
@@ -162,12 +162,12 @@ module Memory_Backplane #(
       mem_space0[reset_index] <= 32'h0000_0000;
     end
     else begin
-      casez (w_write_case)
-        3'b01 : begin
+      casez (w_write0_cases)
+        2'b01 : begin
           // HCC Processor write access
           mem_space1[i_slave_hcc0_write_addr] <= i_slave_hcc0_write_data;
         end
-        3'b10 : begin
+        2'b10 : begin
           // Core write access
           mem_space1[i_slave_core0_write_addr] <= i_slave_core0_write_data;
         end
@@ -183,12 +183,12 @@ module Memory_Backplane #(
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
   always@(posedge i_clk) begin
-    casez (w_read0_cases)
-      3'b01 : begin
+    casez (w_read1_cases)
+      2'b01 : begin
         // HCC Processor read access
         r_slave_read1_data <= mem_space1[i_slave_hcc1_read_addr];
       end
-      3'b10 : begin
+      2'b10 : begin
         // Core read access
         r_slave_read1_data <= mem_space1[i_slave_core1_read_addr];
       end
@@ -211,12 +211,12 @@ module Memory_Backplane #(
       mem_space1[reset_index] <= 32'h0000_0000;
     end
     else begin
-      casez (w_write_case)
-        3'b01 : begin
+      casez (w_write1_cases)
+        2'b01 : begin
           // HCC Processor write access
           mem_space1[i_slave_hcc1_write_addr] <= i_slave_hcc1_write_data;
         end
-        3'b10 : begin
+        2'b10 : begin
           // Core write access
           mem_space1[i_slave_core1_write_addr] <= i_slave_core1_write_data;
         end

@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/28 15:48:05
+// Last modified : 2020/12/28 20:17:41
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -120,7 +120,7 @@ module Goldschmidt_Convergence_Division #(
   reg                        r_found0_hot_bit;
   reg                        r_found1_hot_bit;
   // Divider Accumulator signals
-  reg  [1:0]                     r_divider_state;
+  reg  [2:0]                     r_divider_state;
   reg                            r_calculate_remainder;
   reg                            r_ack;
   reg                            r_lut_half_select;
