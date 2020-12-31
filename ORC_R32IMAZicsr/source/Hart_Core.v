@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2020/12/29 15:16:00
+// Last modified : 2020/12/31 10:18:56
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -342,7 +342,7 @@ module Hart_Core #(
         end
         S_WAIT_FOR_DECODER : begin
           // Wait one clock cycle to allow data to be stored in the registers.
-          if (r_mul == 1'b1) begin
+          if (i_master_hcc_processor_ack == 1'b1) begin
             // Fetch Fetch next instruction
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;

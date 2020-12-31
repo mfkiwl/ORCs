@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/29 16:29:27
+// Last modified : 2020/12/31 10:33:48
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -133,9 +133,9 @@ module Goldschmidt_Convergence_Division #(
   wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor   = w_number_two_extended + ~w_current_divisor;
   wire                           w_converged           = &i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-L_GCD_ACCURACY_BITS];
   // MEMx Factors and LookUp Table Read Signals
-  wire                        w_div0_read_stb  = |r_first_hot_nibble[(L_GCD_FACTORS_NIBBLES/2)-1:0];
+  wire                        w_div0_read_stb  = r_found0_hot_bit;
   wire [P_GCD_MEM_ADDR_MSB:0] w_div0_read_addr = (L_GDC_LUT_ADDR+r_lut0_offset);
-  wire                        w_div1_read_stb  = |r_first_hot_nibble[L_GCD_FACTORS_NIBBLES-1:(L_GCD_FACTORS_NIBBLES/2)];
+  wire                        w_div1_read_stb  = r_found1_hot_bit;
   wire [P_GCD_MEM_ADDR_MSB:0] w_div1_read_addr = (L_GDC_LUT_ADDR+r_lut1_offset);
   // MEMx Result Registers Write Signals
   reg                         r_div0_write_stb;
@@ -166,7 +166,7 @@ module Goldschmidt_Convergence_Division #(
       // Description : Locates the the first hot nibble to determine by which power
       //               of minus ten to multiply the divisor.
       ///////////////////////////////////////////////////////////////////////////////
-	    always @(*) begin
+	    always @(posedge i_slave_stb) begin
         if (i_reset_sync== 1'b1) begin
           r_first_hot_nibble[ii] = 1'b0;
         end
@@ -191,28 +191,28 @@ module Goldschmidt_Convergence_Division #(
       for (jj=0; jj<(L_GCD_FACTORS_NIBBLES/2); jj=jj+1) begin
         if (r_first_hot_nibble[jj] == 1'b0 && r_found0_hot_bit == 1'b0) begin
           // Count until the hot bit is found.
-          r_lut0_offset = r_lut0_offset+1;
+          r_lut0_offset <= r_lut0_offset+1;
         end
         else begin
           // Found the hot bit, stop counting
-          r_found0_hot_bit = 1'b1;
+          r_found0_hot_bit <= 1'b1;
         end
         if (r_first_hot_nibble[jj+(L_GCD_FACTORS_NIBBLES/2)] == 1'b0 && r_found1_hot_bit == 1'b0) begin
           // Count until the hot bit is found.
-          r_lut1_offset = r_lut1_offset+1;
+          r_lut1_offset <= r_lut1_offset+1;
         end
         else begin
           // Found the hot bit, stop counting
-          r_found1_hot_bit = 1'b1;
+          r_found1_hot_bit <= 1'b1;
         end
       end
     end
     else begin
       // Reset to zero.
-      r_lut0_offset    = 0;
-      r_lut1_offset    = 0;
-      r_found0_hot_bit = 1'b0;
-      r_found1_hot_bit = 1'b0;
+      r_lut0_offset    <= 0;
+      r_lut1_offset    <= 0;
+      r_found0_hot_bit <= 1'b0;
+      r_found1_hot_bit <= 1'b0;
     end
   end
 

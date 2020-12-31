@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/29 14:57:36
+// Last modified : 2020/12/31 09:49:19
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -149,7 +149,7 @@ module HCC_Arithmetic_Processor #(
     end
   end
   assign o_slave_hcc_processor_ack = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 :
-                                     (r_select==1'b1 && r_wait_ack==1'b1) ? w_div_ack : 1'b0;
+                                     (r_select==1'b1 && r_wait_ack==1'b1) ? 1'b1 : 1'b0;
   // HCC Processor mem0 WB(pipeline) master Read access control
   assign o_master_hcc0_read_stb  = w_div0_read_stb;  // WB read enable
   assign o_master_hcc0_read_addr = w_div1_read_addr; // WB address
