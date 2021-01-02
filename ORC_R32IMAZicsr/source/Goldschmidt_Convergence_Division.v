@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2020/12/31 10:33:48
+// Last modified : 2021/01/01 10:15:16
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -99,19 +99,20 @@ module Goldschmidt_Convergence_Division #(
   localparam                       L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
   // Program Counter FSM States
   localparam [2:0] S_IDLE                 = 3'h0; // Waits for valid factors.
-  localparam [2:0] S_SHIFT_DIVIDEND_POINT = 3'h1; // multiply the dividend by minus powers of ten to shift the decimal point.
-  localparam [2:0] S_SHIFT_DIVISOR_POINT  = 3'h2; // multiply the divisor by minus powers of ten to shift the decimal point.
+  localparam [2:0] S_SHIFT_DIVISOR_POINT  = 3'h1; // multiply the divisor by minus powers of ten to shift the decimal point.
+  localparam [2:0] S_SHIFT_DIVIDEND_POINT = 3'h2; // multiply the dividend by minus powers of ten to shift the decimal point.
   localparam [2:0] S_HALF_STEP_ONE        = 3'h3; // D[i] * (2-d[i]); were i is the iteration.
   localparam [2:0] S_HALF_STEP_TWO        = 3'h4; // d[i] * (2-d[i]); were i is the iteration.
   localparam [2:0] S_REMAINDER_TO_NATURAL = 3'h5; // Convert remainder from decimal fraction to a natural number.
   // LookUp Table Initial Address
-  localparam [P_GCD_MEM_ADDR_MSB:0] L_GDC_LUT_ADDR = P_GCD_DIV_START_ADDR;
+  localparam [P_GCD_MEM_ADDR_MSB:0] L_GDC_LUT_ADDR0 = P_GCD_DIV_START_ADDR;
+  localparam [P_GCD_MEM_ADDR_MSB:0] L_GDC_LUT_ADDR1 = P_GCD_DIV_START_ADDR+1;
+  localparam [P_GCD_MEM_ADDR_MSB:0] L_GDC_LUT_ADDR2 = P_GCD_DIV_START_ADDR+2;
+  localparam [P_GCD_MEM_ADDR_MSB:0] L_GDC_LUT_ADDR3 = P_GCD_DIV_START_ADDR+3;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
-  // Fixed Point Locator Process signals
-  reg [L_GCD_FACTORS_NIBBLES-1:0] r_first_hot_nibble;
   // Offset Counter
   reg [P_GCD_MEM_ADDR_MSB:0] r_lut0_offset;
   reg [P_GCD_MEM_ADDR_MSB:0] r_lut1_offset;
@@ -121,7 +122,6 @@ module Goldschmidt_Convergence_Division #(
   reg  [2:0]                     r_divider_state;
   reg                            r_calculate_remainder;
   reg                            r_ack;
-  reg                            r_lut_half_select;
   wire [L_GCD_MUL_FACTORS_MSB:0] w_number_two_extended = {L_GCD_NUMBER_TWO,L_GCD_ZERO_FILLER};
   wire                           w_dividend_not_zero   = |i_master_div0_read_data;
   wire                           w_divisor_not_zero    = |i_master_div1_read_data;
@@ -134,9 +134,9 @@ module Goldschmidt_Convergence_Division #(
   wire                           w_converged           = &i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-L_GCD_ACCURACY_BITS];
   // MEMx Factors and LookUp Table Read Signals
   wire                        w_div0_read_stb  = r_found0_hot_bit;
-  wire [P_GCD_MEM_ADDR_MSB:0] w_div0_read_addr = (L_GDC_LUT_ADDR+r_lut0_offset);
+  wire [P_GCD_MEM_ADDR_MSB:0] w_div0_read_addr = r_lut0_offset;
   wire                        w_div1_read_stb  = r_found1_hot_bit;
-  wire [P_GCD_MEM_ADDR_MSB:0] w_div1_read_addr = (L_GDC_LUT_ADDR+r_lut1_offset);
+  wire [P_GCD_MEM_ADDR_MSB:0] w_div1_read_addr = r_lut1_offset;
   // MEMx Result Registers Write Signals
   reg                         r_div0_write_stb;
   reg  [P_GCD_MEM_ADDR_MSB:0] r_div0_write_addr;
@@ -158,27 +158,6 @@ module Goldschmidt_Convergence_Division #(
   //            ********      Architecture Declaration      ********           //
   ///////////////////////////////////////////////////////////////////////////////
 
-  genvar ii;
-  generate
-    for (ii=L_GCD_FACTORS_NIBBLES-1; ii>=0; ii=ii-1) begin
-      ///////////////////////////////////////////////////////////////////////////////
-      // Process     : Fixed Point Locator
-      // Description : Locates the the first hot nibble to determine by which power
-      //               of minus ten to multiply the divisor.
-      ///////////////////////////////////////////////////////////////////////////////
-	    always @(posedge i_slave_stb) begin
-        if (i_reset_sync== 1'b1) begin
-          r_first_hot_nibble[ii] = 1'b0;
-        end
-        else if (i_slave_stb == 1'b1 && |r_first_hot_nibble[L_GCD_FACTORS_NIBBLES-1:ii] == 1'b0) begin
-          // Find first hot nibble in the divisor. The hart's core should have 
-          // already loaded the rs2 and rs1 when the instruction got decoded.
-          r_first_hot_nibble[ii] = |i_master_div1_read_data[((ii+1)*4)-1:ii*4];
-        end
-      end
-    end
-  endgenerate
-
   integer jj=0; 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : Offset Counter
@@ -186,25 +165,55 @@ module Goldschmidt_Convergence_Division #(
   //               from the lookup table to get.
   ///////////////////////////////////////////////////////////////////////////////
   always @(posedge i_clk) begin
+    if (i_reset_sync == 1'b1) begin
+      // Reset to zero.
+      r_lut0_offset    <= L_GDC_LUT_ADDR0;
+      r_lut1_offset    <= L_GDC_LUT_ADDR0;
+      r_found0_hot_bit <= 1'b0;
+      r_found1_hot_bit <= 1'b0;
+    end
     if (i_slave_stb == 1'b1) begin
       //
-      for (jj=0; jj<(L_GCD_FACTORS_NIBBLES/2); jj=jj+1) begin
-        if (r_first_hot_nibble[jj] == 1'b0 && r_found0_hot_bit == 1'b0) begin
-          // Count until the hot bit is found.
-          r_lut0_offset <= r_lut0_offset+1;
-        end
-        else begin
-          // Found the hot bit, stop counting
-          r_found0_hot_bit <= 1'b1;
-        end
-        if (r_first_hot_nibble[jj+(L_GCD_FACTORS_NIBBLES/2)] == 1'b0 && r_found1_hot_bit == 1'b0) begin
-          // Count until the hot bit is found.
-          r_lut1_offset <= r_lut1_offset+1;
-        end
-        else begin
-          // Found the hot bit, stop counting
-          r_found1_hot_bit <= 1'b1;
-        end
+      if (i_master_div0_read_data < 20) begin
+        //
+        r_lut0_offset    <= L_GDC_LUT_ADDR0;
+        r_found0_hot_bit <= 1'b1;
+      end
+      else if (i_master_div0_read_data < 200) begin
+        //
+        r_lut0_offset    <= L_GDC_LUT_ADDR1;
+        r_found0_hot_bit <= 1'b1;
+      end
+      else if (i_master_div0_read_data < 2000) begin
+        //
+        r_lut0_offset    <= L_GDC_LUT_ADDR2;
+        r_found0_hot_bit <= 1'b1;
+      end
+      else if (i_master_div0_read_data < 20000) begin
+        //
+        r_lut0_offset    <= L_GDC_LUT_ADDR3;
+        r_found0_hot_bit <= 1'b1;
+      end
+
+      if (i_master_div0_read_data < 200000) begin
+        //
+        r_lut1_offset    <= L_GDC_LUT_ADDR0;
+        r_found1_hot_bit <= 1'b1;
+      end
+      else if (i_master_div0_read_data < 2000000) begin
+        //
+        r_lut1_offset    <= L_GDC_LUT_ADDR1;
+        r_found1_hot_bit <= 1'b1;
+      end
+      else if (i_master_div0_read_data < 20000000) begin
+        //
+        r_lut1_offset    <= L_GDC_LUT_ADDR2;
+        r_found1_hot_bit <= 1'b1;
+      end
+      else if (i_master_div0_read_data < 200000000) begin
+        //                               2079064012
+        r_lut1_offset    <= L_GDC_LUT_ADDR3;
+        r_found1_hot_bit <= 1'b1;
       end
     end
     else begin
@@ -226,7 +235,6 @@ module Goldschmidt_Convergence_Division #(
       r_ack                 <= 1'b0;
       r_multiplicand        <= 0; 
       r_multiplier          <= 0;
-      r_lut_half_select     <= 1'b0;
       r_calculate_remainder <= 1'b0;
     end
     else begin
@@ -264,10 +272,8 @@ module Goldschmidt_Convergence_Division #(
               r_dividend       <= i_master_div0_read_data; //
               r_divisor        <= i_master_div1_read_data; //
               r_ack            <= 1'b0;
-              //
-              r_lut_half_select <= |r_first_hot_nibble[L_GCD_FACTORS_NIBBLES-1:(L_GCD_FACTORS_NIBBLES/2)];
               // Transition shifting the decimal point.
-              r_divider_state <= S_SHIFT_DIVIDEND_POINT;
+              r_divider_state <= S_SHIFT_DIVISOR_POINT;
             end
             r_calculate_remainder <= i_slave_tga;
           end
@@ -283,19 +289,19 @@ module Goldschmidt_Convergence_Division #(
         S_SHIFT_DIVISOR_POINT : begin
           // 
           r_multiplicand  <= {r_divisor, L_GCD_ZERO_FILLER};
-          if (r_lut_half_select == 1'b0) begin
+          if (r_found0_hot_bit == 1'b1) begin
             r_multiplier <= {L_GCD_ZERO_FILLER, i_master_div0_read_data};
           end
-          if (r_lut_half_select == 1'b1) begin
+          if (r_found1_hot_bit == 1'b1) begin
             r_multiplier <= {L_GCD_ZERO_FILLER, i_master_div1_read_data};
           end
-          r_divider_state <= S_HALF_STEP_ONE;
+          r_divider_state <= S_SHIFT_DIVIDEND_POINT;
         end
         S_SHIFT_DIVIDEND_POINT : begin
           // 
           r_multiplicand  <= {r_dividend, L_GCD_ZERO_FILLER};
           r_multiplier    <= r_multiplier;
-          r_divider_state <= S_SHIFT_DIVISOR_POINT;
+          r_divider_state <= S_HALF_STEP_ONE;
         end
         S_HALF_STEP_ONE : begin
           //          
