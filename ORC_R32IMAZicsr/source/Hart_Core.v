@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2020/12/31 10:18:56
+// Last modified : 2021/01/02 01:51:29
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -95,7 +95,7 @@ module Hart_Core #(
   ///////////////////////////////////////////////////////////////////////////////
   // OpCodes 
   localparam [6:0] L_RII   = 7'b0010011; // imm[11:0],[19:15],funct[14:12],rd[11:7]
-  localparam [6:0] L_RRO   = 7'b0110011; // funct[6:0],rs2[24:20],rs1[19:15],funct[14:12],rd[11:7]
+  localparam [6:0] L_MATH  = 7'b0110011; // funct[6:0],rs2[24:20],rs1[19:15],funct[14:12],rd[11:7]
   localparam [6:0] L_LUI   = 7'b0110111; // imm[31:12], rd[11:7]
   localparam [6:0] L_AUIPC = 7'b0010111; // imm[31:12], rd[11:7]
   localparam [6:0] L_JAL   = 7'b1101111; // imm[20|10:1|11|19:12],rd[11:7]
@@ -103,7 +103,7 @@ module Hart_Core #(
   localparam [6:0] L_BCC   = 7'b1100011; // imm[12|10:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:1|11]
   localparam [6:0] L_LCC   = 7'b0000011; // imm[11:0],rs1[19:15],funct[14:12],rd[11:7]
   localparam [6:0] L_SCC   = 7'b0100011; // imm[11:5],rs2[24:20],rs1[19:15],funct[14:12],imm[4:0]
-  localparam [6:0] L_MATH  = 7'b0110011; // funct7[31:25],rs2[24:20],rs1[19:15],funct3[14:12]
+  localparam [6:0] L_HCC   = 7'b0000001; // funct7[31:25],rs2[24:20],rs1[19:15],funct3[14:12]
   // Program Counter FSM States
   localparam [2:0] S_WAKEUP           = 3'h0; // r_program_counter_state after reset
   localparam [2:0] S_WAIT_FOR_ACK     = 3'h1; // r_program_counter_state, waiting for valid instruction
@@ -211,13 +211,11 @@ module Hart_Core #(
   wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro;
   // Decoder Process valid/enable
   wire w_decoder_opcode = w_opcode==L_RII  ? 1'b1 :
-                          w_opcode==L_RRO  ? 1'b1 :
+                          w_opcode==L_MATH ? 1'b1 :
                           w_opcode==L_LCC  ? 1'b1 :
                           w_opcode==L_SCC  ? 1'b1 :
                           w_opcode==L_BCC  ? 1'b1 :
-                          w_opcode==L_JALR ? 1'b1 :
-                          w_opcode==L_MATH ? 1'b1 : 1'b0;
-                         //  w_opcode==L_MATH && |i_inst_read_data[31:24]==1'b0 && i_inst_read_data[25]==1'b1 ? 1'b1 : 1'b0;
+                          w_opcode==L_JALR ? 1'b1 : 1'b0;
   // MUL/DIV instructions decoded
   reg        r_low_results;
   reg        r_high_results;
@@ -230,8 +228,7 @@ module Hart_Core #(
                         w_fct3_0==L_DIVU   ? 1'b1 : 1'b0; 
   wire       w_rem    = w_fct3_0==L_REM    ? 1'b1 :
                         w_fct3_0==L_REMU   ? 1'b1 : 1'b0;
-  wire       w_math   = (i_inst_read_ack==1'b1 && w_opcode==L_MATH) ? 1'b1 : 1'b0;
-  // wire       w_math   = i_inst_read_ack==1'b1 && w_opcode==L_MATH && |i_inst_read_data[31:24]==1'b0 && i_inst_read_data[25]==1'b1 ? 1'b1 : 1'b0;
+  wire       w_hcc    = (i_inst_read_ack==1'b1 && w_opcode==L_MATH && i_inst_read_data[31:25]==L_HCC) ? 1'b1 : 1'b0;
   // Register Write Strobe Control
   wire w_reg_write_stb  = i_reset_sync ? 1'b0 :
                           (w_rd_not_zero==1'b1 && i_inst_read_ack==1'b1) ? (
@@ -267,7 +264,7 @@ module Hart_Core #(
                                  // required data from rs1 or rs2.
                                  // Stores the Register-Immediate instruction result in the general register
                                  // or store the Register-Register operation result in the general registers
-                                 (w_decoder_valid & (r_rii | r_rro)) ? w_rm_data :
+                                 (w_decoder_valid==1'b1 && (r_rii==1'b1 || r_rro==1'b1)) ? w_rm_data :
                                  // Data loaded from memory or I/O device.
                                  (i_master_read_ack==1'b1 && r_master_read_ready==1'b0) ? w_l_data :
                                  // Default case, no change.
@@ -311,7 +308,6 @@ module Hart_Core #(
               // Increment the address and pre-load the program counter. Register
               // the instruction.
               r_next_pc_fetch <= (r_next_pc_fetch+32'h4);
-              r_inst_data     <= i_inst_read_data;
               // Transition
               r_program_counter_valid <= 1'b0;
               r_program_counter_state <= S_WAIT_FOR_DECODER;
@@ -332,8 +328,10 @@ module Hart_Core #(
               r_program_counter_valid <= 1'b1;
               r_program_counter_state <= S_WAIT_FOR_ACK;
             end
+            r_inst_data <= i_inst_read_data;
           end
           else begin
+            r_inst_data             <= r_inst_data;
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
@@ -342,7 +340,7 @@ module Hart_Core #(
         end
         S_WAIT_FOR_DECODER : begin
           // Wait one clock cycle to allow data to be stored in the registers.
-          if (i_master_hcc_processor_ack == 1'b1) begin
+          if (r_mul == 1'b1) begin
             // Fetch Fetch next instruction
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
@@ -371,6 +369,7 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
+          r_inst_data <= r_inst_data;
         end
         S_WAIT_FOR_READ : begin
           if (i_master_read_ack == 1'b1) begin
@@ -382,6 +381,7 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_READ;
           end
+          r_inst_data <= r_inst_data;
         end
         S_WAIT_FOR_WRITE : begin
           if (i_master_write_ack == 1'b1) begin
@@ -393,6 +393,7 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_WRITE;
           end
+          r_inst_data <= r_inst_data;
         end
         S_WAIT_FOR_DIV : begin
           if (i_master_hcc_processor_ack == 1'b1) begin
@@ -404,8 +405,10 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_DIV;
           end
+          r_inst_data <= r_inst_data;
         end
         default : begin
+          r_inst_data             <= r_inst_data;
           r_program_counter_valid <= 1'b0;
           r_program_counter_state <= S_WAIT_FOR_ACK;
         end
@@ -446,15 +449,37 @@ module Hart_Core #(
           r_rii <= 1'b0;
         end
   
-        if (w_opcode == L_RRO) begin
+        if (w_opcode == L_MATH) begin
           // Register-Register Operations
-          // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
-          r_rro  <= 1'b1;
+          if (i_inst_read_data[31:25] == L_HCC) begin
+            // Store, Math Operation (Multiplication or Division)
+            // TBD
+            r_mul <= w_mul_l | w_mul_h;
+            r_div <= w_div | w_rem;
+            // Higher or lower 32bits
+            r_low_results  <= w_mul_l | w_rem;
+            r_high_results <= w_mul_h | w_div;
+            //
+            r_rro <= 1'b0;
+          end
+          else begin
+            // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
+            r_rro          <= 1'b1;
+            r_mul          <= 1'b0;
+            r_div          <= 1'b0;
+            r_low_results  <= 1'b0;
+            r_high_results <= 1'b0;
+          end
+          //
           r_simm <= L_FILLER_ZERO;
           r_uimm <= L_FILLER_ZERO;
         end
         else begin
-          r_rro <= 1'b0;
+          r_rro          <= 1'b0;
+          r_mul          <= 1'b0;
+          r_div          <= 1'b0;
+          r_low_results  <= 1'b0;
+          r_high_results <= 1'b0;
         end
   
         if (w_opcode == L_JALR) begin
@@ -515,25 +540,6 @@ module Hart_Core #(
         end
         else begin
           r_scc <= 1'b0;
-        end
-
-        if (w_opcode == L_MATH) begin
-          // Store, Math Operation (Multiplication or Division)
-          // TBD
-          r_mul <= w_mul_l | w_mul_h;
-          r_div <= w_div | w_rem;
-          // Higher or lower 32bits
-          r_low_results  <= w_mul_l | w_rem;
-          r_high_results <= w_mul_h | w_div;
-          //
-          r_simm <= L_FILLER_ZERO;
-          r_uimm <= L_FILLER_ZERO;
-        end
-        else begin
-          r_mul          <= 1'b0;
-          r_div          <= 1'b0;
-          r_low_results  <= 1'b0;
-          r_high_results <= 1'b0;
         end
       end
       else begin
@@ -618,9 +624,9 @@ module Hart_Core #(
   assign o_master_write_addr = w_master_addr;
   assign o_master_write_data = w_s_data;
   assign o_master_write_sel  = (w_fct3==3'h0 || w_fct3==3'h4) ? (
-                                 w_master_addr[1:0]==3 ? 4'b1000 :
-                                 w_master_addr[1:0]==2 ? 4'b0100 :
-                                 w_master_addr[1:0]==1 ? 4'b0010 :
+                                 w_master_addr[1:0]==2'h3 ? 4'b1000 :
+                                 w_master_addr[1:0]==2'h2 ? 4'b0100 :
+                                 w_master_addr[1:0]==2'h1 ? 4'b0010 :
                                                          4'b0001) :
                                (w_fct3==3'h1 || w_fct3==3'h5) ? (
                                  w_master_addr[1]==1'b1 ? 4'b1100 :
@@ -631,10 +637,10 @@ module Hart_Core #(
   // Assignment  : HCC Processor Connections
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-  assign o_master_hcc_processor_stb  = w_math;
-  assign o_master_hcc_processor_addr = (w_div==1'b1 || w_rem==1'b1) ? 1'b1 : 1'b0;
-  assign o_master_hcc_processor_tga  = w_rem;
+  assign o_master_hcc_processor_stb  = r_div | r_mul;
+  assign o_master_hcc_processor_addr = r_div;
+  assign o_master_hcc_processor_tga  = r_low_results;
   assign o_master_hcc_processor_data = {{1'b0, w_rd}, {1'b0, w_source2_pointer}, {1'b0, w_source1_pointer}};
-  assign o_master_hcc_processor_tgd  = (w_mul_h== 1'b1 || w_div==1'b1) ? 1'b1 : 1'b0;
+  assign o_master_hcc_processor_tgd  = r_high_results;
 
 endmodule
