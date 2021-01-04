@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/03 22:29:29
+// Last modified : 2021/01/04 09:33:16
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -86,7 +86,7 @@ module Goldschmidt_Convergence_Division #(
   localparam [P_GCD_FACTORS_MSB:0] L_GCD_ZERO_FILLER      = 0;
   localparam                       L_GCD_ACCURACY_BITS    = P_GCD_ACCURACY*4;
   localparam                       L_GCD_MUL_FACTORS_MSB  = ((P_GCD_FACTORS_MSB+1)*2)-1;
-  localparam                       L_GCD_STEP_PRODUCT_MSB = (L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB;
+  localparam                       L_GCD_STEP_PRODUCT_MSB = ((L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB);
   localparam                       L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
   // Program Counter FSM States
   localparam [2:0] S_IDLE                 = 3'h0; // Waits for valid factors.
@@ -129,12 +129,12 @@ module Goldschmidt_Convergence_Division #(
   wire [P_GCD_FACTORS_MSB:0]  w_quotient  = r_divider_state==S_IDLE ? r_dividend : 
                                             i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b100 |
                                             i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b101 | 
-                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? (i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1) :
                                               i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
   wire [P_GCD_FACTORS_MSB:0]  w_remainder = r_divider_state==S_IDLE ? r_divisor :
                                             i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b100 |
                                             i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b101 | 
-                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1 :
+                                            i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-2]==3'b111 ? (i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1] + 1) :
                                               i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1];
   wire [P_GCD_FACTORS_MSB:0]  w_result    = r_calculate_remainder==1'b1 ? w_remainder : w_quotient;
 
@@ -153,35 +153,35 @@ module Goldschmidt_Convergence_Division #(
     end
     else if (i_slave_stb == 1'b1) begin
       //
-      if (i_master_div0_read_data < 20) begin
+      if (i_master_div1_read_data < 20) begin
         //
         r_lut_value <= L_REG_E10;
       end
-      else if (i_master_div0_read_data < 200) begin
+      else if (i_master_div1_read_data < 200) begin
         //
         r_lut_value <= L_REG_E100;
       end
-      else if (i_master_div0_read_data < 2000) begin
+      else if (i_master_div1_read_data < 2000) begin
         //
         r_lut_value <= L_REG_E1000;
       end
-      else if (i_master_div0_read_data < 20000) begin
+      else if (i_master_div1_read_data < 20000) begin
         //
         r_lut_value <= L_REG_E10000;
       end
-      else if (i_master_div0_read_data < 200000) begin
+      else if (i_master_div1_read_data < 200000) begin
         //
         r_lut_value <= L_REG_E100000;
       end
-      else if (i_master_div0_read_data < 2000000) begin
+      else if (i_master_div1_read_data < 2000000) begin
         //
         r_lut_value <= L_REG_E1000000;
       end
-      else if (i_master_div0_read_data < 20000000) begin
+      else if (i_master_div1_read_data < 20000000) begin
         //
         r_lut_value <= L_REG_E10000000;
       end
-      else if (i_master_div0_read_data < 200000000) begin
+      else if (i_master_div1_read_data < 200000000) begin
         //
         r_lut_value <= L_REG_E100000000;
       end
@@ -253,6 +253,8 @@ module Goldschmidt_Convergence_Division #(
             r_div_write_stb       <= 1'b0;
             r_divisor             <= 0;
             r_dividend            <= 0;
+            r_multiplicand        <= 0; 
+            r_multiplier          <= 0;
             r_calculate_remainder <= 1'b0;
             r_divider_state       <= S_IDLE;
           end

@@ -8,12 +8,12 @@ IO Statistics
   #inout                0
 
 Utilization Statistics
-#lut                 3310   out of  19600   16.89%
+#lut                 3298   out of  19600   16.83%
 #reg                  452   out of  19600    2.31%
-#le                  3310
-  #lut only          2858   out of   3310   86.34%
-  #reg only             0   out of   3310    0.00%
-  #lut&reg            452   out of   3310   13.66%
+#le                  3298
+  #lut only          2846   out of   3298   86.29%
+  #reg only             0   out of   3298    0.00%
+  #lut&reg            452   out of   3298   13.71%
 #dsp                   15   out of     29   51.72%
 #bram                   4   out of     64    6.25%
   #bram9k               4
@@ -29,5 +29,5 @@ Report Hierarchy Area:
 +-----------------------------------------------+
 |Instance |Module          |le    |lut   |seq   |
 +-----------------------------------------------+
-|top      |ORC_R32IMAZicsr |3310  |3310  |452   |
+|top      |ORC_R32IMAZicsr |3298  |3298  |452   |
 +-----------------------------------------------+

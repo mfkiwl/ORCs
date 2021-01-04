@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/04 00:52:54
+// Last modified : 2021/01/04 09:34:56
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -96,6 +96,8 @@ module HCC_Arithmetic_Processor #(
   wire                                w_div_ack;
   wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplicand;
   wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplier;
+  wire [L_HCC_PRODUCT_EXTENDED_MSB:0] w_product;
+  wire [P_HCC_FACTORS_MSB:0]          w_product_bits_select = r_tgd==1'b1 ? w_product[L_HCC_FACTORS_EXTENDED_MSB:P_HCC_FACTORS_MSB+1] : w_product[P_HCC_FACTORS_MSB:0];
   wire [P_HCC_FACTORS_MSB:0]          w_write_data      = r_select==1'b0 ? w_product_bits_select : w_div_write_data;
   wire                                w_write_stb       = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 : w_div_write_stb;
   // Multiplier
@@ -103,8 +105,6 @@ module HCC_Arithmetic_Processor #(
                                                                 {{L_HCC_FACTORS_NUM_BITS{i_master_hcc0_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc0_read_data[P_HCC_FACTORS_MSB:0]};
   wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = r_select==1'b1 ? $signed(w_div_multiplier) :
                                                                 {{L_HCC_FACTORS_NUM_BITS{i_master_hcc1_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc1_read_data[P_HCC_FACTORS_MSB:0]};
-  wire        [L_HCC_PRODUCT_EXTENDED_MSB:0] w_product;
-  wire        [P_HCC_FACTORS_MSB:0]          w_product_bits_select = r_tgd==1'b1 ? w_product[L_HCC_FACTORS_EXTENDED_MSB:P_HCC_FACTORS_MSB+1] : w_product[P_HCC_FACTORS_MSB:0];
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -132,7 +132,6 @@ module HCC_Arithmetic_Processor #(
       if (r_select == 1'b0 && r_wait_ack == 1'b1) begin
         // Multiplication done after one clock.
         r_wait_ack <= 1'b0;
-        r_select   <= 1'b1;
       end
       if (r_select == 1'b1 && r_wait_ack == 1'b1) begin
         // Wait for Division to finish.

@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/03 20:59:18
+// Last modified : 2021/01/04 10:11:50
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -312,19 +312,18 @@ module Hart_Core #(
               r_program_counter_valid <= 1'b0;
               r_program_counter_state <= S_WAIT_FOR_DECODER;
             end
+            if (w_jal == 1'b1) begin
+              // Is an immediate jump request. Update the program counter with the 
+              // jump value.
+              r_next_pc_fetch <= (w_j_simm+r_next_pc_fetch);
+              r_program_counter_valid <= 1'b1;
+              r_program_counter_state <= S_WAIT_FOR_ACK;
+            end
             else begin
-              // Instructions that are executed in one clock
-              if (w_jal == 1'b1) begin
-                // Is an immediate jump request. Update the program counter with the 
-                // jump value.
-                r_next_pc_fetch <= (w_j_simm+r_next_pc_fetch);
-              end
-              else begin
-                // LUI, AUIPC, FENCE, ECALL and BREAK
-                // Increment the program counter. Ignore this instruction
-                r_next_pc_fetch <= (r_next_pc_fetch+32'h4);
-              end
-              // Transition
+              // Instructions that are executed in one clock: LUI, AUIPC, FENCE, 
+              // ECALL and BREAK
+              // Increment the program counter. Ignore this instruction
+              r_next_pc_fetch <= (r_next_pc_fetch+32'h4);
               r_program_counter_valid <= 1'b1;
               r_program_counter_state <= S_WAIT_FOR_ACK;
             end
