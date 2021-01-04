@@ -1,0 +1,33 @@
+standard
+***Report Model: ORC_R32IMAZicsr***
+
+IO Statistics
+#IO                   204
+  #input               69
+  #output             135
+  #inout                0
+
+Utilization Statistics
+#lut                 3310   out of  19600   16.89%
+#reg                  452   out of  19600    2.31%
+#le                  3310
+  #lut only          2858   out of   3310   86.34%
+  #reg only             0   out of   3310    0.00%
+  #lut&reg            452   out of   3310   13.66%
+#dsp                   15   out of     29   51.72%
+#bram                   4   out of     64    6.25%
+  #bram9k               4
+  #fifo9k               0
+#bram32k                0   out of     16    0.00%
+#pad                  204   out of    188  108.51%
+  #ireg                 9
+  #oreg                 1
+  #treg                 0
+#pll                    0   out of      4    0.00%
+
+Report Hierarchy Area:
++-----------------------------------------------+
+|Instance |Module          |le    |lut   |seq   |
++-----------------------------------------------+
+|top      |ORC_R32IMAZicsr |3310  |3310  |452   |
++-----------------------------------------------+
