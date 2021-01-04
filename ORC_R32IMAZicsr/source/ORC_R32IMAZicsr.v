@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/29 11:02:30
+// Last modified : 2021/01/03 21:00:10
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -43,11 +43,10 @@
 /////////////////////////////////////////////////////////////////////////////////
 module ORC_R32IMAZicsr #(
   // Compile time configurable generic parameters
-  parameter P_INITIAL_FETCH_ADDR = 0,  // First instruction address
-  parameter P_MEMORY_ADDR_MSB    = 5,  //
-  parameter P_MEMORY_DEPTH       = 36, //
-  parameter P_DIV_START_ADDR     = 32, // 
-  parameter P_DIV_ACCURACY       = 3   // 1e10^-P_DIVISION_ACCURACY
+  parameter integer P_INITIAL_FETCH_ADDR = 0,  // First instruction address
+  parameter integer P_MEMORY_ADDR_MSB    = 4,  //
+  parameter integer P_MEMORY_DEPTH       = 32, //
+  parameter integer P_DIV_ACCURACY       = 3   // 1e10^-P_DIVISION_ACCURACY
 )(
   // Processor's clocks and resets
   input i_clk,        // clock
@@ -90,25 +89,19 @@ module ORC_R32IMAZicsr #(
   wire [P_MEMORY_ADDR_MSB:0] w_core1_write_addr; // WB address
   wire [31:0]                w_core1_write_data; // WB data
   // HCC Processor to Memory_Backplane connecting wires.
-  wire                       w_hcc0_read_stb;   // WB read enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc0_read_addr;  // WB address
-  wire [31:0]                w_hcc0_read_data;  // WB data
   wire                       w_hcc0_write_stb;  // WB write enable
   wire [P_MEMORY_ADDR_MSB:0] w_hcc0_write_addr; // WB address
   wire [31:0]                w_hcc0_write_data; // WB data
-  wire                       w_hcc1_read_stb;   // WB read enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc1_read_addr;  // WB address
-  wire [31:0]                w_hcc1_read_data;  // WB data
   wire                       w_hcc1_write_stb;  // WB write enable
   wire [P_MEMORY_ADDR_MSB:0] w_hcc1_write_addr; // WB address
   wire [31:0]                w_hcc1_write_data; // WB data
   // Hart_Core to HCC Processor connecting wires.
-  wire                                   w_hcc_processor_stb;
-  wire                                   w_hcc_processor_ack;
-  wire                                   w_hcc_processor_addr;
-  wire                                   w_hcc_processor_tga;
-  wire [(((P_MEMORY_ADDR_MSB+1)*3)-1):0] w_hcc_processor_factors;
-  wire                                   w_hcc_processor_tgd;
+  wire                       w_hcc_processor_stb;
+  wire                       w_hcc_processor_ack;
+  wire                       w_hcc_processor_addr;
+  wire                       w_hcc_processor_tga;
+  wire [P_MEMORY_ADDR_MSB:0] w_hcc_processor_factors;
+  wire                       w_hcc_processor_tgd;
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -174,7 +167,6 @@ module ORC_R32IMAZicsr #(
   HCC_Arithmetic_Processor #(
     31,                // P_HCC_FACTORS_MSB
     P_MEMORY_ADDR_MSB, // P_HCC_MEM_ADDR_MSB
-    P_DIV_START_ADDR,  // P_HCC_DIV_START_ADDR
     P_DIV_ACCURACY     // P_HCC_DIV_ACCURACY  
   ) mul_div_processor (
     // HCC Arithmetic Processor WB Interface
@@ -187,17 +179,13 @@ module ORC_R32IMAZicsr #(
     .i_slave_hcc_processor_data(w_hcc_processor_factors), // WB data, factors location in memory
     .i_slave_hcc_processor_tgd(w_hcc_processor_tgd),      // WB data tag, indicates low or high bits of data
     // HCC Processor mem0 WB(pipeline) master Read Interface
-    .o_master_hcc0_read_stb(w_hcc0_read_stb),   // WB read enable
-    .o_master_hcc0_read_addr(w_hcc0_read_addr), // WB address
-    .i_master_hcc0_read_data(w_hcc0_read_data), // WB data
+    .i_master_hcc0_read_data(w_core0_read_data), // WB data
     // HCC Processor mem0 WB(pipeline) master Write Interface
     .o_master_hcc0_write_stb(w_hcc0_write_stb),   // WB write enable
     .o_master_hcc0_write_addr(w_hcc0_write_addr), // WB address
     .o_master_hcc0_write_data(w_hcc0_write_data), // WB data
     // HCC Processor mem1 WB(pipeline) master Read Interface
-    .o_master_hcc1_read_stb(w_hcc1_read_stb),   // WB read enable
-    .o_master_hcc1_read_addr(w_hcc1_read_addr), // WB address
-    .i_master_hcc1_read_data(w_hcc1_read_data), // WB data
+    .i_master_hcc1_read_data(w_core1_read_data), // WB data
     // HCC Processor mem1 WB(pipeline) master Write Interface
     .o_master_hcc1_write_stb(w_hcc1_write_stb),   // WB write enable
     .o_master_hcc1_write_addr(w_hcc1_write_addr), // WB address
@@ -214,7 +202,7 @@ module ORC_R32IMAZicsr #(
     P_MEMORY_ADDR_MSB, // P_MEM_ADDR_MSB   
     P_MEMORY_DEPTH,    // P_MEM_DEPTH
     32,                // P_MEM_WIDTH       
-    32                 // P_NUM_GENERAL_REGS.
+    P_MEMORY_DEPTH     // P_NUM_GENERAL_REGS.
   ) mem_access_controller(
     // Component's clocks and resets
     .i_clk(i_clk),               // clock
@@ -235,18 +223,10 @@ module ORC_R32IMAZicsr #(
     .i_slave_core1_write_stb(w_core1_write_stb),   // WB write enable
     .i_slave_core1_write_addr(w_core1_write_addr), // WB address
     .i_slave_core1_write_data(w_core1_write_data), // WB data
-    // HCC Processor mem0 WB(pipeline) Slave Read Interface
-    .i_slave_hcc0_read_stb(w_hcc0_read_stb),   // WB read enable
-    .i_slave_hcc0_read_addr(w_hcc0_read_addr), // WB address
-    .o_slave_hcc0_read_data(w_hcc0_read_data), // WB data
     // HCC Processor mem0 WB(pipeline) Slave Write Interface
     .i_slave_hcc0_write_stb(w_hcc0_write_stb),   // WB write enable
     .i_slave_hcc0_write_addr(w_hcc0_write_addr), // WB address
     .i_slave_hcc0_write_data(w_hcc0_write_data), // WB data
-    // HCC Processor mem1 WB(pipeline) Slave Read Interface
-    .i_slave_hcc1_read_stb(w_hcc1_read_stb),   // WB read enable
-    .i_slave_hcc1_read_addr(w_hcc1_read_addr), // WB address
-    .o_slave_hcc1_read_data(w_hcc1_read_data), // WB data
     // HCC Processor mem1 WB(pipeline) Slave Write Interface
     .i_slave_hcc1_write_stb(w_hcc1_write_stb),   // WB write enable
     .i_slave_hcc1_write_addr(w_hcc1_write_addr), // WB address

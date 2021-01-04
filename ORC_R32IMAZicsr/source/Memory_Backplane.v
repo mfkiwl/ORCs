@@ -33,7 +33,7 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2020/12/29 07:43:26
+// Last modified : 2021/01/03 20:59:50
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
 // Description   : The Memory_Backplane controls access to the BRAMs.
@@ -42,10 +42,10 @@
 //   
 /////////////////////////////////////////////////////////////////////////////////
 module Memory_Backplane #(
-  parameter P_MEM_ADDR_MSB     = 0,
-  parameter P_MEM_DEPTH        = 0,
-  parameter P_MEM_WIDTH        = 0,
-  parameter P_NUM_GENERAL_REGS = 16 // Should be 16 or 32 per ISA
+  parameter integer P_MEM_ADDR_MSB     = 0,
+  parameter integer P_MEM_DEPTH        = 0,
+  parameter integer P_MEM_WIDTH        = 0,
+  parameter integer P_NUM_GENERAL_REGS = 16 // Should be 16 or 32 per ISA
 )(
   // Component's clocks and resets
   input i_clk,        // clock
@@ -66,18 +66,10 @@ module Memory_Backplane #(
   input                    i_slave_core1_write_stb,  // WB write enable
   input [P_MEM_ADDR_MSB:0] i_slave_core1_write_addr, // WB address
   input [P_MEM_WIDTH-1:0]  i_slave_core1_write_data, // WB data
-  // HCC Processor mem0 WB(pipeline) Slave Read Interface
-  input                     i_slave_hcc0_read_stb,  // WB read enable
-  input  [P_MEM_ADDR_MSB:0] i_slave_hcc0_read_addr, // WB address
-  output [P_MEM_WIDTH-1:0]  o_slave_hcc0_read_data, // WB data
   // HCC Processor mem0 WB(pipeline) Slave Write Interface
   input                    i_slave_hcc0_write_stb,  // WB write enable
   input [P_MEM_ADDR_MSB:0] i_slave_hcc0_write_addr, // WB address
   input [P_MEM_WIDTH-1:0]  i_slave_hcc0_write_data, // WB data
-  // HCC Processor mem1 WB(pipeline) Slave Read Interface
-  input                     i_slave_hcc1_read_stb,  // WB read enable
-  input  [P_MEM_ADDR_MSB:0] i_slave_hcc1_read_addr, // WB address
-  output [P_MEM_WIDTH-1:0]  o_slave_hcc1_read_data, // WB data
   // HCC Processor mem1 WB(pipeline) Slave Write Interface
   input                    i_slave_hcc1_write_stb,  // WB write enable
   input [P_MEM_ADDR_MSB:0] i_slave_hcc1_write_addr, // WB address
@@ -93,30 +85,31 @@ module Memory_Backplane #(
   ///////////////////////////////////////////////////////////////////////////////
   // BRAM array duplicated to index source 0 & 1 at same time or individually. 
   // A fake a dual-port BRAM of sorts.
-  reg [P_MEM_WIDTH-1:0] mem_space0 [0:P_MEM_DEPTH-1]; // 37x32-bit registers,
-  reg [P_MEM_WIDTH-1:0] mem_space1 [0:P_MEM_DEPTH-1]; // 37x32-bit registers, 
   // General Registers Reset
   reg [L_REG_RESET_INDEX_MSB:0] reset_index; //
-  // Memory Slave Read Process
-  reg [P_MEM_WIDTH-1:0] r_slave_read0_data;
-  reg [P_MEM_WIDTH-1:0] r_slave_read1_data;
-  // Read Case
-  wire [1:0] w_read0_cases = {i_slave_core0_read_stb, i_slave_hcc0_read_stb};
-  wire [1:0] w_read1_cases = {i_slave_core1_read_stb, i_slave_hcc1_read_stb};
   // Write Case
-  wire [1:0] w_write0_cases = {i_slave_core0_write_stb, i_slave_hcc0_write_stb};
-  wire [1:0] w_write1_cases = {i_slave_core1_write_stb, i_slave_hcc1_write_stb};
+  wire w_write0_enable = i_reset_sync | (i_slave_core0_write_stb ^ i_slave_hcc0_write_stb);
+  wire w_write1_enable = i_reset_sync | (i_slave_core1_write_stb ^ i_slave_hcc1_write_stb);
+  // Write Address
+  wire [P_MEM_ADDR_MSB:0] w_write0_addr = i_reset_sync == 1'b1 ? reset_index : 
+                                          i_slave_core0_write_stb == 1'b1 ? i_slave_core0_write_addr :
+                                          i_slave_hcc0_write_stb == 1'b1 ? i_slave_hcc0_write_addr : i_slave_core0_write_addr;
+  wire [P_MEM_ADDR_MSB:0] w_write1_addr = i_reset_sync == 1'b1 ? reset_index : 
+                                          i_slave_core1_write_stb == 1'b1 ? i_slave_core1_write_addr :
+                                          i_slave_hcc1_write_stb == 1'b1 ? i_slave_hcc1_write_addr : i_slave_core1_write_addr;
+  // Write Data
+  wire [P_MEM_WIDTH-1:0] w_write0_data = i_reset_sync == 1'b1 ? 0 : 
+                                         i_slave_core0_write_stb == 1'b1 ? i_slave_core0_write_data :
+                                         i_slave_hcc0_write_stb == 1'b1 ? i_slave_hcc0_write_data : i_slave_core0_write_data;
+  wire [P_MEM_WIDTH-1:0] w_write1_data = i_reset_sync == 1'b1 ? 0 : 
+                                         i_slave_core1_write_stb == 1'b1 ? i_slave_core1_write_data :
+                                         i_slave_hcc1_write_stb == 1'b1 ? i_slave_hcc1_write_data : i_slave_core1_write_data;
+  
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
   ///////////////////////////////////////////////////////////////////////////////
   
-  initial begin
-    // Load initial states in the brams.
-    $readmemb("bram0_initial_state.mem", mem_space0);
-    $readmemb("bram1_initial_state.mem", mem_space1);
-  end
-
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Reset Index
   // Description : 
@@ -131,80 +124,40 @@ module Memory_Backplane #(
   end
 
   ///////////////////////////////////////////////////////////////////////////////
-  // Process     : mem_space0 Read Process
+  // Instance    : Memory Space 0
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-  always@(posedge i_clk) begin
-    if (w_read0_cases == 2'b01) begin
-      // HCC Processor read access
-      r_slave_read0_data <= mem_space0[i_slave_hcc0_read_addr];
-    end
-    if (w_read0_cases == 2'b10) begin
-      // Core read access
-      r_slave_read0_data <= mem_space0[i_slave_core0_read_addr];
-    end
-  end
-  // 
-  assign o_slave_core0_read_data = r_slave_read0_data;
-  assign o_slave_hcc0_read_data  = r_slave_read0_data;
+  Generic_BRAM #(
+    (P_MEM_WIDTH-1),
+    P_MEM_ADDR_MSB,
+    P_MEM_DEPTH
+  ) mem_space0 (
+    .i_wclk(i_clk),
+    .i_we(w_write0_enable),
+    .i_rclk(i_clk),
+    .i_waddr(w_write0_addr),
+    .i_raddr(i_slave_core0_read_addr),
+    .i_wdata(w_write0_data),
+    .o_rdata(o_slave_core0_read_data)
+  );
 
   ///////////////////////////////////////////////////////////////////////////////
-  // Process     : mem_space0 Write Process
+  // Instance    : Memory Space 1
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-  always@(posedge i_clk) begin
-    if (i_reset_sync == 1'b1) begin
-      mem_space0[reset_index] <= 32'h0000_0000;
-    end
-    else begin
-      if (w_write0_cases == 2'b01) begin
-        // HCC Processor write access
-        mem_space0[i_slave_hcc0_write_addr] <= i_slave_hcc0_write_data;
-      end
-      if (w_write0_cases == 2'b10) begin
-        // Core write access
-        mem_space0[i_slave_core0_write_addr] <= i_slave_core0_write_data;
-      end
-    end
-  end
-
-  ///////////////////////////////////////////////////////////////////////////////
-  // Process     : mem_space1 Read Process
-  // Description : 
-  ///////////////////////////////////////////////////////////////////////////////
-  always@(posedge i_clk) begin
-    if (w_read1_cases == 2'b01) begin
-      // HCC Processor read access
-      r_slave_read1_data <= mem_space1[i_slave_hcc1_read_addr];
-    end
-    if (w_read1_cases == 2'b10) begin
-      // Core read access
-      r_slave_read1_data <= mem_space1[i_slave_core1_read_addr];
-    end
-  end
-  // 
-  assign o_slave_core1_read_data = r_slave_read1_data;
-  assign o_slave_hcc1_read_data  = r_slave_read1_data;
-
-  ///////////////////////////////////////////////////////////////////////////////
-  // Process     : mem_space1 Write Process
-  // Description : 
-  ///////////////////////////////////////////////////////////////////////////////
-  always@(posedge i_clk) begin
-    if (i_reset_sync == 1'b1) begin
-      mem_space1[reset_index] <= 32'h0000_0000;
-    end
-    else begin
-      if (w_write1_cases == 2'b01) begin
-        // HCC Processor write access
-        mem_space1[i_slave_hcc1_write_addr] <= i_slave_hcc1_write_data;
-      end
-      if (w_write1_cases == 2'b10) begin
-        // Core write access
-        mem_space1[i_slave_core1_write_addr] <= i_slave_core1_write_data;
-      end
-    end
-  end
+  Generic_BRAM #(
+    (P_MEM_WIDTH-1),
+    P_MEM_ADDR_MSB,
+    P_MEM_DEPTH
+  ) mem_space1 (
+    .i_wclk(i_clk),
+    .i_we(w_write1_enable),
+    .i_rclk(i_clk),
+    .i_waddr(w_write1_addr),
+    .i_raddr(i_slave_core1_read_addr),
+    .i_wdata(w_write1_data),
+    .o_rdata(o_slave_core1_read_data)
+  );
 
 endmodule
 

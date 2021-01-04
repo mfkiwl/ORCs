@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/02 01:51:29
+// Last modified : 2021/01/03 20:59:18
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -44,8 +44,8 @@
 /////////////////////////////////////////////////////////////////////////////////
 module Hart_Core #(
   // Compile time configurable generic parameters
-  parameter P_CORE_INITIAL_FETCH_ADDR = 0, // First instruction address
-  parameter P_CORE_MEMORY_ADDR_MSB    = 5  //
+  parameter integer P_CORE_INITIAL_FETCH_ADDR = 0, // First instruction address
+  parameter integer P_CORE_MEMORY_ADDR_MSB    = 4  //
 )(
   // Component's clocks and resets
   input i_clk,        // clock
@@ -83,12 +83,12 @@ module Hart_Core #(
   output [31:0] o_master_write_data, // WB data
   output [3:0]  o_master_write_sel,  // WB byte enable
   // Integer Multiplication and Division Processor
-  output                                      o_master_hcc_processor_stb,  // start
-  input                                       i_master_hcc_processor_ack,  // done
-  output                                      o_master_hcc_processor_addr, // 0=mul, 1=div/rem
-  output                                      o_master_hcc_processor_tga,  // 0=div, 1=rem
-  output [((P_CORE_MEMORY_ADDR_MSB+1)*3)-1:0] o_master_hcc_processor_data, // {rs2, rs1}
-  output                                      o_master_hcc_processor_tgd   // 0=lower bits, 1=higher bits
+  output                            o_master_hcc_processor_stb,  // start
+  input                             i_master_hcc_processor_ack,  // done
+  output                            o_master_hcc_processor_addr, // 0=mul, 1=div/rem
+  output                            o_master_hcc_processor_tga,  // 0=div, 1=rem
+  output [P_CORE_MEMORY_ADDR_MSB:0] o_master_hcc_processor_data, // rd
+  output                            o_master_hcc_processor_tgd   // 0=lower bits, 1=higher bits
 );
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
@@ -110,7 +110,7 @@ module Hart_Core #(
   localparam [2:0] S_WAIT_FOR_DECODER = 3'h2; // r_program_counter_state, wait for Decoder process
   localparam [2:0] S_WAIT_FOR_READ    = 3'h3; // r_program_counter_state, wait for load to complete
   localparam [2:0] S_WAIT_FOR_WRITE   = 3'h4; // r_program_counter_state, wait for store to complete
-  localparam [2:0] S_WAIT_FOR_DIV     = 3'h5; // r_program_counter_state, wait for store to complete
+  localparam [2:0] S_WAIT_FOR_HCC     = 3'h5; // r_program_counter_state, wait for store to complete
   // Math fct3
   localparam [2:0] L_MUL    = 3'b000; // MUL
   localparam [2:0] L_MULH   = 3'b001; // MULH
@@ -163,19 +163,19 @@ module Hart_Core #(
   wire        [31:0] w_master_addr  = r_unsigned_rs1+r_simm;  // address created by lcc and scc instructions
   // L-group of instructions (w_opcode==7'b0000011)
   wire [31:0] w_l_data = (w_fct3==3'h0 || w_fct3==3'h4) ? 
-                           (r_master_read_addr[1:0]==2'h3 ? { (w_fct3==3'h0 && i_master_read_data[31]==1'b1) ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[31:24] } :
-                            r_master_read_addr[1:0]==2'h2 ? { (w_fct3==3'h0 && i_master_read_data[23]==1'b1) ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[23:16] } :
-                            r_master_read_addr[1:0]==2'h1 ? { (w_fct3==3'h0 && i_master_read_data[15]==1'b1) ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[15:8] } :
+                           (r_master_read_addr[1:0]==2'h3 ? {(w_fct3==3'h0 && i_master_read_data[31]==1'b1) ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[31:24]} :
+                            r_master_read_addr[1:0]==2'h2 ? {(w_fct3==3'h0 && i_master_read_data[23]==1'b1) ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[23:16]} :
+                            r_master_read_addr[1:0]==2'h1 ? {(w_fct3==3'h0 && i_master_read_data[15]==1'b1) ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[15:8]} :
                               {(w_fct3==3'h0 && i_master_read_data[7]==1'b1) ? L_FILLER_ONE[31:8]:L_FILLER_ZERO[31:8], i_master_read_data[7:0]}):
-                         (w_fct3==3'h1 || w_fct3==3'h5) ? ( r_master_read_addr[1]==1'b1 ? {(w_fct3==3'h1 && i_master_read_data[31]==1'b1) ? L_FILLER_ONE[31:16]:L_FILLER_ZERO[31:16], i_master_read_data[31:16] } :
+                         (w_fct3==3'h1 || w_fct3==3'h5) ? (r_master_read_addr[1]==1'b1 ? {(w_fct3==3'h1 && i_master_read_data[31]==1'b1) ? L_FILLER_ONE[31:16]:L_FILLER_ZERO[31:16], i_master_read_data[31:16]} :
                            {(w_fct3==3'h1 && i_master_read_data[15]==1'b1) ? L_FILLER_ONE[31:16]:L_FILLER_ZERO[31:16], i_master_read_data[15:0]}) : i_master_read_data;
   // S-group of instructions (w_opcode==7'b0100011)
-  wire [31:0] w_s_data = w_fct3==3'h0 ? (w_master_addr[1:0]==2'h3 ? { r_unsigned_rs2[7:0], L_FILLER_ZERO [23:0] } :
-                                         w_master_addr[1:0]==2'h2 ? { L_FILLER_ZERO [31:24], r_unsigned_rs2[7:0], L_FILLER_ZERO[15:0] } :
-                                         w_master_addr[1:0]==2'h1 ? { L_FILLER_ZERO [31:16], r_unsigned_rs2[7:0], L_FILLER_ZERO[7:0] } :
-                                                                    { L_FILLER_ZERO [31:8], r_unsigned_rs2[7:0] }) :
-                         w_fct3==3'h1 ? (w_master_addr[1]==1'b1 ? { r_unsigned_rs2[15:0], L_FILLER_ZERO [15:0] } :
-                                                                  { L_FILLER_ZERO [31:16], r_unsigned_rs2[15:0] }) : r_unsigned_rs2;
+  wire [31:0] w_s_data = w_fct3==3'h0 ? (w_master_addr[1:0]==2'h3 ? {r_unsigned_rs2[7:0], L_FILLER_ZERO [23:0]} :
+                                         w_master_addr[1:0]==2'h2 ? {L_FILLER_ZERO [31:24], r_unsigned_rs2[7:0], L_FILLER_ZERO[15:0]} :
+                                         w_master_addr[1:0]==2'h1 ? {L_FILLER_ZERO [31:16], r_unsigned_rs2[7:0], L_FILLER_ZERO[7:0]} :
+                                                                    {L_FILLER_ZERO [31:8], r_unsigned_rs2[7:0]}) :
+                         w_fct3==3'h1 ? (w_master_addr[1]==1'b1 ? {r_unsigned_rs2[15:0], L_FILLER_ZERO [15:0]} :
+                                                                  {L_FILLER_ZERO [31:16], r_unsigned_rs2[15:0]}) : r_unsigned_rs2;
   // RM-group of instructions (OPCODEs==7'b0010011/7'b0110011), merged! src=immediate(M)/register(R)
   wire signed [31:0] w_signed_rs2_extended   = r_rii==1'b1 ? r_simm : w_signed_rs2;
   wire        [31:0] w_unsigned_rs2_extended = r_rii==1'b1 ? r_uimm : r_unsigned_rs2;
@@ -236,7 +236,7 @@ module Hart_Core #(
                           (w_decoder_valid & (r_jalr | r_rii | r_rro)) ? 1'b1 :
                           (i_master_read_ack==1'b1 && r_master_read_ready==1'b0) ? 1'b1 : 1'b0;
   // Register write address Select
-  wire [P_CORE_MEMORY_ADDR_MSB:0] w_reg_write_addr = (w_decoder_valid==1'b1 || (i_master_read_ack==1'b1 && r_master_read_ready==1'b0)) ? {1'b0, w_destination_index} : {1'b0, w_rd};
+  wire [P_CORE_MEMORY_ADDR_MSB:0] w_reg_write_addr = (w_decoder_valid==1'b1 || (i_master_read_ack==1'b1 && r_master_read_ready==1'b0)) ? w_destination_index : w_rd;
   // Registers Write Data select
   wire [31:0] w_reg_write_data = (w_rd_not_zero==1'b1 && i_inst_read_ack==1'b1) ? (
                                    // Load Upper Immediate.
@@ -340,15 +340,10 @@ module Hart_Core #(
         end
         S_WAIT_FOR_DECODER : begin
           // Wait one clock cycle to allow data to be stored in the registers.
-          if (r_mul == 1'b1) begin
-            // Fetch Fetch next instruction
-            r_program_counter_valid <= 1'b1;
-            r_program_counter_state <= S_WAIT_FOR_ACK;
-          end
-          else if (r_div == 1'b1) begin
+          if (r_mul == 1'b1 || r_div == 1'b1) begin
             // Transition to wait for division to finish
             r_program_counter_valid <= 1'b0;
-            r_program_counter_state <= S_WAIT_FOR_DIV;
+            r_program_counter_state <= S_WAIT_FOR_HCC;
           end
           else if (r_lcc == 1'b1) begin
             // Load external data
@@ -395,7 +390,7 @@ module Hart_Core #(
           end
           r_inst_data <= r_inst_data;
         end
-        S_WAIT_FOR_DIV : begin
+        S_WAIT_FOR_HCC : begin
           if (i_master_hcc_processor_ack == 1'b1) begin
             // Data write acknowledge. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
@@ -403,7 +398,7 @@ module Hart_Core #(
           end
           else begin
             r_program_counter_valid <= 1'b0;
-            r_program_counter_state <= S_WAIT_FOR_DIV;
+            r_program_counter_state <= S_WAIT_FOR_HCC;
           end
           r_inst_data <= r_inst_data;
         end
@@ -552,6 +547,7 @@ module Hart_Core #(
         r_scc  <= 1'b0;
         r_mul  <= 1'b0;
         r_div  <= 1'b0;
+        r_high_results <= 1'b0;
       end
     end
   end
@@ -561,11 +557,11 @@ module Hart_Core #(
   // Description : Updates the contents of the read strobe and address.
   ///////////////////////////////////////////////////////////////////////////////
   // Strobe Control
-  assign o_master_core0_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack & r_low_results);
-  assign o_master_core1_read_stb = i_inst_read_ack | (i_master_hcc_processor_ack & r_high_results);
+  assign o_master_core0_read_stb = i_inst_read_ack;
+  assign o_master_core1_read_stb = i_inst_read_ack;
   // Address Select
-  assign o_master_core0_read_addr = {1'b0, w_source1_pointer};
-  assign o_master_core1_read_addr = {1'b0, w_source2_pointer};
+  assign o_master_core0_read_addr = w_source1_pointer;
+  assign o_master_core1_read_addr = w_source2_pointer;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : General Purpose Registers Write Process
@@ -640,7 +636,7 @@ module Hart_Core #(
   assign o_master_hcc_processor_stb  = r_div | r_mul;
   assign o_master_hcc_processor_addr = r_div;
   assign o_master_hcc_processor_tga  = r_low_results;
-  assign o_master_hcc_processor_data = {{1'b0, w_rd}, {1'b0, w_source2_pointer}, {1'b0, w_source1_pointer}};
+  assign o_master_hcc_processor_data = w_destination_index;
   assign o_master_hcc_processor_tgd  = r_high_results;
 
 endmodule
