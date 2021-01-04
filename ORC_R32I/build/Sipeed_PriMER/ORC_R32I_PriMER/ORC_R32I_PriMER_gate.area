@@ -8,12 +8,12 @@ IO Statistics
   #inout                0
 
 Utilization Statistics
-#lut                 1575   out of  19600    8.04%
+#lut                 1561   out of  19600    7.96%
 #reg                  167   out of  19600    0.85%
-#le                  1575
-  #lut only          1408   out of   1575   89.40%
-  #reg only             0   out of   1575    0.00%
-  #lut&reg            167   out of   1575   10.60%
+#le                  1561
+  #lut only          1394   out of   1561   89.30%
+  #reg only             0   out of   1561    0.00%
+  #lut&reg            167   out of   1561   10.70%
 #dsp                    0   out of     29    0.00%
 #bram                   4   out of     64    6.25%
   #bram9k               4
@@ -29,5 +29,5 @@ Report Hierarchy Area:
 +----------------------------------------+
 |Instance |Module   |le    |lut   |seq   |
 +----------------------------------------+
-|top      |ORC_R32I |1575  |1575  |167   |
+|top      |ORC_R32I |1561  |1561  |167   |
 +----------------------------------------+

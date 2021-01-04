@@ -16,12 +16,12 @@ _These results should be considered experimental as Yosys does not fully support
 
 |Utilization Statistics|     |                  |       |
 | :------------------ | ---: | :--------------: | ----: |
-| #lut                | 1819 |   out of  19600  |  9.28%|
-| #reg                |  218 |   out of  19600  |  1.11%|
-| #le                 | 1839 |          -       |     - |
-|   #lut only         | 1621 |   out of   1839  | 88.15%|
-|   #reg only         |   20 |   out of   1839  |  1.09%|
-|   #lut&reg          |  198 |   out of   1839  | 10.77%|
+| #lut                | 1479 |   out of  19600  |  7.55%|
+| #reg                |  177 |   out of  19600  |  0.90%|
+| #le                 | 1500 |          -       |     - |
+|   #lut only         | 1323 |   out of   1839  | 88.20%|
+|   #reg only         |   21 |   out of   1839  |  1.40%|
+|   #lut&reg          |  156 |   out of   1839  | 10.40%|
 | #dsp                |    0 |   out of     29  |  0.00%|
 | #bram               |    0 |   out of     64  |  0.00%|
 |   #bram9k           |    0 |        -         |  -    |
@@ -32,13 +32,6 @@ _These results should be considered experimental as Yosys does not fully support
 |   #oreg             |    0 |        -         |   -   |
 |   #treg             |    0 |        -         |   -   |
 | #pll                |    0 |   out of      4  |  0.00%|
-
-               
-
-|Report Hierarchy Area: |  | | | |
-:-------- | :-------- | :---- |:------| :---- |
-| Instance | Module   | le    | lut   | seq   |
-| top      | ORC_R32I | 1839  | 1819  | 218   |
 
 
 ### Running
@@ -74,12 +67,12 @@ mapping.rpt will contain the results.
 
 |Utilization Statistics|     |                  |       |
 | :------------------ | ---: | :--------------: | ----: |
-| #lut                | 1575 |   out of  19600  | 8.04% |
+| #lut                | 1561 |   out of  19600  | 7.96% |
 | #reg                |  167 |   out of  19600  | 0.85% |
-| #le                 | 1575 |        -         |  -    |
-|   #lut only         | 1408 |   out of   1575  | 89.40% |
-|   #reg only         |    0 |   out of   1575  |  0.00% |
-|   #lut&reg          |  167 |   out of   1575  | 10.60% |
+| #le                 | 1561 |        -         |  -    |
+|   #lut only         | 1394 |   out of   1561  | 89.30% |
+|   #reg only         |    0 |   out of   1561  |  0.00% |
+|   #lut&reg          |  167 |   out of   1561  | 10.70% |
 | #dsp                |    0 |   out of     29  |  0.00% |
 | #bram               |    4 |   out of     64  |  6.25% |
 |   #bram9k           |    4 |        -         |  -    |
@@ -95,7 +88,7 @@ mapping.rpt will contain the results.
 | Report Hierarchy Area: |  | |      |      |
 | :-------- | :------ | :---- |:-----| :--- |
 | Instance  |Module   | le    | lut  | seq  |
-| top       |ORC_R32I | 1575  | 1575 | 167  |
+| top       |ORC_R32I | 1561  | 1561 | 167  |
 
 
 ### Running

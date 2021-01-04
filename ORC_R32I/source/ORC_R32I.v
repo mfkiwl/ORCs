@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2020/12/15 13:25:52
+// Last modified : 2021/01/04 12:02:23
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -221,30 +221,34 @@ module ORC_R32I #(
           // is ready to consume the valid instruction.
           if (i_inst_read_ack == 1'b1) begin
             if (w_decoder_opcode == 1'b1) begin
-              // Increment the address and pre-load the program counter.
-              r_next_pc_fetch <= r_next_pc_fetch+4;
-              // If a valid instruction was just received.
-              r_inst_data <= i_inst_read_data;
+              // Instructions that require accessing registers and/or external 
+              // devices.
+              // Increment the address and pre-load the program counter. Register
+              // the instruction.
+              r_next_pc_fetch <= (r_next_pc_fetch+32'h4);
               // Transition
               r_program_counter_valid <= 1'b0;
               r_program_counter_state <= S_WAIT_FOR_DECODER;
             end
-            else begin
-              if (w_jal == 1'b1) begin
-                // Is an immediate jump request. Update the program counter with the 
-                // jump value.
-                r_next_pc_fetch <= w_j_simm + r_next_pc_fetch;
-              end
-              else begin
-                // Increment the program counter. Ignore this instruction
-                r_next_pc_fetch <= r_next_pc_fetch+4;
-              end
-              // Transition
+            if (w_jal == 1'b1) begin
+              // Is an immediate jump request. Update the program counter with the 
+              // jump value.
+              r_next_pc_fetch <= (w_j_simm+r_next_pc_fetch);
               r_program_counter_valid <= 1'b1;
               r_program_counter_state <= S_WAIT_FOR_ACK;
             end
-          end 
+            else begin
+              // Instructions that are executed in one clock: LUI, AUIPC, FENCE, 
+              // ECALL and BREAK
+              // Increment the program counter. Ignore this instruction
+              r_next_pc_fetch <= (r_next_pc_fetch+32'h4);
+              r_program_counter_valid <= 1'b1;
+              r_program_counter_state <= S_WAIT_FOR_ACK;
+            end
+            r_inst_data <= i_inst_read_data;
+          end
           else begin
+            r_inst_data             <= r_inst_data;
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
