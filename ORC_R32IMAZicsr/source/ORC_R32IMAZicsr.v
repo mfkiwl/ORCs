@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/03 21:00:10
+// Last modified : 2021/01/04 23:15:23
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -76,25 +76,19 @@ module ORC_R32IMAZicsr #(
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
   // Hart_Core to Memory_Backplane connecting wires.
-  wire                       w_core0_read_stb;   // WB read enable
-  wire [P_MEMORY_ADDR_MSB:0] w_core0_read_addr;  // WB address
-  wire [31:0]                w_core0_read_data;  // WB data
-  wire                       w_core0_write_stb;  // WB write enable
-  wire [P_MEMORY_ADDR_MSB:0] w_core0_write_addr; // WB address
-  wire [31:0]                w_core0_write_data; // WB data
-  wire                       w_core1_read_stb;   // WB read enable
-  wire [P_MEMORY_ADDR_MSB:0] w_core1_read_addr;  // WB address
-  wire [31:0]                w_core1_read_data;  // WB data
-  wire                       w_core1_write_stb;  // WB write enable
-  wire [P_MEMORY_ADDR_MSB:0] w_core1_write_addr; // WB address
-  wire [31:0]                w_core1_write_data; // WB data
+  wire                       w_core0_read_stb;  // WB read enable
+  wire [P_MEMORY_ADDR_MSB:0] w_core0_read_addr; // WB address
+  wire [31:0]                w_core0_read_data; // WB data
+  wire                       w_core1_read_stb;  // WB read enable
+  wire [P_MEMORY_ADDR_MSB:0] w_core1_read_addr; // WB address
+  wire [31:0]                w_core1_read_data; // WB data
+  wire                       w_core_write_stb;  // WB write enable
+  wire [P_MEMORY_ADDR_MSB:0] w_core_write_addr; // WB address
+  wire [31:0]                w_core_write_data; // WB data
   // HCC Processor to Memory_Backplane connecting wires.
-  wire                       w_hcc0_write_stb;  // WB write enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc0_write_addr; // WB address
-  wire [31:0]                w_hcc0_write_data; // WB data
-  wire                       w_hcc1_write_stb;  // WB write enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc1_write_addr; // WB address
-  wire [31:0]                w_hcc1_write_data; // WB data
+  wire                       w_hcc_write_stb;  // WB write enable
+  wire [P_MEMORY_ADDR_MSB:0] w_hcc_write_addr; // WB address
+  wire [31:0]                w_hcc_write_data; // WB data
   // Hart_Core to HCC Processor connecting wires.
   wire                       w_hcc_processor_stb;
   wire                       w_hcc_processor_ack;
@@ -127,18 +121,14 @@ module ORC_R32IMAZicsr #(
     .o_master_core0_read_stb(w_core0_read_stb),   // WB read enable
     .o_master_core0_read_addr(w_core0_read_addr), // WB address
     .i_master_core0_read_data(w_core0_read_data), // WB data
-    // Core mem0 WB(pipeline) master Write Interface
-    .o_master_core0_write_stb(w_core0_write_stb),   // WB write enable
-    .o_master_core0_write_addr(w_core0_write_addr), // WB address
-    .o_master_core0_write_data(w_core0_write_data), // WB data
     // Core mem1 WB(pipeline) master Read Interface
     .o_master_core1_read_stb(w_core1_read_stb),   // WB read enable
     .o_master_core1_read_addr(w_core1_read_addr), // WB address
     .i_master_core1_read_data(w_core1_read_data), // WB data
-    // Core mem1 WB(pipeline) master Write Interface
-    .o_master_core1_write_stb(w_core1_write_stb),   // WB write enable
-    .o_master_core1_write_addr(w_core1_write_addr), // WB address
-    .o_master_core1_write_data(w_core1_write_data), // WB data
+    // Core memX WB(pipeline) master Write Interface
+    .o_master_core_write_stb(w_core_write_stb),   // WB write enable
+    .o_master_core_write_addr(w_core_write_addr), // WB address
+    .o_master_core_write_data(w_core_write_data), // WB data
     // I/O Wishbone(pipeline) Master Read Interface
     .o_master_read_stb(o_master_read_stb),   // WB read enable
     .i_master_read_ack(i_master_read_ack),   // WB acknowledge 
@@ -180,16 +170,12 @@ module ORC_R32IMAZicsr #(
     .i_slave_hcc_processor_tgd(w_hcc_processor_tgd),      // WB data tag, indicates low or high bits of data
     // HCC Processor mem0 WB(pipeline) master Read Interface
     .i_master_hcc0_read_data(w_core0_read_data), // WB data
-    // HCC Processor mem0 WB(pipeline) master Write Interface
-    .o_master_hcc0_write_stb(w_hcc0_write_stb),   // WB write enable
-    .o_master_hcc0_write_addr(w_hcc0_write_addr), // WB address
-    .o_master_hcc0_write_data(w_hcc0_write_data), // WB data
     // HCC Processor mem1 WB(pipeline) master Read Interface
     .i_master_hcc1_read_data(w_core1_read_data), // WB data
     // HCC Processor mem1 WB(pipeline) master Write Interface
-    .o_master_hcc1_write_stb(w_hcc1_write_stb),   // WB write enable
-    .o_master_hcc1_write_addr(w_hcc1_write_addr), // WB address
-    .o_master_hcc1_write_data(w_hcc1_write_data)  // WB data
+    .o_master_hcc_write_stb(w_hcc_write_stb),   // WB write enable
+    .o_master_hcc_write_addr(w_hcc_write_addr), // WB address
+    .o_master_hcc_write_data(w_hcc_write_data)  // WB data
   );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -211,26 +197,18 @@ module ORC_R32IMAZicsr #(
     .i_slave_core0_read_stb(w_core0_read_stb),   // WB read enable
     .i_slave_core0_read_addr(w_core0_read_addr), // WB address
     .o_slave_core0_read_data(w_core0_read_data), // WB data
-    // Core mem0 WB(pipeline) Slave Write Interface
-    .i_slave_core0_write_stb(w_core0_write_stb),   // WB write enable
-    .i_slave_core0_write_addr(w_core0_write_addr), // WB address
-    .i_slave_core0_write_data(w_core0_write_data), // WB data
     // Core mem1 WB(pipeline) Slave Read Interface
     .i_slave_core1_read_stb(w_core1_read_stb),   // WB read enable
     .i_slave_core1_read_addr(w_core1_read_addr), // WB address
     .o_slave_core1_read_data(w_core1_read_data), // WB data
     // Core mem1 WB(pipeline) Slave Write Interface
-    .i_slave_core1_write_stb(w_core1_write_stb),   // WB write enable
-    .i_slave_core1_write_addr(w_core1_write_addr), // WB address
-    .i_slave_core1_write_data(w_core1_write_data), // WB data
-    // HCC Processor mem0 WB(pipeline) Slave Write Interface
-    .i_slave_hcc0_write_stb(w_hcc0_write_stb),   // WB write enable
-    .i_slave_hcc0_write_addr(w_hcc0_write_addr), // WB address
-    .i_slave_hcc0_write_data(w_hcc0_write_data), // WB data
+    .i_slave_core_write_stb(w_core_write_stb),   // WB write enable
+    .i_slave_core_write_addr(w_core_write_addr), // WB address
+    .i_slave_core_write_data(w_core_write_data), // WB data
     // HCC Processor mem1 WB(pipeline) Slave Write Interface
-    .i_slave_hcc1_write_stb(w_hcc1_write_stb),   // WB write enable
-    .i_slave_hcc1_write_addr(w_hcc1_write_addr), // WB address
-    .i_slave_hcc1_write_data(w_hcc1_write_data)  // WB data
+    .i_slave_hcc_write_stb(w_hcc_write_stb),   // WB write enable
+    .i_slave_hcc_write_addr(w_hcc_write_addr), // WB address
+    .i_slave_hcc_write_data(w_hcc_write_data)  // WB data
   );
 
 endmodule

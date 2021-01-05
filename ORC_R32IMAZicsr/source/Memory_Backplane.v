@@ -33,7 +33,7 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2021/01/03 20:59:50
+// Last modified : 2021/01/04 23:27:25
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
 // Description   : The Memory_Backplane controls access to the BRAMs.
@@ -54,26 +54,18 @@ module Memory_Backplane #(
   input                     i_slave_core0_read_stb,  // WB read enable
   input  [P_MEM_ADDR_MSB:0] i_slave_core0_read_addr, // WB address
   output [P_MEM_WIDTH-1:0]  o_slave_core0_read_data, // WB data
-  // Core mem0 WB(pipeline) Slave Write Interface
-  input                    i_slave_core0_write_stb,  // WB write enable
-  input [P_MEM_ADDR_MSB:0] i_slave_core0_write_addr, // WB address
-  input [P_MEM_WIDTH-1:0]  i_slave_core0_write_data, // WB data
   // Core mem1 WB(pipeline) Slave Read Interface
   input                     i_slave_core1_read_stb,  // WB read enable
   input  [P_MEM_ADDR_MSB:0] i_slave_core1_read_addr, // WB address
   output [P_MEM_WIDTH-1:0]  o_slave_core1_read_data, // WB data
   // Core mem1 WB(pipeline) Slave Write Interface
-  input                    i_slave_core1_write_stb,  // WB write enable
-  input [P_MEM_ADDR_MSB:0] i_slave_core1_write_addr, // WB address
-  input [P_MEM_WIDTH-1:0]  i_slave_core1_write_data, // WB data
-  // HCC Processor mem0 WB(pipeline) Slave Write Interface
-  input                    i_slave_hcc0_write_stb,  // WB write enable
-  input [P_MEM_ADDR_MSB:0] i_slave_hcc0_write_addr, // WB address
-  input [P_MEM_WIDTH-1:0]  i_slave_hcc0_write_data, // WB data
-  // HCC Processor mem1 WB(pipeline) Slave Write Interface
-  input                    i_slave_hcc1_write_stb,  // WB write enable
-  input [P_MEM_ADDR_MSB:0] i_slave_hcc1_write_addr, // WB address
-  input [P_MEM_WIDTH-1:0]  i_slave_hcc1_write_data  // WB data
+  input                    i_slave_core_write_stb,  // WB write enable
+  input [P_MEM_ADDR_MSB:0] i_slave_core_write_addr, // WB address
+  input [P_MEM_WIDTH-1:0]  i_slave_core_write_data, // WB data
+  // HCC Processor mem WB(pipeline) Slave Write Interface
+  input                    i_slave_hcc_write_stb,  // WB write enable
+  input [P_MEM_ADDR_MSB:0] i_slave_hcc_write_addr, // WB address
+  input [P_MEM_WIDTH-1:0]  i_slave_hcc_write_data, // WB data
 );
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
@@ -88,22 +80,15 @@ module Memory_Backplane #(
   // General Registers Reset
   reg [L_REG_RESET_INDEX_MSB:0] reset_index; //
   // Write Case
-  wire w_write0_enable = i_reset_sync | (i_slave_core0_write_stb ^ i_slave_hcc0_write_stb);
-  wire w_write1_enable = i_reset_sync | (i_slave_core1_write_stb ^ i_slave_hcc1_write_stb);
+  wire w_write_enable = (i_reset_sync==1'b1 || i_slave_core_write_stb==1'b1 || i_slave_hcc_write_stb==1'b1) ? 1'b1 : 1'b0;
   // Write Address
-  wire [P_MEM_ADDR_MSB:0] w_write0_addr = i_reset_sync == 1'b1 ? reset_index : 
-                                          i_slave_core0_write_stb == 1'b1 ? i_slave_core0_write_addr :
-                                          i_slave_hcc0_write_stb == 1'b1 ? i_slave_hcc0_write_addr : i_slave_core0_write_addr;
-  wire [P_MEM_ADDR_MSB:0] w_write1_addr = i_reset_sync == 1'b1 ? reset_index : 
-                                          i_slave_core1_write_stb == 1'b1 ? i_slave_core1_write_addr :
-                                          i_slave_hcc1_write_stb == 1'b1 ? i_slave_hcc1_write_addr : i_slave_core1_write_addr;
+  wire [P_MEM_ADDR_MSB:0] w_write_addr = i_reset_sync==1'b1 ? reset_index : 
+                                         i_slave_core_write_stb==1'b1 ? i_slave_core_write_addr :
+                                         i_slave_hcc_write_stb==1'b1 ? i_slave_hcc_write_addr : reset_index;
   // Write Data
-  wire [P_MEM_WIDTH-1:0] w_write0_data = i_reset_sync == 1'b1 ? 0 : 
-                                         i_slave_core0_write_stb == 1'b1 ? i_slave_core0_write_data :
-                                         i_slave_hcc0_write_stb == 1'b1 ? i_slave_hcc0_write_data : i_slave_core0_write_data;
-  wire [P_MEM_WIDTH-1:0] w_write1_data = i_reset_sync == 1'b1 ? 0 : 
-                                         i_slave_core1_write_stb == 1'b1 ? i_slave_core1_write_data :
-                                         i_slave_hcc1_write_stb == 1'b1 ? i_slave_hcc1_write_data : i_slave_core1_write_data;
+  wire [P_MEM_WIDTH-1:0] w_write_data = i_reset_sync==1'b1 ? 0 : 
+                                        i_slave_core_write_stb==1'b1 ? i_slave_core_write_data :
+                                        i_slave_hcc_write_stb==1'b1 ? i_slave_hcc_write_data : 0;
   
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -133,11 +118,11 @@ module Memory_Backplane #(
     P_MEM_DEPTH
   ) mem_space0 (
     .i_wclk(i_clk),
-    .i_we(w_write0_enable),
+    .i_we(w_write_enable),
     .i_rclk(i_clk),
-    .i_waddr(w_write0_addr),
+    .i_waddr(w_write_addr),
     .i_raddr(i_slave_core0_read_addr),
-    .i_wdata(w_write0_data),
+    .i_wdata(w_write_data),
     .o_rdata(o_slave_core0_read_data)
   );
 
@@ -151,11 +136,11 @@ module Memory_Backplane #(
     P_MEM_DEPTH
   ) mem_space1 (
     .i_wclk(i_clk),
-    .i_we(w_write1_enable),
+    .i_we(w_write_enable),
     .i_rclk(i_clk),
-    .i_waddr(w_write1_addr),
+    .i_waddr(w_write_addr),
     .i_raddr(i_slave_core1_read_addr),
-    .i_wdata(w_write1_data),
+    .i_wdata(w_write_data),
     .o_rdata(o_slave_core1_read_data)
   );
 

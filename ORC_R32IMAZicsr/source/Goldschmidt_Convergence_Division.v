@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/04 09:33:16
+// Last modified : 2021/01/04 21:51:42
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -55,23 +55,23 @@
 //  used to make the decision on whether do the calculation or skip it.
 /////////////////////////////////////////////////////////////////////////////////
 module Goldschmidt_Convergence_Division #(
-  parameter integer P_GCD_FACTORS_MSB    = 7,
-  parameter integer P_GCD_ACCURACY       = 1,
-  parameter integer P_GCD_MEM_ADDR_MSB   = 0
+  parameter integer P_GCD_FACTORS_MSB  = 7,
+  parameter integer P_GCD_ACCURACY     = 1,
+  parameter integer P_GCD_MEM_ADDR_MSB = 0
 )(
   input i_clk,
   input i_reset_sync,
   // WB Interface
-  input  i_slave_stb,  // valid
-  input  i_slave_tga,  // 0=div, 1=rem
-  output o_slave_ack,  // ready
+  input  i_slave_stb, // valid
+  input  i_slave_tga, // 0=div, 1=rem
+  output o_slave_ack, // ready
   // GDC mem0 WB(pipeline) master Read Interface
-  input  [P_GCD_FACTORS_MSB:0]  i_master_div0_read_data, // WB data
+  input  [P_GCD_FACTORS_MSB:0] i_master_div0_read_data, // WB data
   // GDC mem1 WB(pipeline) master Read Interface
-  input  [P_GCD_FACTORS_MSB:0]  i_master_div1_read_data, // WB data
+  input  [P_GCD_FACTORS_MSB:0] i_master_div1_read_data, // WB data
   // GDC mem WB(pipeline) master Write Interface
-  output                        o_master_div_write_stb,  // WB write enable
-  output [P_GCD_FACTORS_MSB:0]  o_master_div_write_data, // WB data
+  output                       o_master_div_write_stb,  // WB write enable
+  output [P_GCD_FACTORS_MSB:0] o_master_div_write_data, // WB data
   // Multiplier interface
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplicand,
   output [((P_GCD_FACTORS_MSB+1)*2)-1:0] o_multiplier,
@@ -151,7 +151,7 @@ module Goldschmidt_Convergence_Division #(
     if (i_reset_sync == 1'b1) begin
       r_lut_value <= L_REG_E1000000000;
     end
-    else if (i_slave_stb == 1'b1) begin
+    else begin
       //
       if (i_master_div1_read_data < 20) begin
         //
@@ -219,10 +219,10 @@ module Goldschmidt_Convergence_Division #(
             end
             if (w_dividend_not_zero == 1'b0) begin
               // If either is zero return zero
-              r_div_write_stb   <= 1'b1;
-              r_divisor         <= L_GCD_ZERO_FILLER;
-              r_dividend        <= L_GCD_ZERO_FILLER;
-              r_divider_state   <= S_IDLE;
+              r_div_write_stb <= 1'b1;
+              r_divisor       <= L_GCD_ZERO_FILLER;
+              r_dividend      <= L_GCD_ZERO_FILLER;
+              r_divider_state <= S_IDLE;
             end
             else if ($signed(i_master_div1_read_data) == 1) begin
               // if denominator is 1 return numerator
@@ -243,7 +243,6 @@ module Goldschmidt_Convergence_Division #(
               r_div_write_stb <= 1'b0;
               r_dividend      <= i_master_div0_read_data;
               r_divisor       <= i_master_div1_read_data;
-              // Transition shifting the decimal point.
               r_divider_state <= S_SHIFT_DIVISOR_POINT;
             end
             r_calculate_remainder <= i_slave_tga;

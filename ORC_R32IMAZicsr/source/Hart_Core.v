@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/04 10:05:48
+// Last modified : 2021/01/04 23:54:52
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -59,18 +59,14 @@ module Hart_Core #(
   output                            o_master_core0_read_stb,  // WB read enable
   output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core0_read_addr, // WB address
   input  [31:0]                     i_master_core0_read_data, // WB data
-  // Core mem0 WB(pipeline) master Write Interface
-  output                            o_master_core0_write_stb,  // WB write enable
-  output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core0_write_addr, // WB address
-  output [31:0]                     o_master_core0_write_data, // WB data
   // Core mem1 WB(pipeline) master Read Interface
   output                            o_master_core1_read_stb,  // WB read enable
   output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core1_read_addr, // WB address
   input  [31:0]                     i_master_core1_read_data, // WB data
-  // Core mem1 WB(pipeline) master Write Interface
-  output                            o_master_core1_write_stb,  // WB write enable
-  output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core1_write_addr, // WB address
-  output [31:0]                     o_master_core1_write_data, // WB data
+  // Core memX WB(pipeline) master Write Interface
+  output                            o_master_core_write_stb,  // WB write enable
+  output [P_CORE_MEMORY_ADDR_MSB:0] o_master_core_write_addr, // WB address
+  output [31:0]                     o_master_core_write_data, // WB data
   // Wishbone(pipeline) Master Read Interface
   output        o_master_read_stb,  // WB read enable
   input         i_master_read_ack,  // WB acknowledge 
@@ -202,7 +198,7 @@ module Hart_Core #(
                 w_fct3==3'h0 ? r_unsigned_rs1 == r_unsigned_rs2 : // beq
                 w_fct3==3'h1 ? r_unsigned_rs1 != r_unsigned_rs2 : // bne
                 1'b0);
-  wire        w_jump_request = r_jalr | w_bmux;
+  wire        w_jump_request = (r_jalr==1'b1 || w_bmux==1'b1) ? 1'b1 : 1'b0;
   wire [31:0] w_jump_value   = r_jalr==1'b1 ? (r_simm+r_unsigned_rs1) : (r_simm+r_next_pc_decode);
   // Mem Process wires
   wire w_rd_not_zero = |w_rd; // or reduction of the destination register.
@@ -230,10 +226,10 @@ module Hart_Core #(
                         w_fct3_0==L_REMU   ? 1'b1 : 1'b0;
   wire       w_hcc    = (i_inst_read_ack==1'b1 && w_opcode==L_MATH && i_inst_read_data[31:25]==L_HCC) ? 1'b1 : 1'b0;
   // Register Write Strobe Control
-  wire w_reg_write_stb  = i_reset_sync ? 1'b0 :
+  wire w_reg_write_stb  = i_reset_sync==1'b1 ? 1'b0 :
                           (w_rd_not_zero==1'b1 && i_inst_read_ack==1'b1) ? (
                             (w_opcode==L_LUI || w_opcode==L_AUIPC || w_opcode==L_JAL) ? 1'b1 : 1'b0) :
-                          (w_decoder_valid & (r_jalr | r_rii | r_rro)) ? 1'b1 :
+                          (w_decoder_valid==1'b1 && (r_jalr==1'b1 || r_rii==1'b1 || r_rro==1'b1)) ? 1'b1 :
                           (i_master_read_ack==1'b1 && r_master_read_ready==1'b0) ? 1'b1 : 1'b0;
   // Register write address Select
   wire [P_CORE_MEMORY_ADDR_MSB:0] w_reg_write_addr = (w_decoder_valid==1'b1 || (i_master_read_ack==1'b1 && r_master_read_ready==1'b0)) ? w_destination_index : w_rd;
@@ -308,6 +304,7 @@ module Hart_Core #(
               // Increment the address and pre-load the program counter. Register
               // the instruction.
               r_next_pc_fetch <= (r_next_pc_fetch+32'h4);
+              r_inst_data     <= i_inst_read_data;
               // Transition
               r_program_counter_valid <= 1'b0;
               r_program_counter_state <= S_WAIT_FOR_DECODER;
@@ -327,10 +324,8 @@ module Hart_Core #(
               r_program_counter_valid <= 1'b1;
               r_program_counter_state <= S_WAIT_FOR_ACK;
             end
-            r_inst_data <= i_inst_read_data;
           end
           else begin
-            r_inst_data             <= r_inst_data;
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
@@ -363,7 +358,6 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
-          r_inst_data <= r_inst_data;
         end
         S_WAIT_FOR_READ : begin
           if (i_master_read_ack == 1'b1) begin
@@ -375,7 +369,6 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_READ;
           end
-          r_inst_data <= r_inst_data;
         end
         S_WAIT_FOR_WRITE : begin
           if (i_master_write_ack == 1'b1) begin
@@ -387,7 +380,6 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_WRITE;
           end
-          r_inst_data <= r_inst_data;
         end
         S_WAIT_FOR_HCC : begin
           if (i_master_hcc_processor_ack == 1'b1) begin
@@ -399,10 +391,8 @@ module Hart_Core #(
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_HCC;
           end
-          r_inst_data <= r_inst_data;
         end
         default : begin
-          r_inst_data             <= r_inst_data;
           r_program_counter_valid <= 1'b0;
           r_program_counter_state <= S_WAIT_FOR_ACK;
         end
@@ -566,14 +556,10 @@ module Hart_Core #(
   // Process     : General Purpose Registers Write Process
   // Description : Updates the write strobe, addr, and data.
   ///////////////////////////////////////////////////////////////////////////////
-  // mem0
-  assign o_master_core0_write_stb  = w_reg_write_stb;
-  assign o_master_core0_write_addr = w_reg_write_addr;
-  assign o_master_core0_write_data = w_reg_write_data;
-  // mem1
-  assign o_master_core1_write_stb  = w_reg_write_stb;
-  assign o_master_core1_write_addr = w_reg_write_addr;
-  assign o_master_core1_write_data = w_reg_write_data;
+  // memX
+  assign o_master_core_write_stb  = w_reg_write_stb;
+  assign o_master_core_write_addr = w_reg_write_addr;
+  assign o_master_core_write_data = w_reg_write_data;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : I/O Read Process
