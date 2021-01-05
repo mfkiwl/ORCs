@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/04 23:15:23
+// Last modified : 2021/01/05 16:05:59
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -46,7 +46,7 @@ module ORC_R32IMAZicsr #(
   parameter integer P_INITIAL_FETCH_ADDR = 0,  // First instruction address
   parameter integer P_MEMORY_ADDR_MSB    = 4,  //
   parameter integer P_MEMORY_DEPTH       = 32, //
-  parameter integer P_DIV_ACCURACY       = 3   // 1e10^-P_DIVISION_ACCURACY
+  parameter integer P_DIV_ACCURACY       = 4290672328   // 1e10^-P_DIVISION_ACCURACY
 )(
   // Processor's clocks and resets
   input i_clk,        // clock

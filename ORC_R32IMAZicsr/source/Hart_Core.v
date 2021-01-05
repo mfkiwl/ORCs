@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/04 23:54:52
+// Last modified : 2021/01/05 16:24:47
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -204,7 +204,7 @@ module Hart_Core #(
   wire w_rd_not_zero = |w_rd; // or reduction of the destination register.
   // Qualifying signals
   // Decoder Process
-  wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro;
+  wire w_decoder_valid = (r_jalr==1'b1 || r_bcc ==1'b1 || r_rii ==1'b1 || r_rro == 1'b1) ? 1'b1 : 1'b0;
   // Decoder Process valid/enable
   wire w_decoder_opcode = w_opcode==L_RII  ? 1'b1 :
                           w_opcode==L_MATH ? 1'b1 :
@@ -618,7 +618,7 @@ module Hart_Core #(
   // Assignment  : HCC Processor Connections
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-  assign o_master_hcc_processor_stb  = r_div | r_mul;
+  assign o_master_hcc_processor_stb  = (r_div==1'b1 || r_mul==1'b1) ? 1'b1 : 1'b0;
   assign o_master_hcc_processor_addr = r_div;
   assign o_master_hcc_processor_tga  = r_low_results;
   assign o_master_hcc_processor_data = w_destination_index;

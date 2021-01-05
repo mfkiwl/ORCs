@@ -33,7 +33,7 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2021/01/04 23:27:25
+// Last modified : 2021/01/05 07:31:19
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
 // Description   : The Memory_Backplane controls access to the BRAMs.
@@ -65,7 +65,7 @@ module Memory_Backplane #(
   // HCC Processor mem WB(pipeline) Slave Write Interface
   input                    i_slave_hcc_write_stb,  // WB write enable
   input [P_MEM_ADDR_MSB:0] i_slave_hcc_write_addr, // WB address
-  input [P_MEM_WIDTH-1:0]  i_slave_hcc_write_data, // WB data
+  input [P_MEM_WIDTH-1:0]  i_slave_hcc_write_data  // WB data
 );
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations

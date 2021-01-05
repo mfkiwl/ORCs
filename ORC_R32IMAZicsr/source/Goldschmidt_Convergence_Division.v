@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/04 21:51:42
+// Last modified : 2021/01/05 16:28:52
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -84,7 +84,6 @@ module Goldschmidt_Convergence_Division #(
   // Misc.
   localparam [P_GCD_FACTORS_MSB:0] L_GCD_NUMBER_TWO       = 2;
   localparam [P_GCD_FACTORS_MSB:0] L_GCD_ZERO_FILLER      = 0;
-  localparam                       L_GCD_ACCURACY_BITS    = P_GCD_ACCURACY*4;
   localparam                       L_GCD_MUL_FACTORS_MSB  = ((P_GCD_FACTORS_MSB+1)*2)-1;
   localparam                       L_GCD_STEP_PRODUCT_MSB = ((L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB);
   localparam                       L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
@@ -123,7 +122,7 @@ module Goldschmidt_Convergence_Division #(
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_multiplier;
   wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor     = r_divider_state==S_HALF_STEP_TWO ? r_multiplicand : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
   wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor   = (w_number_two_extended + ~w_current_divisor);
-  wire                           w_converged           = &i_product[L_GCD_MUL_FACTORS_MSB:L_GCD_MUL_FACTORS_MSB-L_GCD_ACCURACY_BITS];
+  wire                           w_converged           = w_current_divisor==P_GCD_ACCURACY ? 1'b1 : 1'b0; // is it 0.999xxx...
   // MEMx Result Registers Write Signals
   reg                         r_div_write_stb;
   wire [P_GCD_FACTORS_MSB:0]  w_quotient  = r_divider_state==S_IDLE ? r_dividend : 
@@ -252,8 +251,6 @@ module Goldschmidt_Convergence_Division #(
             r_div_write_stb       <= 1'b0;
             r_divisor             <= 0;
             r_dividend            <= 0;
-            r_multiplicand        <= 0; 
-            r_multiplier          <= 0;
             r_calculate_remainder <= 1'b0;
             r_divider_state       <= S_IDLE;
           end
