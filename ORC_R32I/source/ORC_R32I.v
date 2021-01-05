@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/04 12:02:23
+// Last modified : 2021/01/05 07:50:13
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -173,13 +173,13 @@ module ORC_R32I #(
                 w_fct3==0 ? r_unsigned_rs1 == r_unsigned_rs2 : // beq
                 w_fct3==1 ? r_unsigned_rs1 != r_unsigned_rs2 : // bne
                 0);
-  wire        w_jump_request = r_jalr | w_bmux;
-  wire [31:0] w_jump_value   = r_jalr == 1'b1 ? r_simm + r_unsigned_rs1 : r_simm + r_next_pc_decode;
+  wire        w_jump_request = (r_jalr==1'b1 || w_bmux ==1'b1) ? 1'b1 : 1'b0;
+  wire [31:0] w_jump_value   = r_jalr==1'b1 ? r_simm + r_unsigned_rs1 : r_simm + r_next_pc_decode;
   // Mem Process wires
   wire w_rd_not_zero = |w_rd; // or reduction of the destination register.
   // Qualifying signals
   // Decoder Process
-  wire w_decoder_valid = r_jalr | r_bcc | r_rii | r_rro;
+  wire w_decoder_valid = (r_jalr ==1'b1 || r_bcc ==1'b1 || r_rii ==1'b1 || r_rro ==1'b1) ? 1'b1 : 1'b0;
   // Program Counter Process
   wire w_decoder_opcode = w_opcode == L_RII  ? 1:
                           w_opcode == L_RRO  ? 1:
