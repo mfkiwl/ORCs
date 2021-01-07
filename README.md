@@ -2,22 +2,6 @@
 **O**pen-source **R**ISC-V **C**ores
 This project aims to create a collection of _harts_ complaint to the RISC-V ISA. Unlike other projects, this one does not seek to create the smallest risc-v implementation but rather experiment on implementations the risc-v ISA on accessible or popular FPGA dev boards focusing on performance first and resource cost second.
 
-## ORC_R32IMAZicsr
-
-### Goal
-
-A 32-bit RISC-V ISA implementation capable of booting Linux.
-
-### Requirements 
-Support ISA's : integer (I), multiplication and division (M), CSR instructions (Z) and atomics (A) extensions
-Supports User, Supervisor and Machine mode privilege profiles.
-
-### Current State
-
-**_Under Progress_**
-
-Currently adapting ORC's R32I per lessons learned.
-
 ## ORC R32I
 
 ### Abstract
@@ -60,6 +44,8 @@ Store       |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4*
 
 _*minimum_
 
+_**Note:**_ The fetch of the instruction is included in table unlike the literature of other projects out there since it can actually impact the overall performance(that is way some implementations in the wild have look-ahead fetching or fetch two instructions at a time, to give some examples).
+
 #### Simulation Waveform Output 
 
 This is a waveform snippet for reference 
@@ -72,6 +58,31 @@ Collection of tools for compiling, synthesizing, building, simulating and verify
 ### To Do 
 Finish test bench, benchmark and build an integrated example... and work on fixes for bugs yet to be discovered.
 
+There was a bug related to S type instructions where it could assume the instruction should be dropped due to rd being 0. This bug is in the process of being squashed.
+
+## ORC_R32IMAZicsr
+
+### Goal
+
+A 32-bit RISC-V ISA implementation capable of booting a modern OS (Linux, BSD...).
+
+### Requirements 
+Support ISA's : integer (I), multiplication and division (M), CSR instructions (Z) and atomics (A) extensions
+Supports User, Supervisor and Machine mode privilege profiles.
+
+### Current State
+
+**_Under Progress_**
+
+1.  ~~Currently adapting ORC's R32I per lessons learned.~~
+2.  Finishing the implementation of the M instructions.
+
+To synthesize code for the SiPEED (ANLOGIC FPGA BOARD) simply set the parameter `P_IS_ANLOGIC` to 1. For Lattice using yosys or Xilinx using Vivado set the parameter to 0. This parameter is declared at the top level wrapper, ORC_R32IMAZicsr.v.
+
+### To Do
+
+1.  Implement the CSR, Z, and  A instructions and implement a proper FENCE mechanism once the CSRs are added.
+2.  Add more documentation.
 
 ## Future Work
 
