@@ -2,7 +2,7 @@
 <Project>
     <Project_Created_Time>2021-01-04 00:52:01</Project_Created_Time>
     <TD_Version>4.6.18154</TD_Version>
-    <UCode>10000010</UCode>
+    <UCode>01100000</UCode>
     <Name>anlogic_orc</Name>
     <HardWare>
         <Family>EG4</Family>
@@ -10,13 +10,11 @@
     </HardWare>
     <Source_Files>
         <Verilog>
-            <File>../ram.v</File>
-            <File>../ORC_R32IMAZicsr.v</File>
-            <File>../Memory_Backplane.v</File>
-            <File>../HCC_Arithmetic_Processor.v</File>
-            <File>../Hart_Core.v</File>
-            <File>../Goldschmidt_Convergence_Division.v</File>
-            <File>../anlogic_mul.v</File>
+            <File>../../../source/ORC_R32IMAZicsr.v</File>
+            <File>../../../source/Memory_Backplane.v</File>
+            <File>../../../source/HCC_Arithmetic_Processor.v</File>
+            <File>../../../source/Hart_Core.v</File>
+            <File>../../../source/Goldschmidt_Convergence_Division.v</File>
         </Verilog>
         <ADC_FILE>../PriMER.adc</ADC_FILE>
         <SDC_FILE/>
@@ -28,7 +26,7 @@
         <CREATEINDEX>auto</CREATEINDEX>
     </TOP_MODULE>
     <Project_Settings>
-        <Step_Last_Change>2021-01-04 10:13:46</Step_Last_Change>
+        <Step_Last_Change>2021-01-06 23:36:36</Step_Last_Change>
         <Current_Step>30</Current_Step>
         <Step_Status>true</Step_Status>
     </Project_Settings>

@@ -8,28 +8,28 @@ IO Statistics
   #inout                0
 
 Gate Statistics
-#Basic gates         1616
-  #and                136
+#Basic gates         1399
+  #and                133
   #nand                 0
-  #or                  87
+  #or                  58
   #nor                  0
-  #xor                 33
+  #xor                 32
   #xnor                 0
   #buf                  0
-  #not                146
+  #not                153
   #bufif1               0
-  #MX21               752
+  #MX21               573
   #FADD                 0
-  #DFF                462
+  #DFF                450
   #LATCH                0
-#MACRO_ADD             23
-#MACRO_EQ              41
+#MACRO_ADD             24
+#MACRO_EQ              44
 #MACRO_MULT             1
-#MACRO_MUX           1737
+#MACRO_MUX           1883
 
 Report Hierarchy Area:
 +--------------------------------------------------+
 |Instance |Module          |gates  |seq    |macros |
 +--------------------------------------------------+
-|top      |ORC_R32IMAZicsr |1154   |462    |67     |
+|top      |ORC_R32IMAZicsr |949    |450    |71     |
 +--------------------------------------------------+
