@@ -33,7 +33,7 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2021/01/05 07:31:19
+// Last modified : 2021/01/06 23:23:26
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
 // Description   : The Memory_Backplane controls access to the BRAMs.
@@ -45,7 +45,8 @@ module Memory_Backplane #(
   parameter integer P_MEM_ADDR_MSB     = 0,
   parameter integer P_MEM_DEPTH        = 0,
   parameter integer P_MEM_WIDTH        = 0,
-  parameter integer P_NUM_GENERAL_REGS = 16 // Should be 16 or 32 per ISA
+  parameter integer P_MEM_NUM_REGS     = 16,
+  parameter integer P_MEM_ANLOGIC_BRAM = 0
 )(
   // Component's clocks and resets
   input i_clk,        // clock
@@ -70,7 +71,7 @@ module Memory_Backplane #(
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
   ///////////////////////////////////////////////////////////////////////////////
-  localparam L_REG_RESET_INDEX_MSB = $clog2(P_NUM_GENERAL_REGS)-1;
+  localparam L_REG_RESET_INDEX_MSB = $clog2(P_MEM_NUM_REGS)-1;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
@@ -83,12 +84,12 @@ module Memory_Backplane #(
   wire w_write_enable = (i_reset_sync==1'b1 || i_slave_core_write_stb==1'b1 || i_slave_hcc_write_stb==1'b1) ? 1'b1 : 1'b0;
   // Write Address
   wire [P_MEM_ADDR_MSB:0] w_write_addr = i_reset_sync==1'b1 ? reset_index : 
-                                         i_slave_core_write_stb==1'b1 ? i_slave_core_write_addr :
-                                         i_slave_hcc_write_stb==1'b1 ? i_slave_hcc_write_addr : reset_index;
+                                         i_slave_hcc_write_stb==1'b1 ? i_slave_hcc_write_addr :
+                                         i_slave_core_write_addr;
   // Write Data
   wire [P_MEM_WIDTH-1:0] w_write_data = i_reset_sync==1'b1 ? 0 : 
-                                        i_slave_core_write_stb==1'b1 ? i_slave_core_write_data :
-                                        i_slave_hcc_write_stb==1'b1 ? i_slave_hcc_write_data : 0;
+                                        i_slave_hcc_write_stb==1'b1 ? i_slave_hcc_write_data :
+                                        i_slave_core_write_data;
   
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -108,41 +109,130 @@ module Memory_Backplane #(
     end
   end
 
-  ///////////////////////////////////////////////////////////////////////////////
-  // Instance    : Memory Space 0
-  // Description : 
-  ///////////////////////////////////////////////////////////////////////////////
-  Generic_BRAM #(
-    (P_MEM_WIDTH-1),
-    P_MEM_ADDR_MSB,
-    P_MEM_DEPTH
-  ) mem_space0 (
-    .i_wclk(i_clk),
-    .i_we(w_write_enable),
-    .i_rclk(i_clk),
-    .i_waddr(w_write_addr),
-    .i_raddr(i_slave_core0_read_addr),
-    .i_wdata(w_write_data),
-    .o_rdata(o_slave_core0_read_data)
-  );
+  generate;
+    if (P_MEM_ANLOGIC_BRAM == 0) begin
+      ///////////////////////////////////////////////////////////////////////////////
+      // Instance    : Memory Space 0
+      // Description : 
+      ///////////////////////////////////////////////////////////////////////////////
+      Generic_BRAM #(
+        (P_MEM_WIDTH-1),
+        P_MEM_ADDR_MSB,
+        P_MEM_DEPTH
+      ) mem_space0 (
+        .i_wclk(i_clk),
+        .i_we(w_write_enable),
+        .i_rclk(i_clk),
+        .i_waddr(w_write_addr),
+        .i_raddr(i_slave_core0_read_addr),
+        .i_wdata(w_write_data),
+        .o_rdata(o_slave_core0_read_data)
+      );
+  
+      ///////////////////////////////////////////////////////////////////////////////
+      // Instance    : Memory Space 1
+      // Description : 
+      ///////////////////////////////////////////////////////////////////////////////
+      Generic_BRAM #(
+        (P_MEM_WIDTH-1),
+        P_MEM_ADDR_MSB,
+        P_MEM_DEPTH
+      ) mem_space1 (
+        .i_wclk(i_clk),
+        .i_we(w_write_enable),
+        .i_rclk(i_clk),
+        .i_waddr(w_write_addr),
+        .i_raddr(i_slave_core1_read_addr),
+        .i_wdata(w_write_data),
+        .o_rdata(o_slave_core1_read_data)
+      );
+    end
+  endgenerate
 
-  ///////////////////////////////////////////////////////////////////////////////
-  // Instance    : Memory Space 1
-  // Description : 
-  ///////////////////////////////////////////////////////////////////////////////
-  Generic_BRAM #(
-    (P_MEM_WIDTH-1),
-    P_MEM_ADDR_MSB,
-    P_MEM_DEPTH
-  ) mem_space1 (
-    .i_wclk(i_clk),
-    .i_we(w_write_enable),
-    .i_rclk(i_clk),
-    .i_waddr(w_write_addr),
-    .i_raddr(i_slave_core1_read_addr),
-    .i_wdata(w_write_data),
-    .o_rdata(o_slave_core1_read_data)
-  );
+  generate;
+    if (P_MEM_ANLOGIC_BRAM == 1) begin
+      ///////////////////////////////////////////////////////////////////////////////
+      // Instance    : Memory Space 0
+      // Description : 
+      ///////////////////////////////////////////////////////////////////////////////
+      EG_LOGIC_BRAM #(
+        .DATA_WIDTH_A(P_MEM_WIDTH),
+				.DATA_WIDTH_B(P_MEM_WIDTH),
+				.ADDR_WIDTH_A(P_MEM_ADDR_MSB+1),
+				.ADDR_WIDTH_B(P_MEM_ADDR_MSB+1),
+				.DATA_DEPTH_A(P_MEM_DEPTH),
+				.DATA_DEPTH_B(P_MEM_DEPTH),
+				.MODE("PDPW"),
+				.REGMODE_A("NOREG"),
+				.REGMODE_B("NOREG"),
+				.WRITEMODE_A("NORMAL"),
+				.WRITEMODE_B("NORMAL"),
+				.RESETMODE("SYNC"),
+				.IMPLEMENT("9K(FAST)"),
+				.INIT_FILE("NONE"),
+				.FILL_ALL("NONE")
+      ) mem_space0 (
+				.dia(w_write_data),
+				.dib({P_MEM_WIDTH{1'b0}}),
+				.addra(w_write_addr),
+				.addrb(i_slave_core0_read_addr),
+				.cea(w_write_enable),
+				.ceb(i_slave_core0_read_stb),
+				.ocea(1'b0),
+				.oceb(1'b0),
+				.clka(i_clk),
+				.clkb(i_clk),
+				.wea(1'b1),
+				.web(1'b0),
+				.bea(1'b0),
+				.beb(1'b0),
+				.rsta(1'b0),
+				.rstb(1'b0),
+				.doa(),
+				.dob(o_slave_core0_read_data)
+      );
+
+      ///////////////////////////////////////////////////////////////////////////////
+      // Instance    : Memory Space 1
+      // Description : 
+      ///////////////////////////////////////////////////////////////////////////////
+      EG_LOGIC_BRAM #(
+        .DATA_WIDTH_A(P_MEM_WIDTH),
+				.DATA_WIDTH_B(P_MEM_WIDTH),
+				.ADDR_WIDTH_A(P_MEM_ADDR_MSB+1),
+				.ADDR_WIDTH_B(P_MEM_ADDR_MSB+1),
+				.DATA_DEPTH_A(P_MEM_DEPTH),
+				.DATA_DEPTH_B(P_MEM_DEPTH),
+				.MODE("PDPW"),
+				.REGMODE_A("NOREG"),
+				.REGMODE_B("NOREG"),
+				.WRITEMODE_A("NORMAL"),
+				.WRITEMODE_B("NORMAL"),
+				.RESETMODE("SYNC"),
+				.IMPLEMENT("9K(FAST)"),
+				.INIT_FILE("NONE"),
+				.FILL_ALL("NONE")
+      ) mem_space1 (
+				.dia(w_write_data),
+				.dib({P_MEM_WIDTH{1'b0}}),
+				.addra(w_write_addr),
+				.addrb(i_slave_core1_read_addr),
+				.cea(w_write_enable),
+				.ceb(i_slave_core1_read_stb),
+				.ocea(1'b0),
+				.oceb(1'b0),
+				.clka(i_clk),
+				.clkb(i_clk),
+				.wea(1'b1),
+				.web(1'b0),
+				.bea(1'b0),
+				.beb(1'b0),
+				.rsta(1'b0),
+				.rstb(1'b0),
+				.doa(),
+				.dob(o_slave_core1_read_data));
+    end
+  endgenerate
 
 endmodule
 

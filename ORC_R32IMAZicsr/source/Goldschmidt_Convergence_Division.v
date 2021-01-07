@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/05 16:28:52
+// Last modified : 2021/01/06 09:39:19
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -114,15 +114,15 @@ module Goldschmidt_Convergence_Division #(
   reg  [2:0]                     r_divider_state;
   reg                            r_calculate_remainder;
   wire [L_GCD_MUL_FACTORS_MSB:0] w_number_two_extended = {L_GCD_NUMBER_TWO,L_GCD_ZERO_FILLER};
-  wire                           w_dividend_not_zero   = |i_master_div0_read_data;
-  wire                           w_divisor_not_zero    = |i_master_div1_read_data;
+  wire                           w_dividend_not_zero   = i_master_div0_read_data==0 ? 1'b0 : 1'b1; // |i_master_div0_read_data;
+  wire                           w_divisor_not_zero    = i_master_div1_read_data==0 ? 1'b0 : 1'b1; // |i_master_div1_read_data;
   reg  [P_GCD_FACTORS_MSB:0]     r_dividend;
   reg  [P_GCD_FACTORS_MSB:0]     r_divisor;
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_multiplicand;
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_multiplier;
   wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor     = r_divider_state==S_HALF_STEP_TWO ? r_multiplicand : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
   wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor   = (w_number_two_extended + ~w_current_divisor);
-  wire                           w_converged           = w_current_divisor==P_GCD_ACCURACY ? 1'b1 : 1'b0; // is it 0.999xxx...
+  wire                           w_converged           = r_multiplicand[P_GCD_FACTORS_MSB:0]>=P_GCD_ACCURACY ? 1'b1 : 1'b0; // is it 0.999xxx...
   // MEMx Result Registers Write Signals
   reg                         r_div_write_stb;
   wire [P_GCD_FACTORS_MSB:0]  w_quotient  = r_divider_state==S_IDLE ? r_dividend : 
@@ -216,7 +216,7 @@ module Goldschmidt_Convergence_Division #(
               r_dividend      <= -1;
               r_divider_state <= S_IDLE;
             end
-            if (w_dividend_not_zero == 1'b0) begin
+            else if (w_dividend_not_zero == 1'b0) begin
               // If either is zero return zero
               r_div_write_stb <= 1'b1;
               r_divisor       <= L_GCD_ZERO_FILLER;

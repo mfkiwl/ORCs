@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/05 16:05:59
+// Last modified : 2021/01/06 23:37:47
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -46,7 +46,8 @@ module ORC_R32IMAZicsr #(
   parameter integer P_INITIAL_FETCH_ADDR = 0,  // First instruction address
   parameter integer P_MEMORY_ADDR_MSB    = 4,  //
   parameter integer P_MEMORY_DEPTH       = 32, //
-  parameter integer P_DIV_ACCURACY       = 4290672328   // 1e10^-P_DIVISION_ACCURACY
+  parameter integer P_DIV_ACCURACY       = 4290672328, // 1e10^-P_DIVISION_ACCURACY
+  parameter integer P_IS_ANLOGIC         = 0
 )(
   // Processor's clocks and resets
   input i_clk,        // clock
@@ -157,7 +158,8 @@ module ORC_R32IMAZicsr #(
   HCC_Arithmetic_Processor #(
     31,                // P_HCC_FACTORS_MSB
     P_MEMORY_ADDR_MSB, // P_HCC_MEM_ADDR_MSB
-    P_DIV_ACCURACY     // P_HCC_DIV_ACCURACY  
+    P_DIV_ACCURACY,    // P_HCC_DIV_ACCURACY
+    P_IS_ANLOGIC       // P_HCC_ANLOGIC_MUL
   ) mul_div_processor (
     // HCC Arithmetic Processor WB Interface
     .i_slave_hcc_processor_clk(i_clk),                    // clock
@@ -188,7 +190,8 @@ module ORC_R32IMAZicsr #(
     P_MEMORY_ADDR_MSB, // P_MEM_ADDR_MSB   
     P_MEMORY_DEPTH,    // P_MEM_DEPTH
     32,                // P_MEM_WIDTH       
-    P_MEMORY_DEPTH     // P_NUM_GENERAL_REGS.
+    P_MEMORY_DEPTH,    // P_MEM_NUM_REGS    
+    P_IS_ANLOGIC       // P_MEM_ANLOGIC_BRAM
   ) mem_access_controller(
     // Component's clocks and resets
     .i_clk(i_clk),               // clock

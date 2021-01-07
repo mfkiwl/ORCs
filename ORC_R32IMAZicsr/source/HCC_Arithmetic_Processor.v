@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/04 23:28:55
+// Last modified : 2021/01/06 23:35:06
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -45,7 +45,8 @@
 module HCC_Arithmetic_Processor #(
   parameter integer P_HCC_FACTORS_MSB  = 7,
   parameter integer P_HCC_MEM_ADDR_MSB = 0,
-  parameter integer P_HCC_DIV_ACCURACY = 2
+  parameter integer P_HCC_DIV_ACCURACY = 2,
+  parameter integer P_HCC_ANLOGIC_MUL  = 0
 )(
   // WB Interface
   input                         i_slave_hcc_processor_clk,
@@ -93,12 +94,15 @@ module HCC_Arithmetic_Processor #(
   wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplicand;
   wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplier;
   wire [L_HCC_PRODUCT_EXTENDED_MSB:0] w_product;
+  reg  [L_HCC_PRODUCT_EXTENDED_MSB:0] r_product;
   wire [P_HCC_FACTORS_MSB:0]          w_product_bits_select = r_tgd==1'b1 ? w_product[L_HCC_FACTORS_EXTENDED_MSB:P_HCC_FACTORS_MSB+1] : w_product[P_HCC_FACTORS_MSB:0];
   wire [P_HCC_FACTORS_MSB:0]          w_write_data          = r_select==1'b0 ? w_product_bits_select : w_div_write_data;
-  wire                                w_write_stb           = (r_select==1'b0 && r_wait_ack==1'b1) ? 1'b1 : (r_select==1'b1 ? w_div_ack : 1'b0);
+  wire                                w_write_stb           = ((r_select==1'b0 && r_wait_ack==1'b1) || (r_select==1'b1 && w_div_ack==1'b1)) ? 1'b1 : 1'b0;
   // Multiplier
-  wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = r_select==1'b1 ? $signed(w_div_multiplicand) : $signed(i_master_hcc0_read_data);
-  wire signed [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = r_select==1'b1 ? $signed(w_div_multiplier) : $signed(i_master_hcc1_read_data);
+  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = r_select==1'b1 ? w_div_multiplicand : 
+                                                         {{L_HCC_FACTORS_NUM_BITS{i_master_hcc0_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc0_read_data};
+  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = r_select==1'b1 ? w_div_multiplier : 
+                                                         {{L_HCC_FACTORS_NUM_BITS{i_master_hcc1_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc1_read_data};
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -110,7 +114,7 @@ module HCC_Arithmetic_Processor #(
   ///////////////////////////////////////////////////////////////////////////////
   always @(posedge i_slave_hcc_processor_clk) begin
     if (i_slave_hcc_processor_reset_sync == 1'b1) begin
-      r_select   <= 1'b1;
+      r_select   <= 1'b0;
       r_addr     <= 0;
       r_tgd      <= 0;
       r_wait_ack <= 1'b0;
@@ -123,11 +127,11 @@ module HCC_Arithmetic_Processor #(
         r_tgd      <= i_slave_hcc_processor_tgd;
         r_wait_ack <= 1'b1;
       end
-      else if (r_select == 1'b0 && r_wait_ack == 1'b1) begin
+      if (r_select == 1'b0 && r_wait_ack == 1'b1) begin
         // Multiplication done after one clock.
         r_wait_ack <= 1'b0;
       end
-      else if (r_select == 1'b1 && r_wait_ack == 1'b1) begin
+      if (r_select == 1'b1 && r_wait_ack == 1'b1) begin
         // Wait for Division to finish.
         r_wait_ack <= !w_div_ack;
       end
@@ -139,21 +143,50 @@ module HCC_Arithmetic_Processor #(
   assign o_master_hcc_write_addr = r_addr;       // WB address
   assign o_master_hcc_write_data = w_write_data; // WB data
 
-  ///////////////////////////////////////////////////////////////////////////////
-  // Instance    : Integer Multiplier
-  // Description : A High Computational Cost Arithmetic Processor that handles
-  //               multiplication and division operations.
-  ///////////////////////////////////////////////////////////////////////////////
-  Integer_Multiplier #(
-    L_HCC_FACTORS_EXTENDED_MSB, 
-    L_HCC_FACTORS_EXTENDED_MSB, 
-    L_HCC_PRODUCT_EXTENDED_MSB
-  ) mul (
-    .i_clk(i_slave_hcc_processor_clk), //
-    .i_multiplicand(w_multiplicand),   //
-    .i_multiplier(w_multiplier),       //
-    .o_product(w_product)              //
-  );
+  generate;
+    if (P_HCC_ANLOGIC_MUL == 0) begin
+      /////////////////////////////////////////////////////////////////////////////
+      // Process     : Multiplication Process
+      // Description : Generates the product by performing the multiplication.
+      /////////////////////////////////////////////////////////////////////////////
+      always @(posedge i_slave_hcc_processor_clk) begin
+        //	Multiply any time the inputs changes.
+        r_product <= $signed(w_multiplicand) * $signed(w_multiplier);
+      end
+      assign w_product = r_product;
+    end
+  endgenerate
+
+  generate;
+    if (P_HCC_ANLOGIC_MUL == 1) begin
+      ///////////////////////////////////////////////////////////////////////////////
+      // Instance    : Integer_Multiplier
+      // Description : Anlogic IP EG_LOGIC_MULT, TD version 4.6.18154
+      ///////////////////////////////////////////////////////////////////////////////
+	    EG_LOGIC_MULT #(
+        .INPUT_WIDTH_A(L_HCC_FACTORS_EXTENDED_MSB+1),
+	      .INPUT_WIDTH_B(L_HCC_FACTORS_EXTENDED_MSB+1),
+	      .OUTPUT_WIDTH(L_HCC_PRODUCT_EXTENDED_MSB+1),
+	      .INPUTFORMAT("SIGNED"),
+	      .INPUTREGA("DISABLE"),
+	      .INPUTREGB("DISABLE"),
+	      .OUTPUTREG("ENABLE"),
+	      .IMPLEMENT("DSP"),
+	      .SRMODE("ASYNC")
+	    ) Integer_Multiplier (
+	      .a(w_multiplicand),
+	      .b(w_multiplier),
+	      .p(w_product),
+	      .cea(1'b0),
+	      .ceb(1'b0),
+	      .cepd(1'b1),
+	      .clk(i_slave_hcc_processor_clk),
+	      .rstan(1'b0),
+	      .rstbn(1'b0),
+	      .rstpdn(i_slave_hcc_processor_reset_sync)
+	    );
+    end
+  endgenerate
 
   ///////////////////////////////////////////////////////////////////////////////
   // Instance    : Integer Divider
