@@ -1,11 +1,11 @@
-# ORC_R32I Synthesizable Unit Specification
+# ORC_R32IMAZicsr Synthesizable Unit Specification
 
 Document        | Metadata
 :-------------- | :------------------
 _Version_       | v0.0.1
 _Prepared by_   | Jose R Garcia
 _Created_       | 2020/12/25 13:39:12
-_Last modified_ | 2020/12/25 13:39:12
+_Last modified_ | 2021/01/07 00:52:39
 _Project_       | ORCs
 
 ## Overview
@@ -14,7 +14,7 @@ The ORC_R32IMAZicsr is an implementation of the RISC-V 32-bit I,M,A,Z and CSR IS
 
 ## Table Of Contents
 
-<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --> - [ORC_R32I Synthesizable Unit Specification](#orcr32i-synthesizable-unit-specification)
+<!-- TOC depthFrom:1 depthTo:6 withLinks:1 updateOnSave:1 orderedList:0 --> - [ORC_R32IMAZicsr Synthesizable Unit Specification](#orcr32imazicsr-synthesizable-unit-specification)
   - [Overview](#overview)
   - [Table Of Contents](#table-of-contents)
   - [1 Syntax and Abbreviations](#1-syntax-and-abbreviations)
@@ -35,7 +35,7 @@ The ORC_R32IMAZicsr is an implementation of the RISC-V 32-bit I,M,A,Z and CSR IS
  ## 1 Syntax and Abbreviations
 
 Term        | Definition
-:---------- | :----------------------------
+:---------- | :---------------------------------------------
 0b0         | Binary number syntax
 0x0000_0000 | Hexadecimal number syntax
 bit         | Single binary digit (0 or 1)
@@ -44,7 +44,7 @@ DWORD       | 32-bits wide data unit
 FPGA        | Field Programmable Gate Array
 GCD         | Goldschmidt Convergence Division
 HART        | Hardware thread
-HCC         | High Computational Cost
+HCC         | High Computational Cost Arithmetics Processor
 ISA         | Instruction Set Architecture
 LSB         | Least Significant bit
 MSB         | Most Significant bit
@@ -53,11 +53,14 @@ WB          | Wishbone Interface
 
 ## 2 Design
 
-The ORC_R32I uses a Harvard architecture, separating the interface used to access the instructions from the interface used to access external devices. The general purpose register are implemented in single port BRAMs. In order to access the rs1 and rs2 simultaneously to copies of the general purpose register are created. 
+The ORC_R32IMAZicsr uses a Harvard architecture, separating the interface used to access the instructions from the interface used to access external devices. The general purpose register are implemented in single port BRAMs. In order to access the rs1 and rs2 simultaneously to copies of the general purpose register are created. 
 
 |      ![Top_Level](top_level.png)
 | :------------------------------------:
 | Figure 1 : Top Level Diagram
+
+
+### 2.1 HART Core
 
 The Program Counter process fetches the instructions by asserting the instruction interface strobe signal, thus validating the address signal and waits for the acknowledge to be asserted in response which validates the data signal. 
 
@@ -67,7 +70,21 @@ The unit consumes instructions as portrayed by Figure 1.
 | :------------------------------------:
 | Figure 2 : Instruction HBI Read Timing
 
-HCC Processor : TBD
+
+### 2.2 High Computational Cost Arithmetics Processor
+
+
+#### 2.2.1 Integer Multiplier
+
+TBD
+
+#### 2.2.2 Goldschmidt Convergence Division
+
+TBD
+
+### 2.3 Memory Backplane
+
+TBD
 
 ## 3 Clocks and Resets
 
@@ -110,23 +127,20 @@ Signals                | Initial State | Dimension | Direction | Definition
 
 ## 5 Generic Parameters
 
-Parameters              |   Default   | Description
-:---------------------- | :---------: | :---------------------------------------------------
-`P_FETCH_COUNTER_RESET` | 0x0000_0000 | Initial address fetched by the Instruction WB Read.
-`P_FETCH_COUNTER_RESET` | 0x0000_0000 | Initial address fetched by the Instruction HBI Read.
-`P_FETCH_COUNTER_RESET` | 0x0000_0000 | Initial address fetched by the Instruction HBI Read.
-`P_FETCH_COUNTER_RESET` | 0x0000_0000 | Initial address fetched by the Instruction HBI Read.
+Parameters              |   Default  | Description
+:---------------------- | :--------: | :---------------------------------------------------
+`P_FETCH_COUNTER_RESET` |      0     | Initial address fetched by the Instruction WB Read.
+`P_MEMORY_ADDR_MSB`     |      4     | Log2(Number_Of_Total_Register)-1 
+`P_MEMORY_DEPTH`        |     32     | Memory space depth.
+`P_DIV_ACCURACY`        | 4290672328 | Divisor Convergence Threshold. How close to one does it get to accept the result. These are the 32bits after the decimal point, 0.XXXXXXXX expressed as an integer. The default value represent the 999 part of a 64bit binary fractional number equal to 0.999.
+`P_IS_ANLOGIC`          |      0     | When '0' it generates generic BRAM and multiplier. When '1' it generates ANLOGIC BRAMs and DSPs targeting the SiPEED board. 
 
 ## 6 Memory Map
 
 | Memory Space | Address Range | Description
-|:-----------: | :-----------: | :------------------------
-| mem0         |      [0:31]   | General Registers.
-| mem0         |        [32]   | Multiplication Registers.
-| mem0         |     [33:37]   | Division Registers.
-| mem1         |      [0:31]   | General Registers.
-| mem1         |        [32]   | Multiplication Registers.
-| mem1         |     [33:37]   | Division Registers.
+|:-----------: | :-----------: | :-----------------
+| mem0         |     [0:31]    | General Registers.
+| mem1         |     [0:31]    | General Registers.
 
 ### 6.1 General Register, mem0 and mem1
 
@@ -134,64 +148,32 @@ Parameters              |   Default   | Description
 |:------------------------: | :--: | :----: | :---------: | :----------------
 | [0x0000_0000:0x0000_001F] | 31:0 |   RW   | 0x0000_0000 | General register.
 
-### 6.2 Multiplication Registers, mem0
-
-|   Address   | Bits | Access | Reset | Description
-| :---------: | :--: | :----: | :---: | :---------------------------------
-| 0x0000_0020 | 31:0 |    R   |  N/A  | Multiplication Results Lower bits.
-
-### 6.3 Multiplication Registers, mem1
-
-|   Address   | Bits | Access |    Reset    | Description
-| :---------: | :--: | :----: | :---------: | :---------------------------------
-| 0x0000_0020 | 31:0 |    R   |     N/A     | Multiplication Results Upper bits.
-
-### 6.4 Division Registers, mem0
-
-|   Address   | Bits | Access |   Reset   | Description
-| :---------: | :--: | :----: | :-------: | :----------------------
-| 0x0000_0021 | 31:0 |    R   |    N/A    | Division Quotient bits.
-| 0x0000_0022 | 31:0 |    R   | 429496730 | Binary 0.1
-| 0x0000_0023 | 31:0 |    R   |  42949673 | Binary 0.01
-| 0x0000_0024 | 31:0 |    R   |  4294967  | Binary 0.001
-| 0x0000_0025 | 31:0 |    R   |   429497  | Binary 0.0001
-
-### 6.4 Division Registers, mem1
-
-|   Address   | Bits | Access | Reset | Description
-| :---------: | :--: | :----: | :---: | :----------------------
-| 0x0000_0021 | 31:0 |    R   |  N/A  | Division Remainder bits.
-| 0x0000_0022 | 31:0 |    R   | 42950 | Binary 0.00001
-| 0x0000_0023 | 31:0 |    R   |  4295 | Binary 0.000001
-| 0x0000_0024 | 31:0 |    R   |  429  | Binary 0.0000001
-| 0x0000_0025 | 31:0 |    R   |   43  | Binary 0.00000001
-
 ## 7 Directory Structure
 
-- `build` _contains build scripts, synthesis scripts, build constraints, build outputs and bitstream_
+- `build` _contains build scripts, synthesis scripts, build constraints, build outputs and bitstreams_
 - `sim` _contains simulation scripts and test bench files_
-- `source` _contains source code file (*.v)_
+- `source` _contains source code files (*.v)_
 
 ## 8 Simulation
 
 Simulation scripts assumes _Icarus Verilog_ (iverilog) as the simulation tool. From the /sim directory run make. Options available are
 
-Command              | Description
-:------------------- | :--------------------------------------------------------------------
-`SIM=verilator make` | cleans, compiles and runs the test bench, then it loads the waveform.
-`make clean`         | cleans all the compile and simulation products
+Command       | Description
+:------------ | :--------------------------------------------------------------------
+`make`        | cleans, compiles and runs the test bench, then it loads the waveform.
+`make clean`  | cleans all the compile and simulation products
 
 ## 9 Synthesis
 
-Synthesis scripts assume _Yosys_ as the tool for synthesizing code and _Lattice ICE HX-8K_ as the target FPGA device.
+Synthesis scripts assume _Yosys_ as the tool for synthesizing code and _Lattice ICE UP5K_ as the target FPGA device.
 
 Command              | Description
-:------------------- | :-----------------------------------------------------
+:------------------- | :----------------------
 `yosys syn_ice40.ys` | runs synthesis scripts.
 
 ## 10 Build
 
-Build scripts are written for the Icestorm tool-chain. The target device is the hx8kboard sold by Lattice.
+Build scripts are written for the Icestorm tool-chain. The target device is the up5k sold by Lattice.
 
 Command    | Description
 :--------- | :-----------------------------------------------------
