@@ -33,7 +33,7 @@
 // File name     : Generic_BRAM.v
 // Author        : Jose R Garcia
 // Create        : 21/04/2019 19:25:32
-// Last modified : 2021/01/08 11:18:42
+// Last modified : 2021/01/08 13:50:42
 // Project Name  : Generic BRAM Module
 // Module Name   : Generic_BRAM
 // Description   : Inferred BRAM. Most modern synthesis tools can infer this code
@@ -73,21 +73,29 @@ module Generic_BRAM #(parameter integer P_BRAM_DATA_MSB    = 15,
     end
   endgenerate
 
-  /////////////////////////////////////////////////////////////////////////////
-  // Process     : mem access
-  // Description : Synchronous reads and writes to memory. There is no enable
-  //               signal for the read side, hence it is always reading on 
-  //               every clock transition.
-  /////////////////////////////////////////////////////////////////////////////
+  ///////////////////////////////////////////////////////////////////////////////
+  //            ********      Architecture Declaration      ********           //
+  ///////////////////////////////////////////////////////////////////////////////
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // Process     : mem write access
+  // Description : Synchronous writes to memory.
+  ///////////////////////////////////////////////////////////////////////////////
   always @(posedge i_wclk) begin
     if (i_we == 1'b1) begin
       r_mem[i_waddr] <= i_wdata;
     end
   end
 
- always @(posedge i_rclk) begin
-     r_rdata <= r_mem[i_raddr];
- end
+  ///////////////////////////////////////////////////////////////////////////////
+  // Process     : mem read access
+  // Description : Synchronous reads memory. There is no read enable signal for 
+  //               the read side, hence it is always reading on every clock 
+  //               transition.
+  ///////////////////////////////////////////////////////////////////////////////
+  always @(posedge i_rclk) begin
+      r_rdata <= r_mem[i_raddr];
+  end
+  assign o_rdata = r_rdata;
 
-assign o_rdata = r_rdata;
 endmodule // Generic_BRAM
