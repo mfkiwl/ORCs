@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/06 23:37:47
+// Last modified : 2021/01/08 11:32:04
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -43,10 +43,12 @@
 /////////////////////////////////////////////////////////////////////////////////
 module ORC_R32IMAZicsr #(
   // Compile time configurable generic parameters
-  parameter integer P_INITIAL_FETCH_ADDR = 0,  // First instruction address
-  parameter integer P_MEMORY_ADDR_MSB    = 4,  //
-  parameter integer P_MEMORY_DEPTH       = 32, //
-  parameter integer P_DIV_ACCURACY       = 4290672328, // 1e10^-P_DIVISION_ACCURACY
+  parameter integer P_INITIAL_FETCH_ADDR = 0,         // First instruction address
+  parameter integer P_MEMORY_ADDR_MSB    = 4,         //
+  parameter integer P_MEMORY_DEPTH       = 32,        //
+  parameter integer P_MEMORY_HAS_INIT    = 0,         // 0=No init file, 1=loads memory init file
+  parameter         P_MEMORY_FILE        = 0,         // File name and directory "./example.txt"
+  parameter integer P_DIV_ACCURACY       = -21474837, // 4273492459, 0.995
   parameter integer P_IS_ANLOGIC         = 0
 )(
   // Processor's clocks and resets
@@ -187,10 +189,12 @@ module ORC_R32IMAZicsr #(
   //               CSRs for the multiple profiles.
   ///////////////////////////////////////////////////////////////////////////////
   Memory_Backplane #(
-    P_MEMORY_ADDR_MSB, // P_MEM_ADDR_MSB   
+    P_MEMORY_ADDR_MSB, // P_MEM_ADDR_MSB
     P_MEMORY_DEPTH,    // P_MEM_DEPTH
-    32,                // P_MEM_WIDTH       
-    P_MEMORY_DEPTH,    // P_MEM_NUM_REGS    
+    32,                // P_MEM_WIDTH
+    32,                // P_MEM_NUM_REGS
+    P_MEMORY_HAS_INIT, // P_MEM_NUM_REGS
+    P_MEMORY_FILE,     // P_MEM_NUM_REGS
     P_IS_ANLOGIC       // P_MEM_ANLOGIC_BRAM
   ) mem_access_controller(
     // Component's clocks and resets

@@ -33,7 +33,7 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2021/01/06 23:23:26
+// Last modified : 2021/01/08 11:18:39
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
 // Description   : The Memory_Backplane controls access to the BRAMs.
@@ -46,6 +46,8 @@ module Memory_Backplane #(
   parameter integer P_MEM_DEPTH        = 0,
   parameter integer P_MEM_WIDTH        = 0,
   parameter integer P_MEM_NUM_REGS     = 16,
+  parameter integer P_MEM_HAS_FILE     = 0,
+  parameter         P_MEM_INIT_FILE    = 0,
   parameter integer P_MEM_ANLOGIC_BRAM = 0
 )(
   // Component's clocks and resets
@@ -118,7 +120,9 @@ module Memory_Backplane #(
       Generic_BRAM #(
         (P_MEM_WIDTH-1),
         P_MEM_ADDR_MSB,
-        P_MEM_DEPTH
+        P_MEM_DEPTH,
+        P_MEM_HAS_FILE,
+        P_MEM_INIT_FILE
       ) mem_space0 (
         .i_wclk(i_clk),
         .i_we(w_write_enable),
@@ -136,7 +140,9 @@ module Memory_Backplane #(
       Generic_BRAM #(
         (P_MEM_WIDTH-1),
         P_MEM_ADDR_MSB,
-        P_MEM_DEPTH
+        P_MEM_DEPTH,
+        P_MEM_HAS_FILE,
+        P_MEM_INIT_FILE
       ) mem_space1 (
         .i_wclk(i_clk),
         .i_we(w_write_enable),

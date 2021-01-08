@@ -30,39 +30,54 @@
 // OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 //
 /////////////////////////////////////////////////////////////////////////////////
-// File name    : Generic_BRAM.v
-// Author       : Jose R Garcia
-// Create Date  : 21/04/2019 19:25:32
-// Project Name : 
-// Module Name  : Generic_BRAM
-// Description  : Inferred BRAM
+// File name     : Generic_BRAM.v
+// Author        : Jose R Garcia
+// Create        : 21/04/2019 19:25:32
+// Last modified : 2021/01/08 11:18:42
+// Project Name  : Generic BRAM Module
+// Module Name   : Generic_BRAM
+// Description   : Inferred BRAM. Most modern synthesis tools can infer this code
+//                 as an array of BRAM and map it to specific technologies.
 //
 // Additional Comments:
-//    
+// 
 /////////////////////////////////////////////////////////////////////////////////
-module Generic_BRAM #(parameter integer P_DATA_MSB    = 15,
-                      parameter integer P_ADDRESS_MSB = 4,
-                      parameter integer P_DEPTH       = 32)
- (
-  input                    i_wclk,
-  input                    i_we,
-  input                    i_rclk,
-  input  [P_ADDRESS_MSB:0] i_waddr,
-  input  [P_ADDRESS_MSB:0] i_raddr,
-  input  [P_DATA_MSB:0]    i_wdata,
-  output [P_DATA_MSB:0]    o_rdata
+module Generic_BRAM #(parameter integer P_BRAM_DATA_MSB    = 15,
+                      parameter integer P_BRAM_ADDRESS_MSB = 4,
+                      parameter integer P_BRAM_DEPTH       = 32,
+                      parameter integer P_BRAM_HAS_FILE    = 0,
+                      parameter         P_BRAM_INIT_FILE   = 0
+)(
+  input                         i_wclk,
+  input                         i_we,
+  input                         i_rclk,
+  input  [P_BRAM_ADDRESS_MSB:0] i_waddr,
+  input  [P_BRAM_ADDRESS_MSB:0] i_raddr,
+  input  [P_BRAM_DATA_MSB:0]    i_wdata,
+  output [P_BRAM_DATA_MSB:0]    o_rdata
  );
 
   /////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
   /////////////////////////////////////////////////////////////////////////////
   // Signals Definition
-  reg [P_DATA_MSB:0] r_mem [0:P_DEPTH-1];
-  reg [P_DATA_MSB:0] r_rdata;
+  reg [P_BRAM_DATA_MSB:0] r_mem [0:P_BRAM_DEPTH-1];
+  reg [P_BRAM_DATA_MSB:0] r_rdata;
+
+  generate;
+    if (P_BRAM_HAS_FILE == 1) begin
+      initial begin
+        // Load initial states of the brams from a file.
+        $readmemb(P_BRAM_INIT_FILE, r_mem);
+      end
+    end
+  endgenerate
 
   /////////////////////////////////////////////////////////////////////////////
   // Process     : mem access
-  // Description : Synchronous reads and writes to memory
+  // Description : Synchronous reads and writes to memory. There is no enable
+  //               signal for the read side, hence it is always reading on 
+  //               every clock transition.
   /////////////////////////////////////////////////////////////////////////////
   always @(posedge i_wclk) begin
     if (i_we == 1'b1) begin

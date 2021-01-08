@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/06 09:39:19
+// Last modified : 2021/01/08 11:18:07
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -52,7 +52,7 @@
 //   were 'd' is the divisor; 'D' is the dividend; 'i' is the step.
 //
 //  The remainder calculation requires an extra which is why the address tag is
-//  used to make the decision on whether do the calculation or skip it.
+//  used to make the decision on whether to do the calculation or skip it.
 /////////////////////////////////////////////////////////////////////////////////
 module Goldschmidt_Convergence_Division #(
   parameter integer P_GCD_FACTORS_MSB  = 7,
@@ -114,15 +114,16 @@ module Goldschmidt_Convergence_Division #(
   reg  [2:0]                     r_divider_state;
   reg                            r_calculate_remainder;
   wire [L_GCD_MUL_FACTORS_MSB:0] w_number_two_extended = {L_GCD_NUMBER_TWO,L_GCD_ZERO_FILLER};
-  wire                           w_dividend_not_zero   = i_master_div0_read_data==0 ? 1'b0 : 1'b1; // |i_master_div0_read_data;
-  wire                           w_divisor_not_zero    = i_master_div1_read_data==0 ? 1'b0 : 1'b1; // |i_master_div1_read_data;
+  wire                           w_dividend_not_zero   = i_master_div0_read_data==0 ? 1'b0 : 1'b1;
+  wire                           w_divisor_not_zero    = i_master_div1_read_data==0 ? 1'b0 : 1'b1;
   reg  [P_GCD_FACTORS_MSB:0]     r_dividend;
   reg  [P_GCD_FACTORS_MSB:0]     r_divisor;
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_multiplicand;
   reg  [L_GCD_MUL_FACTORS_MSB:0] r_multiplier;
-  wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor     = r_divider_state==S_HALF_STEP_TWO ? r_multiplicand : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
-  wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor   = (w_number_two_extended + ~w_current_divisor);
-  wire                           w_converged           = r_multiplicand[P_GCD_FACTORS_MSB:0]>=P_GCD_ACCURACY ? 1'b1 : 1'b0; // is it 0.999xxx...
+  // Iterative operation signals
+  wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor   = r_divider_state==S_HALF_STEP_TWO ? r_multiplicand : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
+  wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor = (w_number_two_extended + ~w_current_divisor);
+  wire                           w_converged         = r_multiplicand[P_GCD_FACTORS_MSB:0]>=P_GCD_ACCURACY ? 1'b1 : 1'b0; // is it 0.9xxx...
   // MEMx Result Registers Write Signals
   reg                         r_div_write_stb;
   wire [P_GCD_FACTORS_MSB:0]  w_quotient  = r_divider_state==S_IDLE ? r_dividend : 
@@ -151,41 +152,42 @@ module Goldschmidt_Convergence_Division #(
       r_lut_value <= L_REG_E1000000000;
     end
     else begin
-      //
+      // Detect how many position to shift the decimal point for divisor to be 
+      // less than 2.
       if (i_master_div1_read_data < 20) begin
-        //
+        // from 2 to 19, use 0.1
         r_lut_value <= L_REG_E10;
       end
       else if (i_master_div1_read_data < 200) begin
-        //
+        // from 20 to 199, use 0.01
         r_lut_value <= L_REG_E100;
       end
       else if (i_master_div1_read_data < 2000) begin
-        //
+        // from 200 to 1999, use 0.001
         r_lut_value <= L_REG_E1000;
       end
       else if (i_master_div1_read_data < 20000) begin
-        //
+        // from 2000 to 19999, use 0.0001
         r_lut_value <= L_REG_E10000;
       end
       else if (i_master_div1_read_data < 200000) begin
-        //
+        // from 20000 to 199999, use 0.00001
         r_lut_value <= L_REG_E100000;
       end
       else if (i_master_div1_read_data < 2000000) begin
-        //
+        // from 200000 to 1999999, use 0.000001
         r_lut_value <= L_REG_E1000000;
       end
       else if (i_master_div1_read_data < 20000000) begin
-        //
+        // from 2000000 to 19999999, use 0.0000001
         r_lut_value <= L_REG_E10000000;
       end
       else if (i_master_div1_read_data < 200000000) begin
-        //
+        // from 20000000 to 199999999, use 0.00000001
         r_lut_value <= L_REG_E100000000;
       end
       else begin
-        //
+        // from 200000000 or higher, use 0.000000001
         r_lut_value <= L_REG_E1000000000;
       end
     end
@@ -270,13 +272,15 @@ module Goldschmidt_Convergence_Division #(
         S_HALF_STEP_ONE : begin
           //          
           if (w_converged == 1'b1) begin
-            // When the divisor converges to 1.0 (actually 0.999...).
+            // When the divisor converges to 1.0 (actually 0.99...).
             if (r_calculate_remainder == 1'b1) begin
+              // Convert the remainder from decimal fraction to a natural number
               r_multiplicand  <= {L_GCD_ZERO_FILLER, i_product[P_GCD_FACTORS_MSB:0]};
               r_multiplier    <= {r_divisor, L_GCD_ZERO_FILLER};
               r_divider_state <= S_REMAINDER_TO_NATURAL;
             end
             else begin
+              // Return the quotient
               r_div_write_stb <= 1'b1;
               r_divider_state <= S_IDLE;
             end
@@ -295,6 +299,7 @@ module Goldschmidt_Convergence_Division #(
           r_divider_state <= S_HALF_STEP_ONE;
         end
         S_REMAINDER_TO_NATURAL : begin
+          // Return the remainder
           r_div_write_stb <= 1'b1;
           r_divider_state <= S_IDLE;
         end
