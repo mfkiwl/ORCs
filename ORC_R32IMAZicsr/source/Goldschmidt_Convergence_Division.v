@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/08 23:32:31
+// Last modified : 2021/01/09 09:02:37
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -124,7 +124,7 @@ module Goldschmidt_Convergence_Division #(
   // Iterative operation signals
   wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor   = r_divider_state==S_HALF_STEP_TWO ? r_multiplicand : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
   wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor = (w_number_two_extended + ~w_current_divisor);
-  wire                           w_converged         = r_multiplicand[P_GCD_FACTORS_MSB:P_GCD_FACTORS_MSB-P_GCD_ACCURACY-1]==L_CONVERGENCE_THRESHOLD ? 1'b1 : 1'b0; // is it 0.9xxx...
+  wire                           w_converged         = &r_multiplicand[P_GCD_FACTORS_MSB:P_GCD_FACTORS_MSB-P_GCD_ACCURACY-1]; // is it 0.9xxx...
   // MEMx Result Registers Write Signals
   reg                         r_div_write_stb;
   wire [P_GCD_FACTORS_MSB:0]  w_quotient  = r_divider_state==S_IDLE ? r_dividend : 

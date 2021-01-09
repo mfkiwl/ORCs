@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/06 18:30:33
+// Last modified : 2021/01/09 09:01:54
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -199,7 +199,7 @@ module Hart_Core #(
   wire        w_jump_request = (r_jalr==1'b1 || w_bmux==1'b1) ? 1'b1 : 1'b0;
   wire [31:0] w_jump_value   = r_jalr==1'b1 ? (r_simm+r_unsigned_rs1) : (r_simm+r_next_pc_decode);
   // Mem Process wires
-  wire w_rd_not_zero = w_rd==0 ? 1'b0 : 1'b1; // or reduction of the destination register.
+  wire w_rd_not_zero = w_rd==5'b00000 ? 1'b0 : 1'b1; // or reduction of the destination register.
   // Qualifying signals
   // Decoder Process
   wire w_decoder_valid = (r_jalr==1'b1 || r_rii==1'b1 || r_rro==1'b1) ? 1'b1 : 1'b0;
