@@ -3,19 +3,20 @@ PIN_DEF = hx8kboard
 DEVICE = hx8k
 PACKAGE = ct256
 PLACE_AND_ROUTE = nextpnr-ice40
-SEED_0 = 10319
-SEED_1 = 1070319
-SEED_2 = 2070319
-SEED_3 = 3070319
-SEED_4 = 4070319
-SEED_5 = 5070319
-SEED_6 = 6070319
-SEED_7 = 7070319
-SEED_8 = 8070319
-SEED_9 = 9070319
-SEED_10 = 10070319
-SEED_11 = 11070319
+SEED_0 = 0
+SEED_1 = 1
+SEED_2 = 2
+SEED_3 = 3
+SEED_4 = 4
+SEED_5 = 5
+SEED_6 = 6
+SEED_7 = 7
+SEED_8 = 8
+SEED_9 = 9
+SEED_10 = 10
+SEED_11 = 11
 # 	yosys -ql $(PROJ)_$(DEVICE)_syn.log -p "synth_ice40 -abc2 -retime -dsp -json ORC_R32I_syn.json -top ORC_R32I" "../../source/ORC_R32I.v"
+#   50703
 
 all: clean asc_1 rpt_1
 

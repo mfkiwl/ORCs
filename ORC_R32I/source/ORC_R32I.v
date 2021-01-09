@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/09 00:56:55
+// Last modified : 2021/01/09 09:17:11
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -133,9 +133,9 @@ module ORC_R32I #(
   wire        [31:0] w_master_addr = r_unsigned_rs1 + r_simm; // address created by lcc and scc instructions
   // L-group of instructions (w_opcode==7'b0000011)
   wire [31:0] w_l_data = w_fct3==0||w_fct3==4 ? 
-                           (r_master_read_addr[1:0]==3 ? { w_fct3==0&&i_master_read_data[31] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[31:24] } :
-                            r_master_read_addr[1:0]==2 ? { w_fct3==0&&i_master_read_data[23] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[23:16] } :
-                            r_master_read_addr[1:0]==1 ? { w_fct3==0&&i_master_read_data[15] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[15:8] } :
+                           (r_master_read_addr[1:0]==3 ? {(w_fct3==0&&i_master_read_data[31] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8]), i_master_read_data[31:24]} :
+                            r_master_read_addr[1:0]==2 ? {(w_fct3==0&&i_master_read_data[23] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8]), i_master_read_data[23:16]} :
+                            r_master_read_addr[1:0]==1 ? {(w_fct3==0&&i_master_read_data[15] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8]), i_master_read_data[15:8]} :
                               {w_fct3==0&&i_master_read_data[7] ? L_ALL_ONES[31:8]:L_ALL_ZERO[31:8], i_master_read_data[7:0]}):
                          w_fct3==1||w_fct3==5 ? ( r_master_read_addr[1]==1 ? { w_fct3==1&&i_master_read_data[31] ? L_ALL_ONES[31:16]:L_ALL_ZERO[31:16], i_master_read_data[31:16] } :
                            {w_fct3==1&&i_master_read_data[15] ? L_ALL_ONES[31:16]:L_ALL_ZERO[31:16], i_master_read_data[15:0]}) : i_master_read_data;
@@ -175,7 +175,7 @@ module ORC_R32I #(
   wire        w_jump_request = (r_jalr==1'b1 || w_bmux ==1'b1) ? 1'b1 : 1'b0;
   wire [31:0] w_jump_value   = r_jalr==1'b1 ? (r_simm+r_unsigned_rs1) : (r_simm+r_next_pc_decode);
   // Mem Process wires
-  wire w_rd_not_zero =  w_rd==6'b000000 ? 1'b0 : 1'b1; // |w_rd; // or reduction of the destination register.
+  wire w_rd_not_zero = w_rd==5'b00000 ? 1'b0 : 1'b1; // not zero
   // Qualifying signals
   // Decoder Process
   wire w_decoder_valid = (r_jalr ==1'b1 || r_rii ==1'b1 || r_rro ==1'b1) ? 1'b1 : 1'b0;
@@ -300,7 +300,7 @@ module ORC_R32I #(
         // Register-Immediate Instructions.
         // Performs ADDI, SLTI, ANDI, ORI, XORI, SLLI, SRLI, SRAI (I=immediate).
         r_rii  <= 1'b1;
-        r_simm <= {i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], i_inst_read_data[31:20]};
+        r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), i_inst_read_data[31:20]};
         r_uimm <= {L_ALL_ZERO[31:12], i_inst_read_data[31:20]};
       end
       else begin
@@ -324,7 +324,7 @@ module ORC_R32I #(
         // (r_next_pc_fetch) is written to register rd. Register x0 can be
         // used as the destination if the result is not required.
         r_jalr <= 1'b1;
-        r_simm <= {i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12],
+        r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]),
                    i_inst_read_data[31:20]};
       end
       else begin
@@ -337,7 +337,7 @@ module ORC_R32I #(
         // sign-extended 12-bit offset. Loads copy a value from memory to 
         // register rd.
         r_lcc  <= 1'b1;
-        r_simm <= {i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+        r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), 
                    i_inst_read_data[31:20]};
       end
       else begin
@@ -351,7 +351,7 @@ module ORC_R32I #(
         // instruction to give the target address. Branch instructions compare 
         // two registers.
         r_bcc  <= 1'b1;
-        r_simm <= {i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13], 
+        r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:13]:L_ALL_ZERO[31:13]), 
                    i_inst_read_data[31],i_inst_read_data[7],i_inst_read_data[30:25],
                    i_inst_read_data[11:8],L_ALL_ZERO[0]};
       end
@@ -365,7 +365,7 @@ module ORC_R32I #(
         // sign-extended 12-bit offset. Stores copy the value in register rs2 to
         // memory.
         r_scc   <= 1'b1;
-        r_simm  <= {i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12], 
+        r_simm  <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), 
                     i_inst_read_data[31:25], i_inst_read_data[11:7]};
       end
       else begin
