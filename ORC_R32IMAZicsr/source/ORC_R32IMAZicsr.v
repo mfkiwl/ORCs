@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/08 11:32:04
+// Last modified : 2021/01/08 23:33:04
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -43,13 +43,13 @@
 /////////////////////////////////////////////////////////////////////////////////
 module ORC_R32IMAZicsr #(
   // Compile time configurable generic parameters
-  parameter integer P_INITIAL_FETCH_ADDR = 0,         // First instruction address
-  parameter integer P_MEMORY_ADDR_MSB    = 4,         //
-  parameter integer P_MEMORY_DEPTH       = 32,        //
-  parameter integer P_MEMORY_HAS_INIT    = 0,         // 0=No init file, 1=loads memory init file
-  parameter         P_MEMORY_FILE        = 0,         // File name and directory "./example.txt"
-  parameter integer P_DIV_ACCURACY       = -21474837, // 4273492459, 0.995
-  parameter integer P_IS_ANLOGIC         = 0
+  parameter integer P_INITIAL_FETCH_ADDR = 0,  // First instruction address
+  parameter integer P_MEMORY_ADDR_MSB    = 4,  //
+  parameter integer P_MEMORY_DEPTH       = 32, //
+  parameter integer P_MEMORY_HAS_INIT    = 0,  // 0=No init file, 1=loads memory init file
+  parameter         P_MEMORY_FILE        = 0,  // File name and directory "./example.txt"
+  parameter integer P_DIV_ACCURACY       = 12, // Divisor bits '1' to indicate convergence. 
+  parameter integer P_IS_ANLOGIC         = 0   //
 )(
   // Processor's clocks and resets
   input i_clk,        // clock

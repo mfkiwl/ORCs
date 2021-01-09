@@ -73,6 +73,7 @@ The unit consumes instructions as portrayed by Figure 1.
 
 ### 2.2 High Computational Cost Arithmetics Processor
 
+This module handles both integer division and multiplication operations. It has the option of selecting between an instance of ANLOGIC specific DSP block or a generic multiplication that modern synthesis tools can map to other FPGA technologies. The division is handled by Goldschmidt divider module.
 
 #### 2.2.1 Integer Multiplier
 
@@ -80,7 +81,30 @@ TBD
 
 #### 2.2.2 Goldschmidt Convergence Division
 
-TBD
+The Goldschmidt division is an special application of the Newton-Raphson method. This iterative divider computes:
+
+    d(i) = d[i-1].(2-d[i-1])
+             and
+    D(i) = D[i-1].(2-d[i-1])
+
+were 'd' is the divisor; 'D' is the dividend; 'i' is the step. D converges toward the quotient and d converges toward 1 at a quadratic rate. For the divisor to converge to 1 it must obviously be less than 2 therefore integers greater than 2 must be multiplied by 10 to the negative powers to shift the decimal point. Consider the following example:
+
+Step  | D                | d                 | 2-d
+----: | :--------------- | :---------------- | :---------------
+.	    | 16	             | 4                 | 1.6
+0	    | 1.6	             | 0.4               | 1.36
+1	    | 2.56             | 0.64              | 1.1296
+2	    | 3.4816           | 0.8704            | 1.01679616
+3	    | 3.93281536       | 0.98320384        | 1.00028211099075
+4	    | 3.99887155603702 | 0.999717889009254 | 1.00000007958661
+5	    | 3.99999968165356 | 0.999999920413389 | 1.00000000000001
+5	    | 3.99999968165356 | 0.999999920413389 | 1.00000000000001
+6     | 3.99999999999997 | 0.999999999999994 | 1
+7     | 4                | 1                 | 1
+
+The code implementation compares the size of the divisor against 2*10^_n_ were _n_ is a natural number. The result of the comparison indicates against which 10^_m_, were _m_ is a negative integer, to multiply the divisor. Then the Goldschmidt division is performed until the divisor converges to degree indicated by `P_GCD_ACCURACY`. The quotient returned is the rounded up value to which the dividend converged to.
+    
+The remainder calculation requires an extra which is why the address tag is used to make the decision on whether to do the calculation or skip it. The calculation simply take the value after the decimal point of the quotient a multiplies it by the divisor.
 
 ### 2.3 Memory Backplane
 

@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/08 11:18:07
+// Last modified : 2021/01/08 23:32:31
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -56,7 +56,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 module Goldschmidt_Convergence_Division #(
   parameter integer P_GCD_FACTORS_MSB  = 7,
-  parameter integer P_GCD_ACCURACY     = 1,
+  parameter integer P_GCD_ACCURACY     = 0,
   parameter integer P_GCD_MEM_ADDR_MSB = 0
 )(
   input i_clk,
@@ -86,7 +86,6 @@ module Goldschmidt_Convergence_Division #(
   localparam [P_GCD_FACTORS_MSB:0] L_GCD_ZERO_FILLER      = 0;
   localparam                       L_GCD_MUL_FACTORS_MSB  = ((P_GCD_FACTORS_MSB+1)*2)-1;
   localparam                       L_GCD_STEP_PRODUCT_MSB = ((L_GCD_MUL_FACTORS_MSB+1)+P_GCD_FACTORS_MSB);
-  localparam                       L_GCD_FACTORS_NIBBLES  = (P_GCD_FACTORS_MSB+1)/4;
   // Program Counter FSM States
   localparam [2:0] S_IDLE                 = 3'h0; // Waits for valid factors.
   localparam [2:0] S_SHIFT_DIVISOR_POINT  = 3'h1; // multiply the divisor by minus powers of ten to shift the decimal point.
@@ -104,6 +103,8 @@ module Goldschmidt_Convergence_Division #(
   localparam [P_GCD_FACTORS_MSB:0] L_REG_E10000000 = 429; // X.0000001
   localparam [P_GCD_FACTORS_MSB:0] L_REG_E100000000 = 43; // X.00000001
   localparam [P_GCD_FACTORS_MSB:0] L_REG_E1000000000 = 4; // X.000000001
+  // Divisor convergence threshold
+  localparam [P_GCD_ACCURACY-1:0] L_CONVERGENCE_THRESHOLD = -1;
 
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Signals Declarations
@@ -123,7 +124,7 @@ module Goldschmidt_Convergence_Division #(
   // Iterative operation signals
   wire [L_GCD_MUL_FACTORS_MSB:0] w_current_divisor   = r_divider_state==S_HALF_STEP_TWO ? r_multiplicand : i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
   wire [L_GCD_MUL_FACTORS_MSB:0] w_two_minus_divisor = (w_number_two_extended + ~w_current_divisor);
-  wire                           w_converged         = r_multiplicand[P_GCD_FACTORS_MSB:0]>=P_GCD_ACCURACY ? 1'b1 : 1'b0; // is it 0.9xxx...
+  wire                           w_converged         = r_multiplicand[P_GCD_FACTORS_MSB:P_GCD_FACTORS_MSB-P_GCD_ACCURACY-1]==L_CONVERGENCE_THRESHOLD ? 1'b1 : 1'b0; // is it 0.9xxx...
   // MEMx Result Registers Write Signals
   reg                         r_div_write_stb;
   wire [P_GCD_FACTORS_MSB:0]  w_quotient  = r_divider_state==S_IDLE ? r_dividend : 
