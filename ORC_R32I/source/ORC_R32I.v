@@ -33,7 +33,7 @@
 // File name     : ORC_R32I.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/15 17:11:51
+// Last modified : 2021/01/15 21:26:43
 // Project Name  : ORCs
 // Module Name   : ORC_R32I
 // Description   : The ORC_R32I is a machine mode capable hart implementation of 
@@ -184,7 +184,7 @@ module ORC_R32I #(
   wire        w_jump_request = (r_jalr==1'b1 || w_bmux==1'b1) ? 1'b1 : 1'b0;
   wire [31:0] w_jump_value   = r_jalr==1'b1 ? (r_simm+r_unsigned_rs1) : (r_simm+r_next_pc_decode);
   // Mem Process wires
-  wire w_rd_not_zero = w_rd==5'h0 ? 1'b0 : 1'b1; // not zero
+  wire w_rd_not_zero          = w_rd==5'h0 ? 1'b0 : 1'b1;                // not zero
   wire w_destination_not_zero = w_destination_index==5'h0 ? 1'b0 : 1'b1; // not zero
   // Qualifying signals
   // Program Counter Process
@@ -480,7 +480,7 @@ module ORC_R32I #(
         general_registers2[w_destination_index] <= w_rii_data;
       end
       if (r_rro == 1'b1) begin
-        // Stores the Register-Immediate instruction result in the general register
+        // Stores the Register-Register operation result in the general register
         general_registers1[w_destination_index] <= w_rro_data;
         general_registers2[w_destination_index] <= w_rro_data;
       end
@@ -530,7 +530,7 @@ module ORC_R32I #(
         r_master_write_ready <= 1'b0;                       
       end
       if (r_master_write_ready == 1'b0 && i_master_write_ack == 1'b1) begin
-        //
+        // Ready for new transaction on the next clock.
         r_master_write_ready <= 1'b1;
       end
     end
@@ -538,14 +538,14 @@ module ORC_R32I #(
   assign o_master_write_stb  = w_write_stb;
   assign o_master_write_addr = {w_master_addr[31:2], 2'b00};
   assign o_master_write_data = w_s_data;
-  assign o_master_write_sel  = (w_fct3==3'h0) ? ( 
+  assign o_master_write_sel  = w_fct3==3'h0 ? ( 
                                  w_master_addr[1:0]==2'h3 ? 4'b1000 : 
                                  w_master_addr[1:0]==2'h2 ? 4'b0100 : 
                                  w_master_addr[1:0]==2'h1 ? 4'b0010 : 
                                                             4'b0001 ) :
-                               (w_fct3==3'h1) ? ( 
-                                 w_master_addr[1] == 1'b1 ? 4'b1100 :
-                                                            4'b0011 ) :
-                                                            4'b1111;
+                               w_fct3==3'h1 ? ( 
+                                 w_master_addr[1]==1'b1 ? 4'b1100 :
+                                                          4'b0011 ) :
+                                                          4'b1111;
 
 endmodule
