@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/08 23:33:04
+// Last modified : 2021/01/15 21:11:25
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -44,6 +44,7 @@
 module ORC_R32IMAZicsr #(
   // Compile time configurable generic parameters
   parameter integer P_INITIAL_FETCH_ADDR = 0,  // First instruction address
+  parameter integer P_STACK_ADDR         = 0,  // Reg x2 reset value
   parameter integer P_MEMORY_ADDR_MSB    = 4,  //
   parameter integer P_MEMORY_DEPTH       = 32, //
   parameter integer P_MEMORY_HAS_INIT    = 0,  // 0=No init file, 1=loads memory init file
@@ -189,6 +190,7 @@ module ORC_R32IMAZicsr #(
   //               CSRs for the multiple profiles.
   ///////////////////////////////////////////////////////////////////////////////
   Memory_Backplane #(
+    P_STACK_ADDR,      // P_MEM_STACK_ADDR
     P_MEMORY_ADDR_MSB, // P_MEM_ADDR_MSB
     P_MEMORY_DEPTH,    // P_MEM_DEPTH
     32,                // P_MEM_WIDTH

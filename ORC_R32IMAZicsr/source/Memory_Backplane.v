@@ -33,7 +33,7 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2021/01/08 11:18:39
+// Last modified : 2021/01/15 20:44:17
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
 // Description   : The Memory_Backplane controls access to the BRAMs.
@@ -42,6 +42,7 @@
 //   
 /////////////////////////////////////////////////////////////////////////////////
 module Memory_Backplane #(
+  parameter integer P_MEM_STACK_ADDR   = 0,  // Reg x2 reset value
   parameter integer P_MEM_ADDR_MSB     = 0,
   parameter integer P_MEM_DEPTH        = 0,
   parameter integer P_MEM_WIDTH        = 0,
@@ -89,7 +90,7 @@ module Memory_Backplane #(
                                          i_slave_hcc_write_stb==1'b1 ? i_slave_hcc_write_addr :
                                          i_slave_core_write_addr;
   // Write Data
-  wire [P_MEM_WIDTH-1:0] w_write_data = i_reset_sync==1'b1 ? 0 : 
+  wire [P_MEM_WIDTH-1:0] w_write_data = i_reset_sync==1'b1 ? (reset_index==2 ? P_MEM_STACK_ADDR : 0) : 
                                         i_slave_hcc_write_stb==1'b1 ? i_slave_hcc_write_data :
                                         i_slave_core_write_data;
   
