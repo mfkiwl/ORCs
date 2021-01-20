@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/07 00:52:46
+// Last modified : 2021/01/20 00:45:09
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -54,9 +54,8 @@ module HCC_Arithmetic_Processor #(
   input                         i_slave_hcc_processor_stb,
   output                        o_slave_hcc_processor_ack,
   input                         i_slave_hcc_processor_addr,
-  input                         i_slave_hcc_processor_tga,
+  input  [1:0]                  i_slave_hcc_processor_tga,
   input  [P_HCC_MEM_ADDR_MSB:0] i_slave_hcc_processor_data, // rd
-  input                         i_slave_hcc_processor_tgd,  // 0=low, 1=high bits
   // HCC Processor mem0 WB(pipeline) master Read Interface
   input  [P_HCC_FACTORS_MSB:0]  i_master_hcc0_read_data, // WB data
   // HCC Processor mem1 WB(pipeline) master Read Interface
@@ -99,10 +98,12 @@ module HCC_Arithmetic_Processor #(
   wire [P_HCC_FACTORS_MSB:0]          w_write_data          = r_select==1'b0 ? w_product_bits_select : w_div_write_data;
   wire                                w_write_stb           = ((r_select==1'b0 && r_wait_ack==1'b1) || (r_select==1'b1 && w_div_ack==1'b1)) ? 1'b1 : 1'b0;
   // Multiplier
-  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = r_select==1'b1 ? w_div_multiplicand : 
-                                                         {{L_HCC_FACTORS_NUM_BITS{i_master_hcc0_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc0_read_data};
-  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = r_select==1'b1 ? w_div_multiplier : 
-                                                         {{L_HCC_FACTORS_NUM_BITS{i_master_hcc1_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc1_read_data};
+  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = (i_slave_hcc_processor_stb==1'b1 && i_slave_hcc_processor_addr==1'b0) ? (
+                                                         ^i_slave_hcc_processor_tga ? {{L_HCC_FACTORS_NUM_BITS{i_master_hcc0_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc0_read_data} :
+                                                           {{L_HCC_FACTORS_NUM_BITS{1'b0}}, i_master_hcc0_read_data}) : w_div_multiplicand;
+  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = (i_slave_hcc_processor_stb==1'b1 && i_slave_hcc_processor_addr==1'b0) ? (
+                                                        i_slave_hcc_processor_tga==2'b01 ? {{L_HCC_FACTORS_NUM_BITS{i_master_hcc1_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc1_read_data} :
+                                                          {{L_HCC_FACTORS_NUM_BITS{1'b0}}, i_master_hcc1_read_data}) : w_div_multiplier;
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -124,7 +125,7 @@ module HCC_Arithmetic_Processor #(
         // Received valid factors index.
         r_select   <= i_slave_hcc_processor_addr;
         r_addr     <= i_slave_hcc_processor_data; // rd
-        r_tgd      <= i_slave_hcc_processor_tgd;
+        r_tgd      <= |i_slave_hcc_processor_tga;
         r_wait_ack <= 1'b1;
       end
       if (r_select == 1'b0 && r_wait_ack == 1'b1) begin
@@ -143,7 +144,7 @@ module HCC_Arithmetic_Processor #(
   assign o_master_hcc_write_addr = r_addr;       // WB address
   assign o_master_hcc_write_data = w_write_data; // WB data
 
-  generate;
+  generate
     if (P_HCC_ANLOGIC_MUL == 0) begin
       /////////////////////////////////////////////////////////////////////////////
       // Process     : Multiplication Process
@@ -151,13 +152,13 @@ module HCC_Arithmetic_Processor #(
       /////////////////////////////////////////////////////////////////////////////
       always @(posedge i_slave_hcc_processor_clk) begin
         //	Multiply any time the inputs changes.
-        r_product <= $signed(w_multiplicand) * $signed(w_multiplier);
+        r_product <= w_multiplicand * w_multiplier;
       end
       assign w_product = r_product;
     end
   endgenerate
 
-  generate;
+  generate
     if (P_HCC_ANLOGIC_MUL == 1) begin
       ///////////////////////////////////////////////////////////////////////////////
       // Instance    : Integer_Multiplier

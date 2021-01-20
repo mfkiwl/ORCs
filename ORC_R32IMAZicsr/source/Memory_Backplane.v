@@ -33,7 +33,7 @@
 // File name     : Memory_Backplane.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/23 14:17:03
-// Last modified : 2021/01/15 20:44:17
+// Last modified : 2021/01/15 23:35:52
 // Project Name  : ORCs
 // Module Name   : Memory_Backplane
 // Description   : The Memory_Backplane controls access to the BRAMs.
@@ -112,7 +112,7 @@ module Memory_Backplane #(
     end
   end
 
-  generate;
+  generate
     if (P_MEM_ANLOGIC_BRAM == 0) begin
       ///////////////////////////////////////////////////////////////////////////////
       // Instance    : Memory Space 0
@@ -156,7 +156,7 @@ module Memory_Backplane #(
     end
   endgenerate
 
-  generate;
+  generate
     if (P_MEM_ANLOGIC_BRAM == 1) begin
       ///////////////////////////////////////////////////////////////////////////////
       // Instance    : Memory Space 0

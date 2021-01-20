@@ -33,7 +33,7 @@
 // File name     : Generic_BRAM.v
 // Author        : Jose R Garcia
 // Create        : 21/04/2019 19:25:32
-// Last modified : 2021/01/08 13:50:42
+// Last modified : 2021/01/14 20:23:09
 // Project Name  : Generic BRAM Module
 // Module Name   : Generic_BRAM
 // Description   : Inferred BRAM. Most modern synthesis tools can infer this code
@@ -64,11 +64,11 @@ module Generic_BRAM #(parameter integer P_BRAM_DATA_MSB    = 15,
   reg [P_BRAM_DATA_MSB:0] r_mem [0:P_BRAM_DEPTH-1];
   reg [P_BRAM_DATA_MSB:0] r_rdata;
 
-  generate;
+  generate
     if (P_BRAM_HAS_FILE == 1) begin
       initial begin
         // Load initial states of the brams from a file.
-        $readmemb(P_BRAM_INIT_FILE, r_mem);
+        $readmemh(P_BRAM_INIT_FILE, r_mem);
       end
     end
   endgenerate

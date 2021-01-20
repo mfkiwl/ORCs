@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/15 21:11:25
+// Last modified : 2021/01/19 19:05:15
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -97,7 +97,7 @@ module ORC_R32IMAZicsr #(
   wire                       w_hcc_processor_stb;
   wire                       w_hcc_processor_ack;
   wire                       w_hcc_processor_addr;
-  wire                       w_hcc_processor_tga;
+  wire [1:0]                 w_hcc_processor_tga;
   wire [P_MEMORY_ADDR_MSB:0] w_hcc_processor_factors;
   wire                       w_hcc_processor_tgd;
 
@@ -149,8 +149,7 @@ module ORC_R32IMAZicsr #(
     .i_master_hcc_processor_ack(w_hcc_processor_ack),     // WB acknowledge
     .o_master_hcc_processor_addr(w_hcc_processor_addr),   // WB address
     .o_master_hcc_processor_tga(w_hcc_processor_tga),     // WB address
-    .o_master_hcc_processor_data(w_hcc_processor_factors), // WB output data
-    .o_master_hcc_processor_tgd(w_hcc_processor_tgd)      // WB data tag
+    .o_master_hcc_processor_data(w_hcc_processor_factors) // WB output data
   );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -172,7 +171,6 @@ module ORC_R32IMAZicsr #(
     .i_slave_hcc_processor_addr(w_hcc_processor_addr),    // WB address used to indicate mul or div
     .i_slave_hcc_processor_tga(w_hcc_processor_tga),      // WB address tag used to indicate quotient or remainder
     .i_slave_hcc_processor_data(w_hcc_processor_factors), // WB data, factors location in memory
-    .i_slave_hcc_processor_tgd(w_hcc_processor_tgd),      // WB data tag, indicates low or high bits of data
     // HCC Processor mem0 WB(pipeline) master Read Interface
     .i_master_hcc0_read_data(w_core0_read_data), // WB data
     // HCC Processor mem1 WB(pipeline) master Read Interface
