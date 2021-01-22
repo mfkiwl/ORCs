@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/19 19:51:46
+// Last modified : 2021/01/22 11:59:33
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -198,7 +198,7 @@ module Hart_Core #(
                            w_fct3==3'h3 ? (i_master_core0_read_data < r_uimm ? 32'h1 : 32'h0) :
                            w_fct3==3'h4 ? (i_master_core0_read_data ^ r_simm) :
                            (w_fct3==3'h5 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data >> r_uimm[4:0]) :
-                           (w_fct3==3'h5 && w_fct7[5]==1'b1) ? $signed($signed(i_master_core0_read_data) >>> r_simm[4:0]) :
+                           (w_fct3==3'h5 && w_fct7[5]==1'b1) ? ($signed(i_master_core0_read_data) >>> r_simm[4:0]) :
                            w_fct3==3'h6 ? (i_master_core0_read_data | r_simm) :
                            w_fct3==3'h7 ? (i_master_core0_read_data & r_simm) : i_master_core0_read_data;
  // Page 20 check comment about rd
@@ -209,7 +209,7 @@ module Hart_Core #(
                            (w_fct3==3'h3 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data < i_master_core1_read_data ? 32'h1 : 32'h0) :
                            (w_fct3==3'h4 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data ^ i_master_core1_read_data) :
                            (w_fct3==3'h5 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data >> i_master_core1_read_data[4:0]) :
-                           (w_fct3==3'h5 && w_fct7[5]==1'b1) ? $signed($signed(i_master_core0_read_data) >>> i_master_core1_read_data[4:0]) :
+                           (w_fct3==3'h5 && w_fct7[5]==1'b1) ? ($signed(i_master_core0_read_data) >>> i_master_core1_read_data[4:0]) :
                            (w_fct3==3'h6 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data | i_master_core1_read_data) :
                            (w_fct3==3'h7 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data & i_master_core1_read_data) : i_master_core0_read_data;
   // Jump/Branch-group of instructions (w_opcode==7'b1100011)
@@ -303,7 +303,7 @@ module Hart_Core #(
         end
         S_WAIT_FOR_DECODER : begin
           // Wait one clock cycle to allow data to be stored in the registers.
-          if (r_lcc == 1'b1 || r_scc == 1'b1 || r_hcc ==1'b1) begin
+          if (r_lcc == 1'b1 || r_hcc ==1'b1) begin
             // Transition to wait for division to finish
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_EXT;
@@ -319,7 +319,7 @@ module Hart_Core #(
           end
         end
         S_WAIT_FOR_EXT : begin
-          if (i_master_read_ack == 1'b1 || i_master_write_ack == 1'b1 || i_master_hcc_processor_ack == 1'b1) begin
+          if (i_master_read_ack == 1'b1 || i_master_hcc_processor_ack == 1'b1) begin
             // Data received. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
@@ -383,13 +383,13 @@ module Hart_Core #(
         end
         else begin
           // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
-          r_rro          <= 1'b1;
-          r_hcc          <= 1'b0;
+          r_rro <= 1'b1;
+          r_hcc <= 1'b0;
         end
       end
       else begin
-        r_rro          <= 1'b0;
-        r_hcc          <= 1'b0;
+        r_rro <= 1'b0;
+        r_hcc <= 1'b0;
       end
 
       if (w_opcode == L_JALR) begin

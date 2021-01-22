@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Convergence_Division.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/19 20:04:47
+// Last modified : 2021/01/22 12:12:18
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Convergence_Division
 // Description   : The Goldschmidt Convergence Division is an iterative method
@@ -252,7 +252,8 @@ module Goldschmidt_Convergence_Division #(
             end
             else begin
               // Shift the decimal point in the divisor.
-              if (i_slave_tga[0] == 1'b0 && (i_master_div0_read_data[P_GCD_FACTORS_MSB]==1'b1 ^ i_master_div1_read_data[P_GCD_FACTORS_MSB]==1'b1)) begin
+              if (i_slave_tga[0] == 1'b0 && (
+                i_master_div0_read_data[P_GCD_FACTORS_MSB]==1'b1 ^ i_master_div1_read_data[P_GCD_FACTORS_MSB]==1'b1)) begin
                 // 
                 r_signed_extend <= 1'b1;
               end
@@ -307,14 +308,17 @@ module Goldschmidt_Convergence_Division #(
         S_HALF_STEP_TWO : begin
           if (w_converged == 1'b1 && r_calculate_remainder == 1'b1) begin
             // Convert the remainder from decimal fraction to a natural number
-            r_multiplicand  <= i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
+            r_multiplicand  <= (i_product[L_GCD_RESULT_LSB-1:L_GCD_RESULT_LSB-3]==3'b100 |
+                               i_product[L_GCD_RESULT_LSB-1:L_GCD_RESULT_LSB-3]==3'b101 | 
+                               i_product[L_GCD_RESULT_LSB-1:L_GCD_RESULT_LSB-3]==3'b111) ? {L_GCD_ZERO_FILLER, L_GCD_ZERO_FILLER} :
+                               {L_GCD_ZERO_FILLER, i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1]};
             r_multiplier    <= {r_divisor, L_GCD_ZERO_FILLER};
             r_converged     <= 1'b1;
             r_divider_state <= S_REMAINDER_TO_NATURAL;
           end
           else begin
             // Second half of the division step
-            r_multiplicand  <= {L_GCD_ZERO_FILLER, i_product[L_GCD_MUL_FACTORS_MSB:P_GCD_FACTORS_MSB+1]};
+            r_multiplicand  <= i_product[L_GCD_STEP_PRODUCT_MSB:P_GCD_FACTORS_MSB+1];
             r_multiplier    <= w_two_minus_divisor;
             r_converged     <= w_converged;
             r_divider_state <= S_HALF_STEP_ONE;
