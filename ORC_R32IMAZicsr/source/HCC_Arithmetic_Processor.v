@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/22 12:10:08
+// Last modified : 2021/01/23 12:00:03
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -43,10 +43,11 @@
 //   .
 /////////////////////////////////////////////////////////////////////////////////
 module HCC_Arithmetic_Processor #(
-  parameter integer P_HCC_FACTORS_MSB  = 7,
-  parameter integer P_HCC_MEM_ADDR_MSB = 0,
-  parameter integer P_HCC_DIV_ACCURACY = 2,
-  parameter integer P_HCC_ANLOGIC_MUL  = 0
+  parameter integer P_HCC_FACTORS_MSB   = 31,
+  parameter integer P_HCC_MEM_ADDR_MSB  = 4,
+  parameter integer P_HCC_DIV_ACCURACY  = 9,
+  parameter integer P_HCC_DIV_ROUND_LVL = 3,
+  parameter integer P_HCC_ANLOGIC_MUL   = 0
 )(
   // WB Interface
   input                         i_slave_hcc_processor_clk,
@@ -85,7 +86,6 @@ module HCC_Arithmetic_Processor #(
   wire [P_HCC_MEM_ADDR_MSB:0] w_div0_read_addr; // WB address
   wire                        w_div1_read_stb;  // WB read enable
   wire [P_HCC_MEM_ADDR_MSB:0] w_div1_read_addr; // WB address
-  wire                        w_div_write_stb;  // WB write enable
   wire [P_HCC_FACTORS_MSB:0]  w_div_write_data; // WB data
   // Divider
   wire                                w_div_stb = (i_slave_hcc_processor_stb==1'b1 && i_slave_hcc_processor_addr==1'b1) ? 1'b1 : 1'b0;
@@ -193,10 +193,10 @@ module HCC_Arithmetic_Processor #(
   // Instance    : Integer Divider
   // Description : Instance of a Goldschmidt Division implementation.
   ///////////////////////////////////////////////////////////////////////////////
-  Goldschmidt_Convergence_Division #(
-    P_HCC_FACTORS_MSB,  // 
-    P_HCC_DIV_ACCURACY, //
-    P_HCC_MEM_ADDR_MSB  //
+  Goldschmidt_Integer_Divider_2CPS #(
+    P_HCC_FACTORS_MSB,  // P_GID_FACTORS_MSB
+    P_HCC_DIV_ACCURACY, // P_GID_ACCURACY_LVL
+    P_HCC_DIV_ROUND_LVL // P_GID_ROUND_UP_LVL
   ) div (
     // Clock and Reset
     .i_clk(i_slave_hcc_processor_clk),
@@ -210,7 +210,6 @@ module HCC_Arithmetic_Processor #(
     // mem1 WB(pipeline) master Read Interface
     .i_master_div1_read_data(i_master_hcc1_read_data), // WB data
     // mem WB(pipeline) master Write Interface
-    .o_master_div_write_stb(w_div_write_stb),   // WB write enable
     .o_master_div_write_data(w_div_write_data), // WB data
     // Connection to multiplier
     .o_multiplicand(w_div_multiplicand),

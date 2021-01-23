@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/20 10:23:24
+// Last modified : 2021/01/23 12:06:37
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -49,7 +49,8 @@ module ORC_R32IMAZicsr #(
   parameter integer P_MEMORY_DEPTH       = 32, //
   parameter integer P_MEMORY_HAS_INIT    = 0,  // 0=No init file, 1=loads memory init file
   parameter         P_MEMORY_FILE        = 0,  // File name and directory "./example.txt"
-  parameter integer P_DIV_ACCURACY       = 12, // Divisor bits '1' to indicate convergence. 
+  parameter integer P_DIV_ACCURACY       = 9,  // Divisor bits '1' to indicate convergence.
+  parameter integer P_DIV_ROUND_LEVEL    = 3,  // result bits '1' to indicate round up result.
   parameter integer P_IS_ANLOGIC         = 0   //
 )(
   // Processor's clocks and resets
@@ -161,6 +162,7 @@ module ORC_R32IMAZicsr #(
     31,                // P_HCC_FACTORS_MSB
     P_MEMORY_ADDR_MSB, // P_HCC_MEM_ADDR_MSB
     P_DIV_ACCURACY,    // P_HCC_DIV_ACCURACY
+    P_DIV_ROUND_LEVEL, // P_HCC_DIV_ROUND_LVL
     P_IS_ANLOGIC       // P_HCC_ANLOGIC_MUL
   ) mul_div_processor (
     // HCC Arithmetic Processor WB Interface
