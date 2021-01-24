@@ -70,14 +70,51 @@ A 32-bit RISC-V ISA implementation capable of booting a modern OS (Linux, BSD...
 Support ISA's : integer (I), multiplication and division (M), CSR instructions (Z) and atomics (A) extensions
 Supports User, Supervisor and Machine mode privilege profiles.
 
+### Performance
+
+#### Clocks Per Instructions
+ _________\ Pipeline Stage <br> Instruction \ ___________ | Fetch | Decode | Register | Response | Total Clocks
+:---------- | :---: | :----: | :------: | :------: | :----------:
+LUI         |   ✔️   |    ✔️   |          |          |      2
+AUIPC       |   ✔️   |    ✔️   |          |          |      2
+JAL         |   ✔️   |    ✔️   |          |          |      2
+JALR        |   ✔️   |    ✔️   |     ✔️    |          |      3
+BRANCH      |   ✔️   |    ✔️   |     ✔️    |          |      3
+R-R         |   ✔️   |    ✔️   |     ✔️    |          |      3
+R-I         |   ✔️   |    ✔️   |     ✔️    |          |      3
+Load        |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4*
+Store       |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4*
+Multiply    |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4
+Division    |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4 to 18**
+
+_*minimum_
+
+_**minimum, spcecial cases like dividing by one or zero or when the factors are the same. But on average the divider takes 6 Goldschmidt steps which are implemented in two half steps plus the numbers need to be conditioned for the divider. For these reasons division takes 18 clock on average._
+
+_**Note:**_ The fetch of the instruction is included in the table, unlike the literature of other projects out there since it can actually impact the overall performance(that is why some implementations in the wild have look-ahead fetching or fetch two instructions at a time, to give some examples).
+
+#### Simulation Waveform Output 
+
+##### This is a waveform snippet for reference 
+
+ ![ORC_R32IM_Wave](wave.png)
+
+
+##### This is a waveform snippet of the division module.
+
+ ![ORC_R32IM_Wave](div.png)
+
 ### Current State
 
 **_Under Progress_**
 
 1.  ~~Currently adapting ORC's R32I per lessons learned.~~
-2.  Finishing the implementation of the M instructions.
+2.  ~~Finishing the implementation of the M instructions.~~
+3.  Start implementing the CSRs starting with the counters in order to be able to run the pico32 Dhrystone benchmark.
 
-To synthesize the code for the Sipeed PriMER ANLOGIC FPGA BOARD simply set the parameter `P_IS_ANLOGIC` to 1. For Lattice using yosys or Xilinx using Vivado set the parameter to 0. This parameter is declared at the top level wrapper, ORC_R32IMAZicsr.v.
+To synthesize the code for the Sipeed PriMER ANLOGIC FPGA BOARD simply set the parameter `P_IS_ANLOGIC` to 1. When using yosys or Xilinx using Vivado set the parameter to 0. This parameter is declared at the top level wrapper, ORC_R32IMAZicsr.v.
+
+Sadly the division uses more DSP blocks than what the Lattice 5k has to offer and the ANLOGIC FPGA in the SiPEED board only has enough DSP block for a pipelined division. I will create a faster non-pipeline division module for larger fpgas like the A7 or S7 found in the Arty boards. Also Vivado results show the most critical timing path is associated to the DSP blocks, therefore there is a risk of having to reduce the clock rate for a non-pipelined version.
 
 ### To Do
 

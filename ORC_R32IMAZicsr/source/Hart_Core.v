@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/24 02:25:40
+// Last modified : 2021/01/24 14:58:11
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -293,7 +293,7 @@ module Hart_Core #(
         end
         S_WAIT_FOR_DECODER : begin
           // Wait one clock cycle to allow data to be stored in the registers.
-          if (r_lcc == 1'b1 || r_hcc ==1'b1) begin
+          if (r_lcc == 1'b1 || r_scc == 1'b1 || r_hcc ==1'b1) begin
             // Transition to wait for division to finish
             r_program_counter_valid <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_EXT;
@@ -309,7 +309,7 @@ module Hart_Core #(
           end
         end
         S_WAIT_FOR_EXT : begin
-          if (i_master_read_ack == 1'b1 || i_master_hcc_processor_ack == 1'b1) begin
+          if (i_master_read_ack == 1'b1 || i_master_write_ack == 1'b1 || i_master_hcc_processor_ack == 1'b1) begin
             // Data received. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
