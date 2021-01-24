@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/22 14:36:02
+// Last modified : 2021/01/24 02:25:40
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -158,15 +158,11 @@ module Hart_Core #(
   wire [4:0] w_destination_index = r_inst_data[11:7];       // registered rd_field (one clock delayed of w_rd)
   wire [4:0] w_source1_pointer   = i_inst_read_data[19:15]; // s1 field
   wire [4:0] w_source2_pointer   = i_inst_read_data[24:20]; // s2 field
+  wire [2:0] w_fct3_0            = i_inst_read_data[14:12]; // fct3 field
   wire [2:0] w_fct3              = r_inst_data[14:12];      // fct3 field
+  wire [6:0] w_fct7_0            = i_inst_read_data[31:25]; // fct7 field
   wire [6:0] w_fct7              = r_inst_data[31:25];      // fct7 field
   wire [6:0] w_fct7_not_zero     = |w_fct7;                 // fct7 is zero?
-  // source-1 and source-2 register selection
-  // reg  [31:0] r_unsigned_rs1; // rs1 field
-  // reg  [31:0] r_unsigned_rs2; // rs2 field
-  // source-1 and source-2 register selection
-  // wire [31:0] w_unsigned_rs1 = r_inst_read_ack==1'b1 ? i_master_core0_read_data : i_master_core0_read_data; // rs1 field
-  // wire [31:0] w_unsigned_rs2 = r_inst_read_ack==1'b1 ? i_master_core1_read_data : i_master_core1_read_data; // rs2 field
   wire [31:0] w_master_addr = (i_master_core0_read_data+r_simm); // address created by lcc and scc instructions w_fct3[2]==1'b1 ? (i_master_core0_read_data+r_uimm) :
   // L-group of instructions (w_opcode==7'b0000011)
   reg  [3:0]  r_load_cases;
@@ -183,47 +179,41 @@ module Hart_Core #(
                          r_load_cases==L_LOAD_UNSIGNED_UPPER_WORD ? {L_ALL_ZERO[31:16], i_master_read_data[31:16]} :
                          r_load_cases==L_LOAD_UNSIGNED_LOWER_WORD ? {L_ALL_ZERO[31:16], i_master_read_data[15:0]} : i_master_read_data;
   // S-group of instructions (w_opcode==7'b0100011)
-  // Consider Misaligned access
-  wire [31:0] w_s_data = w_fct3==3'h0 ? (w_master_addr[1:0]==2'h3 ? {i_master_core1_read_data[7:0], L_ALL_ZERO [23:0]} : 
-                                         w_master_addr[1:0]==2'h2 ? {L_ALL_ZERO [31:24], i_master_core1_read_data[7:0], L_ALL_ZERO[15:0]} : 
-                                         w_master_addr[1:0]==2'h1 ? {L_ALL_ZERO [31:16], i_master_core1_read_data[7:0], L_ALL_ZERO[7:0]} :
-                                          {L_ALL_ZERO [31:8], i_master_core1_read_data[7:0]}) :
-                         w_fct3==3'h1 ? (w_master_addr[1]==1'b1 ? {i_master_core1_read_data[15:0], L_ALL_ZERO [15:0]} :
-                                         {L_ALL_ZERO [31:16], i_master_core1_read_data[15:0]}) : i_master_core1_read_data;
+  wire [31:0] w_s_data = w_fct3==3'h0 ? {4{i_master_core1_read_data[7:0]}} :
+                         w_fct3==3'h1 ? {2{i_master_core1_read_data[15:0]}} : i_master_core1_read_data;
   // RM-group of instructions (OPCODEs==7'b0010011/7'b0110011), merged! src=immediate(M)/register(R)
-  // wire [31:0] w_simm_rs2 = r_rro==1'b1 ? i_master_core1_read_data : r_simm;
-  wire [31:0] w_rii_data = w_fct3==3'h0 ? (i_master_core0_read_data+r_simm) :
-                           (w_fct3==3'h1 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data << r_uimm[4:0]) :
-                           w_fct3==3'h2 ? (i_master_core0_read_data < r_simm ? 32'h1 : 32'h0) :
-                           w_fct3==3'h3 ? (i_master_core0_read_data < r_uimm ? 32'h1 : 32'h0) :
-                           w_fct3==3'h4 ? (i_master_core0_read_data ^ r_simm) :
-                           (w_fct3==3'h5 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data >> r_uimm[4:0]) :
-                           (w_fct3==3'h5 && w_fct7[5]==1'b1) ? ($signed(i_master_core0_read_data) >>> r_simm[4:0]) :
-                           w_fct3==3'h6 ? (i_master_core0_read_data | r_simm) :
-                           w_fct3==3'h7 ? (i_master_core0_read_data & r_simm) : i_master_core0_read_data;
- // Page 20 check comment about rd
-  wire [31:0] w_rro_data = (w_fct3==3'h0 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data+i_master_core1_read_data) :
-                           (w_fct3==3'h0 && w_fct7[5]==1'b1) ? (i_master_core0_read_data-i_master_core1_read_data) :
-                           (w_fct3==3'h1 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data << i_master_core1_read_data[4:0]) :
-                           (w_fct3==3'h2 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data < $signed(i_master_core1_read_data) ? 32'h1 : 32'h0) :
-                           (w_fct3==3'h3 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data < i_master_core1_read_data ? 32'h1 : 32'h0) :
-                           (w_fct3==3'h4 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data ^ i_master_core1_read_data) :
-                           (w_fct3==3'h5 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data >> i_master_core1_read_data[4:0]) :
-                           (w_fct3==3'h5 && w_fct7[5]==1'b1) ? ($signed(i_master_core0_read_data) >>> i_master_core1_read_data[4:0]) :
-                           (w_fct3==3'h6 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data | i_master_core1_read_data) :
-                           (w_fct3==3'h7 && w_fct7_not_zero==1'b0) ? (i_master_core0_read_data & i_master_core1_read_data) : i_master_core0_read_data;
+  reg         r_add;
+  reg         r_sub;
+  reg         r_sll;
+  reg         r_srl;
+  reg         r_sra;
+  reg         r_slt;
+  reg         r_xor;
+  reg         r_or;
+  reg         r_and;
+  wire [31:0] w_simm_rs2 = r_rii==1'b1 ? ((w_fct3==3'h1 || w_fct3==3'h3 || (w_fct3==3'h5 && w_fct7_not_zero==1'b0)) ? r_uimm : r_simm) : 
+                                         (w_fct3==3'h2 ? $signed(i_master_core1_read_data) : i_master_core1_read_data);
+  wire [31:0] w_rxx_data = r_add==1'b1 ? (i_master_core0_read_data+w_simm_rs2) :
+                           r_sub==1'b1 ? (i_master_core0_read_data-w_simm_rs2) :
+                           r_sll==1'b1 ? (i_master_core0_read_data << w_simm_rs2[4:0]) :
+                           r_slt==1'b1 ? (i_master_core0_read_data < w_simm_rs2 ? 32'h1 : 32'h0) :
+                           r_xor==1'b1 ? (i_master_core0_read_data ^ w_simm_rs2) :
+                           r_srl==1'b1 ? (i_master_core0_read_data >> w_simm_rs2[4:0]) :
+                           r_sra==1'b1 ? ($signed(i_master_core0_read_data) >>> w_simm_rs2[4:0]) :
+                           r_or ==1'b1 ? (i_master_core0_read_data | w_simm_rs2) :
+                           r_and==1'b1 ? (i_master_core0_read_data & w_simm_rs2) : i_master_core0_read_data;
   // Jump/Branch-group of instructions (w_opcode==7'b1100011)
   wire [31:0] w_j_simm = {(i_inst_read_data[31] ? L_ALL_ONES[31:21] : L_ALL_ZERO[31:21]),
                           i_inst_read_data[31], i_inst_read_data[19:12],
                           i_inst_read_data[20], i_inst_read_data[30:21], L_ALL_ZERO[0]};
-  wire w_bmux = (r_bcc & (
+  wire w_bmux = (r_bcc==1'b1 && (
                   w_fct3==3'h0 ? (i_master_core0_read_data == i_master_core1_read_data) :                   // beq
                   w_fct3==3'h1 ? (i_master_core0_read_data != i_master_core1_read_data) :                   // bne
                   w_fct3==3'h4 ? ($signed(i_master_core0_read_data) < $signed(i_master_core1_read_data)) :  // blt
                   w_fct3==3'h5 ? ($signed(i_master_core0_read_data) >= $signed(i_master_core1_read_data)) : // bge
                   w_fct3==3'h6 ? (i_master_core0_read_data < i_master_core1_read_data) :                    // bltu
                   w_fct3==3'h7 ? (i_master_core0_read_data >= i_master_core1_read_data) :                   // bgeu
-                  1'b0));
+                  1'b0)) ? 1'b1 : 1'b0;
   wire        w_jump_request = (r_jalr==1'b1 || w_bmux==1'b1) ? 1'b1 : 1'b0;
   wire [31:0] w_jump_value   = r_jalr==1'b1 ? (r_simm+i_master_core0_read_data) : (r_simm+r_next_pc_decode);
   // Mem Process wires
@@ -231,9 +221,9 @@ module Hart_Core #(
   wire w_destination_not_zero = w_destination_index==5'h0 ? 1'b0 : 1'b1; // not zero
   // Qualifying signals
   // Program Counter Process
-  wire w_decoder_opcode = w_opcode==L_RII ? 1'b1 :
+  wire w_decoder_opcode = w_opcode==L_RII  ? 1'b1 :
                           w_opcode==L_MATH ? 1'b1 :
-                          w_opcode==L_LCC ? 1'b1 :
+                          w_opcode==L_LCC  ? 1'b1 :
                           w_opcode==L_SCC  ? 1'b1 :
                           w_opcode==L_BCC  ? 1'b1 :
                           w_opcode==L_JALR ? 1'b1 : 1'b0;
@@ -339,24 +329,83 @@ module Hart_Core #(
   ///////////////////////////////////////////////////////////////////////////////
   always @(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
-      r_jalr         <= 1'b0;
-      r_bcc          <= 1'b0;
-      r_lcc          <= 1'b0;
-      r_scc          <= 1'b0;
-      r_rii          <= 1'b0;
-      r_rro          <= 1'b0;
-      r_hcc          <= 1'b0;
-      r_simm         <= L_ALL_ZERO;
-      r_uimm         <= L_ALL_ZERO;
+      r_jalr <= 1'b0;
+      r_bcc  <= 1'b0;
+      r_lcc  <= 1'b0;
+      r_scc  <= 1'b0;
+      r_rii  <= 1'b0;
+      r_rro  <= 1'b0;
+      r_hcc  <= 1'b0;
+      r_simm <= L_ALL_ZERO;
+      r_uimm <= L_ALL_ZERO;
+      r_add  <= 1'b0;
+      r_sub  <= 1'b0;
+      r_sll  <= 1'b0;
+      r_srl  <= 1'b0;
+      r_sra  <= 1'b0;
+      r_slt  <= 1'b0;
+      r_xor  <= 1'b0;
+      r_or   <= 1'b0;
+      r_and  <= 1'b0;
     end
     else if (i_inst_read_ack == 1'b1) begin
       // If rs1 and rs2 are valid
       if (w_opcode == L_RII) begin
-        // Register-Immediate Instructions.
-        // Performs ADDI, SLTI, ANDI, ORI, XORI, SLLI, SRLI, SRAI (I=immediate).
-        r_rii  <= 1'b1;
-        r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), i_inst_read_data[31:20]};
-        r_uimm <= {L_ALL_ZERO[31:12], i_inst_read_data[31:20]};
+        // Register-Immediate Instructions. (ALU)
+        if (w_fct3_0 == 3'h0) begin
+          // ADDI
+          r_rii  <= 1'b1;
+          r_add  <= 1'b1;
+          r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), i_inst_read_data[31:20]};
+        end
+        if (w_fct3_0 == 3'h1 && |w_fct7_0 == 1'b0) begin
+          // SLLI
+          r_rii  <= 1'b1;
+          r_sll  <= 1'b1;
+          r_uimm <= {L_ALL_ZERO[31:12], i_inst_read_data[31:20]};
+        end
+        if (w_fct3_0 == 3'h2) begin
+          // SLTI Signed
+          r_rii  <= 1'b1;
+          r_slt  <= 1'b1;
+          r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), i_inst_read_data[31:20]};
+        end
+        if (w_fct3_0 == 3'h3) begin
+          // SLTI unsigned
+          r_rii  <= 1'b1;
+          r_slt  <= 1'b1;
+          r_uimm <= {L_ALL_ZERO[31:12], i_inst_read_data[31:20]};
+        end
+        if (w_fct3_0 == 3'h4) begin
+          // XORI
+          r_rii  <= 1'b1;
+          r_xor  <= 1'b1;
+          r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), i_inst_read_data[31:20]};
+        end
+        if (w_fct3_0 == 3'h5 && |w_fct7_0 == 1'b0) begin
+          // SRLI
+          r_rii  <= 1'b1;
+          r_srl  <= 1'b1;
+          r_uimm <= {L_ALL_ZERO[31:12], i_inst_read_data[31:20]};
+        end
+        if (w_fct3_0 == 3'h5 && w_fct7_0[5] == 1'b1) begin
+          // SRAI
+          r_rii  <= 1'b1;
+          r_sra  <= 1'b1;
+          r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), i_inst_read_data[31:20]};
+        end
+        if (w_fct3_0 == 3'h6) begin
+          // ORI
+          r_rii  <= 1'b1;
+          r_or   <= 1'b1;
+          r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), i_inst_read_data[31:20]};
+        end
+        if (w_fct3_0 == 3'h7) begin
+          // ORI
+          r_rii  <= 1'b1;
+          r_and  <= 1'b1;
+          r_simm <= {(i_inst_read_data[31] ? L_ALL_ONES[31:12]:L_ALL_ZERO[31:12]), i_inst_read_data[31:20]};
+        end
       end
       else begin
         r_rii <= 1'b0;
@@ -382,8 +431,57 @@ module Hart_Core #(
           r_rro <= 1'b0;
         end
         else begin
-          // Performs ADD, SLT, SLTU, AND, OR, XOR, SLL, SRL, SUB, SRA
-          r_rro <= 1'b1;
+          // ALU operations
+          if (w_fct3_0 == 3'h0 && |w_fct7_0 == 1'b0) begin
+            // ADD
+            r_rro <= 1'b1;
+            r_add <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h0 && w_fct7_0[5] == 1'b1) begin
+            // SUBTRACTS
+            r_rro <= 1'b1;
+            r_sub <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h1 && |w_fct7_0 == 1'b0) begin
+            // SLL
+            r_rro <= 1'b1;
+            r_sll <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h2 && |w_fct7_0 == 1'b0) begin
+            // SLT
+            r_rro <= 1'b1;
+            r_slt <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h3 && |w_fct7_0 == 1'b0) begin
+            // SLT
+            r_rro <= 1'b1;
+            r_slt <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h4 && |w_fct7_0 == 1'b0) begin
+            // XOR
+            r_rro <= 1'b1;
+            r_xor <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h5 && |w_fct7_0 == 1'b0) begin
+            // SRL
+            r_rro <= 1'b1;
+            r_srl <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h5 && w_fct7_0[5] == 1'b1) begin
+            // SRA
+            r_rro <= 1'b1;
+            r_sra <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h6 && |w_fct7_0 == 1'b0) begin
+            // SRL
+            r_rro <= 1'b1;
+            r_or  <= 1'b1;
+          end
+          if (w_fct3_0 == 3'h7 && |w_fct7_0 == 1'b0) begin
+            // SRL
+            r_rro <= 1'b1;
+            r_and <= 1'b1;
+          end
           r_hcc <= 1'b0;
         end
       end
@@ -393,7 +491,7 @@ module Hart_Core #(
       end
 
       if (w_opcode == L_JALR) begin
-        //  Jump And Link Register(indirect jump instruction).
+        // Jump And Link Register(indirect jump instruction).
         // The target address is obtained by adding the sign-extended 12-bit
         // I-immediate to the register rs1, then setting the least-significant bit of
         // the result to zero. The address of the instruction following the jump
@@ -459,6 +557,15 @@ module Hart_Core #(
       r_lcc  <= 1'b0;
       r_scc  <= 1'b0;
       r_hcc  <= 1'b0;
+      r_add  <= 1'b0;
+      r_sub  <= 1'b0;
+      r_sll  <= 1'b0;
+      r_srl  <= 1'b0;
+      r_sra  <= 1'b0;
+      r_slt  <= 1'b0;
+      r_xor  <= 1'b0;
+      r_or   <= 1'b0;
+      r_and  <= 1'b0;
     end
   end
   
@@ -489,9 +596,8 @@ module Hart_Core #(
   assign o_master_core_write_addr = i_inst_read_ack==1'b1 ? w_rd : w_destination_index;
   // Registers Write Data select
   assign o_master_core_write_data = r_jalr==1'b1 ? (r_next_pc_decode+(32'h4)) :
-                                    r_rii==1'b1 ? w_rii_data :
+                                    (r_rii==1'b1 || r_rro==1'b1) ? w_rxx_data :
                                       // Stores the Register-Immediate instruction result in the general register
-                                    r_rro==1'b1 ? w_rro_data :
                                       // store the Register-Register operation result in the general registers
                                     (i_master_read_ack==1'b1 && r_master_read_ready==1'b0) ? w_l_data :
                                       // Data loaded from memory or I/O device.
