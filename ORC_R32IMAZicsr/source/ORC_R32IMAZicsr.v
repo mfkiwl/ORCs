@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/23 12:06:37
+// Last modified : 2021/01/24 21:23:02
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -101,6 +101,10 @@ module ORC_R32IMAZicsr #(
   wire [1:0]                 w_hcc_processor_tga;
   wire [P_MEMORY_ADDR_MSB:0] w_hcc_processor_factors;
   wire                       w_hcc_processor_tgd;
+  // CSR
+  wire        w_csr_instr_decoded_stb;
+  wire [3:0]  w_csr_read_addr;
+  wire [31:0] w_csr_read_data;
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -146,11 +150,15 @@ module ORC_R32IMAZicsr #(
     .o_master_write_data(o_master_write_data), // WB data
     .o_master_write_sel(o_master_write_sel),   // WB byte enable
     // Integer Multiplier and Divider Processing Unit
-    .o_master_hcc_processor_stb(w_hcc_processor_stb),     // WB valid stb
-    .i_master_hcc_processor_ack(w_hcc_processor_ack),     // WB acknowledge
-    .o_master_hcc_processor_addr(w_hcc_processor_addr),   // WB address
-    .o_master_hcc_processor_tga(w_hcc_processor_tga),     // WB address
-    .o_master_hcc_processor_data(w_hcc_processor_factors) // WB output data
+    .o_master_hcc_processor_stb(w_hcc_processor_stb),      // WB valid stb
+    .i_master_hcc_processor_ack(w_hcc_processor_ack),      // WB acknowledge
+    .o_master_hcc_processor_addr(w_hcc_processor_addr),    // WB address
+    .o_master_hcc_processor_tga(w_hcc_processor_tga),      // WB address
+    .o_master_hcc_processor_data(w_hcc_processor_factors), // WB output data
+    // CSR Interface
+    .o_csr_instr_decoded_stb(w_csr_instr_decoded_stb), // Indicates an instruction was decode.
+    .o_csr_read_addr(w_csr_read_addr),                 //
+    .i_csr_read_data(w_csr_read_data)                  // 
   );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -219,5 +227,15 @@ module ORC_R32IMAZicsr #(
     .i_slave_hcc_write_addr(w_hcc_write_addr), // WB address
     .i_slave_hcc_write_data(w_hcc_write_data)  // WB data
   );
+
+CSR csrs (
+  // Component's clocks and resets
+  .i_clk(i_clk),               // clock
+  .i_reset_sync(i_reset_sync), // reset
+  // CSR Interface
+  .i_csr_instr_decoded_stb(w_csr_instr_decoded_stb), // Indicates an instruction was decode.
+  .i_csr_read_addr(w_csr_read_addr),                 //
+  .o_csr_read_data(w_csr_read_data)                  // 
+);
 
 endmodule
