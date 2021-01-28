@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/24 21:53:59
+// Last modified : 2021/01/27 22:07:49
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation of 
@@ -105,10 +105,10 @@ module Hart_Core #(
   localparam [6:0] L_HCC   = 7'b0000001; // funct7[31:25],rs2[24:20],rs1[19:15],funct3[14:12]
   localparam [6:0] L_SYSTM = 7'b1110011; //
   // Program Counter FSM States
-  localparam [1:0] S_WAKEUP           = 2'h0; // r_program_counter_state after reset
-  localparam [1:0] S_WAIT_FOR_ACK     = 2'h1; // r_program_counter_state, waiting for valid instruction
-  localparam [1:0] S_WAIT_FOR_DECODER = 2'h2; // r_program_counter_state, wait for Decoder process
-  localparam [1:0] S_WAIT_FOR_EXT     = 2'h3; // r_program_counter_state, wait for load to complete
+  localparam [3:0] S_WAKEUP           = 4'b0001; // r_program_counter_state after reset
+  localparam [3:0] S_WAIT_FOR_ACK     = 4'b0010; // r_program_counter_state, waiting for valid instruction
+  localparam [3:0] S_WAIT_FOR_DECODER = 4'b0100; // r_program_counter_state, wait for Decoder process
+  localparam [3:0] S_WAIT_FOR_EXT     = 4'b1000; // r_program_counter_state, wait for load to complete
   // Math fct3
   localparam [2:0] L_MUL    = 3'b000; // MUL
   localparam [2:0] L_MULH   = 3'b001; // MULH
@@ -118,7 +118,7 @@ module Hart_Core #(
   localparam [2:0] L_DIVU   = 3'b101; // DIVU
   localparam [2:0] L_REM    = 3'b110; // REM
   localparam [2:0] L_REMU   = 3'b111; // REMU
-  // LCC owrd cases
+  // LCC cases
   localparam [3:0] L_LOAD_SIGNED_3_BYTE       = 4'h0;
   localparam [3:0] L_LOAD_SIGNED_2_BYTE       = 4'h1;
   localparam [3:0] L_LOAD_SIGNED_1_BYTE       = 4'h2;
@@ -148,18 +148,19 @@ module Hart_Core #(
   reg [31:0] r_next_pc_decode;        // 32-bit program counter t-1
   reg        r_program_counter_valid; // Program Counter Valid
   reg [31:0] r_inst_data;             // registers the valid instructions
-  reg [1:0]  r_program_counter_state; // Current State Holder.
+  reg [3:0]  r_program_counter_state; // Current State Holder.
   // Decoder Process Signals
-  wire [6:0]  w_opcode = i_inst_read_data[6:0]; // i_inst_read_ack==1'b1 ? i_inst_read_data[6:0] : r_inst_data[6:0]; // OPCODE field
-  reg  [31:0] r_simm;                           // Signed Immediate
-  reg  [31:0] r_uimm;                           // Unsigned Immediate
-  reg         r_jalr;                           // valid JALR flag
-  reg         r_bcc;                            // valid branch flag
-  reg         r_lcc;                            // valid load flag
-  reg         r_scc;                            // valid store flag
-  reg         r_rii;                            // valid register-immediate flag
-  reg         r_rro;                            // valid register-register flag
-  reg         r_hcc;                            // valid register-register flag
+  wire [6:0]  w_opcode = (r_program_counter_state[1]==1'b1 && i_inst_read_ack==1'b1) ?
+                           i_inst_read_data[6:0] : 7'h0; // OPCODE field when valid and ready
+  reg  [31:0] r_simm; // Signed Immediate
+  reg  [31:0] r_uimm; // Unsigned Immediate
+  reg         r_jalr; // valid JALR flag
+  reg         r_bcc;  // valid branch flag
+  reg         r_lcc;  // valid load flag
+  reg         r_scc;  // valid store flag
+  reg         r_rii;  // valid register-immediate flag
+  reg         r_rro;  // valid register-register flag
+  reg         r_hcc;  // valid register-register flag
   // Memory Master Read and Write Process
   reg r_master_read_ready;
   reg r_master_write_ready;
@@ -244,7 +245,7 @@ module Hart_Core #(
   wire w_read_stb  = (r_lcc==1'b1 || r_master_read_ready==1'b0)  ? 1'b1 : 1'b0;
   // CSRs
   reg r_decoded_instr; // 
-  reg r_csr;     // 
+  reg r_csr;           // 
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -271,13 +272,8 @@ module Hart_Core #(
       r_decoded_instr         <= 1'b0;
     end
     else begin
-      casez (r_program_counter_state)
-        S_WAKEUP : begin
-          // Fetch first instruction after reset.
-          r_program_counter_valid <= 1'b1;
-          r_program_counter_state <= S_WAIT_FOR_ACK;
-        end
-        S_WAIT_FOR_ACK : begin
+      case (1'b1)
+        r_program_counter_state[1] : begin
           r_decoded_instr <= 1'b0;
           // If the no valid inst is currently available or if the following process
           // is ready to consume the valid instruction.
@@ -311,11 +307,11 @@ module Hart_Core #(
           r_inst_data      <= i_inst_read_data;
           r_next_pc_decode <= r_next_pc_fetch;
         end
-        S_WAIT_FOR_DECODER : begin
+        r_program_counter_state[2] : begin
           // Wait one clock cycle to allow data to be stored in the registers.
           if (r_lcc == 1'b1 || r_scc == 1'b1 || r_hcc ==1'b1) begin
             // Transition to wait for division to finish
-            r_program_counter_valid <= 1'b0;
+            r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_EXT;
           end
           else begin
@@ -329,7 +325,7 @@ module Hart_Core #(
             r_next_pc_fetch <= w_jump_value;
           end
         end
-        S_WAIT_FOR_EXT : begin
+        r_program_counter_state[3] : begin
           if (i_master_read_ack == 1'b1 || i_master_write_ack == 1'b1 || i_master_hcc_processor_ack == 1'b1) begin
             // Data received. Transition to fetch new instruction.
             r_program_counter_valid <= 1'b1;
@@ -337,9 +333,9 @@ module Hart_Core #(
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
         end
-        default : begin
-          r_program_counter_valid <= 1'b0;
-          r_decoded_instr         <= 1'b0;
+        r_program_counter_state[0] : begin
+          // Fetch first instruction after reset.
+          r_program_counter_valid <= 1'b1;
           r_program_counter_state <= S_WAIT_FOR_ACK;
         end
       endcase
@@ -669,7 +665,7 @@ module Hart_Core #(
   always @(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
       r_master_read_ready <= 1'b1;
-      r_load_cases        <= 0;
+      r_load_cases        <= L_LOAD_OTHERS;
     end
     else begin
       if (r_lcc == 1'b1) begin
