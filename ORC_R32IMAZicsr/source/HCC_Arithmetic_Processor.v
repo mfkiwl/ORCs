@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/23 12:00:03
+// Last modified : 2021/01/28 14:28:03
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -44,27 +44,23 @@
 /////////////////////////////////////////////////////////////////////////////////
 module HCC_Arithmetic_Processor #(
   parameter integer P_HCC_FACTORS_MSB   = 31,
-  parameter integer P_HCC_MEM_ADDR_MSB  = 4,
   parameter integer P_HCC_DIV_ACCURACY  = 9,
   parameter integer P_HCC_DIV_ROUND_LVL = 3,
   parameter integer P_HCC_ANLOGIC_MUL   = 0
 )(
   // WB Interface
-  input                         i_slave_hcc_processor_clk,
-  input                         i_slave_hcc_processor_reset_sync,
-  input                         i_slave_hcc_processor_stb,
-  output                        o_slave_hcc_processor_ack,
-  input                         i_slave_hcc_processor_addr,
-  input  [1:0]                  i_slave_hcc_processor_tga,
-  input  [P_HCC_MEM_ADDR_MSB:0] i_slave_hcc_processor_data, // rd
+  input        i_slave_hcc_processor_clk,
+  input        i_slave_hcc_processor_reset_sync,
+  input        i_slave_hcc_processor_stb,
+  output       o_slave_hcc_processor_ack,
+  input        i_slave_hcc_processor_addr,
+  input  [1:0] i_slave_hcc_processor_tga,
   // HCC Processor mem0 WB(pipeline) master Read Interface
-  input  [P_HCC_FACTORS_MSB:0]  i_master_hcc0_read_data, // WB data
+  input  [P_HCC_FACTORS_MSB:0] i_master_hcc0_read_data, // WB data
   // HCC Processor mem1 WB(pipeline) master Read Interface
-  input  [P_HCC_FACTORS_MSB:0]  i_master_hcc1_read_data, // WB data
+  input  [P_HCC_FACTORS_MSB:0] i_master_hcc1_read_data, // WB data
   // HCC Processor mem WB(pipeline) master Write Interface
-  output                        o_master_hcc_write_stb,  // WB write enable
-  output [P_HCC_MEM_ADDR_MSB:0] o_master_hcc_write_addr, // WB address
-  output [P_HCC_FACTORS_MSB:0]  o_master_hcc_write_data  // WB data
+  output [P_HCC_FACTORS_MSB:0] o_master_hcc_write_data  // WB data
 );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -77,33 +73,18 @@ module HCC_Arithmetic_Processor #(
   // Internal Signals Declarations
   ///////////////////////////////////////////////////////////////////////////////
   // HCC Controls
-  reg                        r_wait_ack;
-  reg                        r_select;
-  reg [P_HCC_MEM_ADDR_MSB:0] r_addr;
-  reg                        r_tgd;
+  reg r_wait_ack;
+  reg r_select;
+  reg r_tgd;
   // HCC Processor to Memory_Backplane connecting wires.
-  wire                        w_div0_read_stb;  // WB read enable
-  wire [P_HCC_MEM_ADDR_MSB:0] w_div0_read_addr; // WB address
-  wire                        w_div1_read_stb;  // WB read enable
-  wire [P_HCC_MEM_ADDR_MSB:0] w_div1_read_addr; // WB address
-  wire [P_HCC_FACTORS_MSB:0]  w_div_write_data; // WB data
+  wire [P_HCC_FACTORS_MSB:0] w_div_write_data; // WB data
   // Divider
   wire                                w_div_stb = (i_slave_hcc_processor_stb==1'b1 && i_slave_hcc_processor_addr==1'b1) ? 1'b1 : 1'b0;
   wire                                w_div_ack;
-  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplicand;
-  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_div_multiplier;
-  wire [L_HCC_PRODUCT_EXTENDED_MSB:0] w_product;
-  reg  [L_HCC_PRODUCT_EXTENDED_MSB:0] r_product;
-  wire [P_HCC_FACTORS_MSB:0]          w_product_bits_select = r_tgd==1'b1 ? w_product[L_HCC_FACTORS_EXTENDED_MSB:P_HCC_FACTORS_MSB+1] : w_product[P_HCC_FACTORS_MSB:0];
-  wire [P_HCC_FACTORS_MSB:0]          w_write_data          = r_select==1'b0 ? w_product_bits_select : w_div_write_data;
-  wire                                w_write_stb           = ((r_select==1'b0 && r_wait_ack==1'b1) || (r_select==1'b1 && w_div_ack==1'b1)) ? 1'b1 : 1'b0;
-  // Multiplier
-  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplicand = (i_slave_hcc_processor_stb==1'b1 && i_slave_hcc_processor_addr==1'b0) ? (
-                                                         ^i_slave_hcc_processor_tga ? {{L_HCC_FACTORS_NUM_BITS{i_master_hcc0_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc0_read_data} :
-                                                           {{L_HCC_FACTORS_NUM_BITS{1'b0}}, i_master_hcc0_read_data}) : w_div_multiplicand;
-  wire [L_HCC_FACTORS_EXTENDED_MSB:0] w_multiplier   = (i_slave_hcc_processor_stb==1'b1 && i_slave_hcc_processor_addr==1'b0) ? (
-                                                        i_slave_hcc_processor_tga==2'b01 ? {{L_HCC_FACTORS_NUM_BITS{i_master_hcc1_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc1_read_data} :
-                                                          {{L_HCC_FACTORS_NUM_BITS{1'b0}}, i_master_hcc1_read_data}) : w_div_multiplier;
+  reg  [L_HCC_FACTORS_EXTENDED_MSB:0] r_product;
+  wire [P_HCC_FACTORS_MSB:0]          w_product_select = r_tgd==1'b1 ? r_product[63:32] : r_product[31:0];
+  wire [P_HCC_FACTORS_MSB:0]          w_write_data     = r_select==1'b0 ? w_product_select : w_div_write_data;
+  wire                                w_write_stb      = ((r_select==1'b0 && r_wait_ack==1'b1) || w_div_ack==1'b1) ? 1'b1 : 1'b0;
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -116,7 +97,6 @@ module HCC_Arithmetic_Processor #(
   always @(posedge i_slave_hcc_processor_clk) begin
     if (i_slave_hcc_processor_reset_sync == 1'b1) begin
       r_select   <= 1'b0;
-      r_addr     <= 0;
       r_tgd      <= 0;
       r_wait_ack <= 1'b0;
     end
@@ -124,7 +104,6 @@ module HCC_Arithmetic_Processor #(
       if (i_slave_hcc_processor_stb == 1'b1) begin
         // Received valid factors index.
         r_select   <= i_slave_hcc_processor_addr;
-        r_addr     <= i_slave_hcc_processor_data; // rd
         r_tgd      <= |i_slave_hcc_processor_tga;
         r_wait_ack <= 1'b1;
       end
@@ -138,23 +117,25 @@ module HCC_Arithmetic_Processor #(
       end
     end
   end
-  assign o_slave_hcc_processor_ack = w_write_stb;
   // HCC Processor mem WB(pipeline) master Write access control
-  assign o_master_hcc_write_stb  = w_write_stb;  // WB write enable
-  assign o_master_hcc_write_addr = r_addr;       // WB address
-  assign o_master_hcc_write_data = w_write_data; // WB data
+  assign o_slave_hcc_processor_ack = w_write_stb;
+  assign o_master_hcc_write_data   = w_write_data; // WB data
 
   generate
     if (P_HCC_ANLOGIC_MUL == 0) begin
       /////////////////////////////////////////////////////////////////////////////
       // Process     : Multiplication Process
-      // Description : Generates the product by performing the multiplication.
+      // Description : Generic code that modern synthesizers infer as DSP blocks.
       /////////////////////////////////////////////////////////////////////////////
       always @(posedge i_slave_hcc_processor_clk) begin
-        //	Multiply any time the inputs changes.
-        r_product <= w_multiplicand * w_multiplier;
+        if (i_slave_hcc_processor_reset_sync == 1'b0) begin
+          r_product <= 64'h0;
+        end
+        else if (i_slave_hcc_processor_stb == 1'b1 && i_slave_hcc_processor_addr == 1'b1) begin
+          // Multiply any time the inputs changes.
+          r_product <= $signed(i_master_hcc0_read_data) * $signed(i_master_hcc1_read_data);
+        end
       end
-      assign w_product = r_product;
     end
   endgenerate
 
@@ -165,9 +146,9 @@ module HCC_Arithmetic_Processor #(
       // Description : Anlogic IP EG_LOGIC_MULT, TD version 4.6.18154
       ///////////////////////////////////////////////////////////////////////////////
 	    EG_LOGIC_MULT #(
-        .INPUT_WIDTH_A(L_HCC_FACTORS_EXTENDED_MSB+1),
-	      .INPUT_WIDTH_B(L_HCC_FACTORS_EXTENDED_MSB+1),
-	      .OUTPUT_WIDTH(L_HCC_PRODUCT_EXTENDED_MSB+1),
+        .INPUT_WIDTH_A(P_HCC_FACTORS_MSB+1),
+	      .INPUT_WIDTH_B(P_HCC_FACTORS_MSB+1),
+	      .OUTPUT_WIDTH(L_HCC_FACTORS_EXTENDED_MSB+1),
 	      .INPUTFORMAT("SIGNED"),
 	      .INPUTREGA("DISABLE"),
 	      .INPUTREGB("DISABLE"),
@@ -175,16 +156,16 @@ module HCC_Arithmetic_Processor #(
 	      .IMPLEMENT("DSP"),
 	      .SRMODE("ASYNC")
 	    ) Integer_Multiplier (
-	      .a(w_multiplicand),
-	      .b(w_multiplier),
-	      .p(w_product),
+	      .a(i_master_hcc0_read_data),
+	      .b(i_master_hcc1_read_data),
+	      .p(r_product),
 	      .cea(1'b0),
 	      .ceb(1'b0),
 	      .cepd(1'b1),
 	      .clk(i_slave_hcc_processor_clk),
 	      .rstan(1'b0),
 	      .rstbn(1'b0),
-	      .rstpdn(i_slave_hcc_processor_reset_sync)
+	      .rstpdn(~i_slave_hcc_processor_reset_sync)
 	    );
     end
   endgenerate
@@ -194,27 +175,24 @@ module HCC_Arithmetic_Processor #(
   // Description : Instance of a Goldschmidt Division implementation.
   ///////////////////////////////////////////////////////////////////////////////
   Goldschmidt_Integer_Divider_2CPS #(
-    P_HCC_FACTORS_MSB,  // P_GID_FACTORS_MSB
-    P_HCC_DIV_ACCURACY, // P_GID_ACCURACY_LVL
-    P_HCC_DIV_ROUND_LVL // P_GID_ROUND_UP_LVL
+    P_HCC_FACTORS_MSB,   // P_GID_FACTORS_MSB
+    P_HCC_DIV_ACCURACY,  // P_GID_ACCURACY_LVL
+    P_HCC_DIV_ROUND_LVL, // P_GID_ROUND_UP_LVL
+    P_HCC_ANLOGIC_MUL    // P_GID_ANLOGIC_MUL
   ) div (
     // Clock and Reset
     .i_clk(i_slave_hcc_processor_clk),
     .i_reset_sync(i_slave_hcc_processor_reset_sync),
     // WB Interface
-    .i_slave_stb(w_div_stb),                 // valid
+    .i_slave_stb(w_div_stb),                 // start
     .i_slave_tga(i_slave_hcc_processor_tga), // quotient=0, remainder=1
-    .o_slave_ack(w_div_ack),                 // ready
+    .o_slave_ack(w_div_ack),                 // done
     // mem0 WB(pipeline) master Read Interface
     .i_master_div0_read_data(i_master_hcc0_read_data), // WB data
     // mem1 WB(pipeline) master Read Interface
     .i_master_div1_read_data(i_master_hcc1_read_data), // WB data
     // mem WB(pipeline) master Write Interface
-    .o_master_div_write_data(w_div_write_data), // WB data
-    // Connection to multiplier
-    .o_multiplicand(w_div_multiplicand),
-    .o_multiplier(w_div_multiplier),
-    .i_product(w_product)
+    .o_master_div_write_data(w_div_write_data) // WB data
   );
 
 endmodule // HCC_Arithmetic_Processor

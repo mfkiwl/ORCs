@@ -2,11 +2,11 @@
 **O**pen-source **R**ISC-V **C**ores
 This project aims to create a collection of _harts_ complaint to the RISC-V ISA. Unlike other projects, this one does not seek to create the smallest risc-v implementation but rather experiment on implementations the risc-v ISA on accessible or popular FPGA dev boards focusing on performance first and resource cost second.
 
-## ORC_R32IMAZicsr
+## ORC_R32IMAZicsr (Main Branch)
 
-### Goal
+### Abstract
 
-A 32-bit RISC-V ISA implementation capable of booting a modern OS (Linux, BSD...).
+A 32-bit RISC-V ISA implementation capable of booting a modern OS (Linux, BSD...). As features get implemented new git branches will be created for code implementation of the different instruction. Currently there are three branches, the main branch (this branch), an r32i and an r32im branch. The code in the repos might not work or contain bugs, try sticking to the releases (tags) for working code.
 
 ### Requirements 
 Support ISA's : integer (I), multiplication and division (M), CSR instructions (Z) and atomics (A) extensions
@@ -18,11 +18,13 @@ Supports User, Supervisor and Machine mode privilege profiles.
 
 No two Dhrystone benchmark are the same since this is a compiler/core benchmark. Therefore a third party core was benchmarked and included for comparison.
 
-Using Dhrystone test bench found in the picorv32 repo (https://github.com/cliffordwolf/picorv32/tree/master/dhrystone) and the same compiled code (hex file) on both for comparison.
-Implementation  | Runs | User Time | Cycles Per Instruction | Dhrystones Per Second Per MHz | DMIPS Per MHz
-:-------------- | :--: | :-------: | :--------------------: | :---------------------------: | :-----------:
-ORC_R32IMAZicsr | 100  | 78301 cycles, 26025 insn  | 3.099 | 1264 | 0.725
-picorv32        | 100  | 145013 cycles, 26136 insn | 5.548 |  689 | 0.392
+Dhrystone test bench found in the picorv32 repo (https://github.com/cliffordwolf/picorv32/tree/master/dhrystone) was used and the same compiled code (hex file) on all cores for comparison.
+Implementation                   | Runs |         User Time         | Cycles Per Instruction | Dhrystones Per Second Per MHz | DMIPS Per MHz
+:------------------------------- | :--: | :-----------------------: | :--------------------: | :---------------------------: | :-----------:
+ORC_R32IMAZicsr (in developemnt) | 100  | 53672 cycles, 26136 insn  |         2.053          |              1863             |      1.060
+ORC_R32IM (BRAM branch)          | 100  | 78602 cycles, 26136 insn  |         3.007          |              1272             |      0.724
+picorv32                         | 100  | 107758 cycles, 26136 insn |         4.122          |               928             |      0.528
+picorv32 (no look ahead)         | 100  | 145013 cycles, 26136 insn |         5.548          |               689             |      0.392
 
 #### Clocks Per Instructions
  _________\ Pipeline Stage <br> Instruction \ ___________ | Fetch | Decode | Register | Response | Total Clocks
@@ -30,14 +32,14 @@ picorv32        | 100  | 145013 cycles, 26136 insn | 5.548 |  689 | 0.392
 LUI         |   ✔️   |    ✔️   |          |          |      2
 AUIPC       |   ✔️   |    ✔️   |          |          |      2
 JAL         |   ✔️   |    ✔️   |          |          |      2
-JALR        |   ✔️   |    ✔️   |     ✔️    |          |      3
-BRANCH      |   ✔️   |    ✔️   |     ✔️    |          |      3
-R-R         |   ✔️   |    ✔️   |     ✔️    |          |      3
-R-I         |   ✔️   |    ✔️   |     ✔️    |          |      3
-Load        |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4*
-Store       |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4*
-Multiply    |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4
-Division    |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      4 to 18**
+JALR        |   ✔️   |    ✔️   |     ✔️    |          |      2
+BRANCH      |   ✔️   |    ✔️   |     ✔️    |          |      2
+R-R         |   ✔️   |    ✔️   |     ✔️    |          |      2
+R-I         |   ✔️   |    ✔️   |     ✔️    |          |      2
+Load        |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      3*
+Store       |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      3*
+Multiply    |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      3
+Division    |   ✔️   |    ✔️   |     ✔️    |    ✔️     |      3 to 18**
 
 _*minimum_
 
