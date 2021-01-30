@@ -1,3 +1,4 @@
+
 # ORCs
 **O**pen-source **R**ISC-V **C**ores
 This project aims to create a collection of _harts_ complaint to the RISC-V ISA. Unlike other projects, this one does not seek to create the smallest risc-v implementation but rather experiment on implementations the risc-v ISA on accessible or popular FPGA dev boards focusing on performance first and resource cost second.
@@ -19,12 +20,17 @@ Supports User, Supervisor and Machine mode privilege profiles.
 No two Dhrystone benchmark are the same since this is a compiler/core benchmark. Therefore a third party core was benchmarked and included for comparison.
 
 Dhrystone test bench found in the picorv32 repo (https://github.com/cliffordwolf/picorv32/tree/master/dhrystone) was used and the same compiled code (hex file) on all cores for comparison.
-Implementation                   | Runs |         User Time         | Cycles Per Instruction | Dhrystones Per Second Per MHz | DMIPS Per MHz
-:------------------------------- | :--: | :-----------------------: | :--------------------: | :---------------------------: | :-----------:
-ORC_R32IMAZicsr (in developemnt) | 100  | 53672 cycles, 26136 insn  |         2.053          |              1863             |      1.060
-ORC_R32IM (BRAM branch)          | 100  | 78602 cycles, 26136 insn  |         3.007          |              1272             |      0.724
-picorv32                         | 100  | 107758 cycles, 26136 insn |         4.122          |               928             |      0.528
-picorv32 (no look ahead)         | 100  | 145013 cycles, 26136 insn |         5.548          |               689             |      0.392
+Implementation           | CFLAGS (-march=) | Runs |         User Time         | Cycles/Instruction | Dhrystones/Sec/MHz | DMIPS/MHz
+:----------------------- | :--------------: | :--: | :-----------------------: | :----------------: | :----------------: | :-------:
+ORC_R32IMAZicsr (main)   |       rv32im     | 100  | 53672 cycles,  26136 insn |       2.053        |       1863         |   1.060
+ORC_R32IMAZicsr (main)   |       rv32i      | 100  | 58072 cycles,  29036 insn |       2.000        |       1722         |   0.980
+ORC_R32IM_BRAM (branch)  |       rv32im     | 100  | 78602 cycles,  26136 insn |       3.007        |       1272         |   0.724
+ORC_R32I_BRAM  (branch)  |       rv32i      | 100  | 85802 cycles,  29036 insn |       2.955        |       1165         |   0.663
+picorv32                 |       rv32im     | 100  | 107758 cycles, 26136 insn |       4.122        |        928         |   0.528
+picorv32                 |       rv32i      | 100  | 113154 cycles, 29036 insn |       3.897        |        883         |   0.502
+picorv32 (no look ahead) |       rv32im     | 100  | 145013 cycles, 26136 insn |       5.548        |        689         |   0.392
+picorv32 (no look ahead) |       rv32i      | 100  | 153707 cycles, 29036 insn |       5.293        |        650         |   0.369
+
 
 #### Clocks Per Instructions
  _________\ Pipeline Stage <br> Instruction \ ___________ | Fetch | Decode | Register | Response | Total Clocks
