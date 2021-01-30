@@ -33,7 +33,7 @@
 // File name     : HCC_Arithmetic_Processor.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 15:51:57
-// Last modified : 2021/01/28 14:28:03
+// Last modified : 2021/01/30 14:30:21
 // Project Name  : ORCs
 // Module Name   : HCC_Arithmetic_Processor
 // Description   : The High Computational Cost Arithmetic Processor encapsules 
@@ -86,6 +86,10 @@ module HCC_Arithmetic_Processor #(
   wire [P_HCC_FACTORS_MSB:0]          w_write_data     = r_select==1'b0 ? w_product_select : w_div_write_data;
   wire                                w_write_stb      = ((r_select==1'b0 && r_wait_ack==1'b1) || w_div_ack==1'b1) ? 1'b1 : 1'b0;
 
+  wire [P_HCC_FACTORS_MSB:0] w_multiplicand = ^i_slave_hcc_processor_tga ? {{L_HCC_FACTORS_NUM_BITS{i_master_hcc0_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc0_read_data} :
+                                                {{L_HCC_FACTORS_NUM_BITS{1'b0}}, i_master_hcc0_read_data};
+  wire [P_HCC_FACTORS_MSB:0] w_multiplier   = i_slave_hcc_processor_tga==2'b01 ? {{L_HCC_FACTORS_NUM_BITS{i_master_hcc1_read_data[P_HCC_FACTORS_MSB]}}, i_master_hcc1_read_data} :
+                                                {{L_HCC_FACTORS_NUM_BITS{1'b0}}, i_master_hcc1_read_data};
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
   ///////////////////////////////////////////////////////////////////////////////
@@ -128,12 +132,12 @@ module HCC_Arithmetic_Processor #(
       // Description : Generic code that modern synthesizers infer as DSP blocks.
       /////////////////////////////////////////////////////////////////////////////
       always @(posedge i_slave_hcc_processor_clk) begin
-        if (i_slave_hcc_processor_reset_sync == 1'b0) begin
+        if (i_slave_hcc_processor_reset_sync == 1'b1) begin
           r_product <= 64'h0;
         end
-        else if (i_slave_hcc_processor_stb == 1'b1 && i_slave_hcc_processor_addr == 1'b1) begin
+        else if (i_slave_hcc_processor_stb == 1'b1 && i_slave_hcc_processor_addr == 1'b0) begin
           // Multiply any time the inputs changes.
-          r_product <= $signed(i_master_hcc0_read_data) * $signed(i_master_hcc1_read_data);
+          r_product <= $signed(w_multiplicand) * $signed(w_multiplier);
         end
       end
     end

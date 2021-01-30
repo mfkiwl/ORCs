@@ -33,7 +33,7 @@
 // File name     : ORC_R32IMAZicsr.v
 // Author        : Jose R Garcia
 // Created       : 2020/11/04 23:20:43
-// Last modified : 2021/01/28 18:41:29
+// Last modified : 2021/01/30 14:40:56
 // Project Name  : ORCs
 // Module Name   : ORC_R32IMAZicsr
 // Description   : The ORC_R32IMAZicsr is the top level wrapper.
@@ -89,8 +89,6 @@ module ORC_R32IMAZicsr #(
   wire [P_MEMORY_ADDR_MSB:0] w_core_write_addr; // WB address
   wire [31:0]                w_core_write_data; // WB data
   // HCC Processor to Memory_Backplane connecting wires.
-  wire                       w_hcc_write_stb;  // WB write enable
-  wire [P_MEMORY_ADDR_MSB:0] w_hcc_write_addr; // WB address
   wire [31:0]                w_hcc_write_data; // WB data
   // Hart_Core to HCC Processor connecting wires.
   wire                       w_hcc_stb;

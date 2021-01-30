@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/28 15:04:54
+// Last modified : 2021/01/30 14:37:50
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation
@@ -213,7 +213,7 @@ module Hart_Core #(
                    |w_fct7==1'b0 ? 1'b1 : 1'b0) : 
                  1'b1) : 1'b0;
 
-  wire [31:0] w_simm_rs2 = w_rii==1'b1 ? ((w_fct3_one_hot[1]==1'b1 || w_fct3_one_hot[3]==1'b1 || (w_fct3_one_hot[5]==1'b1 && |w_fct7==1'b0)) ? w_uimm : w_simm) : 
+  wire [31:0] w_simm_rs2 = w_rii==1'b1 ? ((w_fct3_one_hot[3]==1'b1 || ((w_fct3_one_hot[1]==1'b1 || w_fct3_one_hot[5]==1'b1) && |w_fct7==1'b0)) ? w_uimm : w_simm) : 
                                          (w_fct3_one_hot[2]==1'b1 ? $signed(i_master_core1_read_data) : i_master_core1_read_data);
   wire [31:0] w_rxx_data = w_add==1'b1 ? (i_master_core0_read_data+w_simm_rs2) :
                            w_sub==1'b1 ? (i_master_core0_read_data-w_simm_rs2) :
@@ -298,8 +298,8 @@ module Hart_Core #(
           if (i_inst_read_ack == 1'b1 ) begin
             if (w_lcc == 1'b1 || w_scc == 1'b1 || w_hcc == 1'b1 || w_csr == 1'b1) begin
               // If a valid instruction was just received.
-              r_decoded_instr <= 1'b0;
-              r_rd <= w_rd;
+              r_decoded_instr         <= 1'b0;
+              r_rd                    <= w_rd;
               r_program_counter_state <= S_WAIT_FOR_EXT;
             end
             else begin
@@ -322,7 +322,7 @@ module Hart_Core #(
             end
           end 
           else begin
-            r_decoded_instr <= 1'b0;
+            r_decoded_instr         <= 1'b0;
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
         end
@@ -335,11 +335,6 @@ module Hart_Core #(
             r_program_counter_state <= S_WAIT_FOR_ACK;
           end
         end
-        // default : begin
-        //   r_decoded_instr         <= 1'b0;
-        //   r_program_counter_valid <= 1'b0;
-        //   r_program_counter_state <= S_WAIT_FOR_ACK;
-        // end
       endcase
     end
   end
@@ -521,6 +516,6 @@ module Hart_Core #(
                                w_csr_field==L_RDINSTRETH ? 4'b1000 : 
                                                            4'b0000;
   // General Purpose Signals
-  assign o_rd = (r_program_counter_state[0]==1'b1 && i_inst_read_ack==1'b1) ? w_rd : r_rd;
+  assign o_rd = r_program_counter_state[0]==1'b1 ? w_rd : r_rd;
 
 endmodule

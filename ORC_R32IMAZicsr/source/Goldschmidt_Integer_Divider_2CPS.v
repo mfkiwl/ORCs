@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Integer_Divider_2CPS.v
 // Author        : Jose R Garcia
 // Created       : 2021/01/23 11:23:01
-// Last modified : 2021/01/29 00:31:11
+// Last modified : 2021/01/30 14:31:59
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Integer_Divider_2CPS
 // Description   : The Goldschmidt divider is an iterative method
@@ -357,8 +357,13 @@ module Goldschmidt_Integer_Divider_2CPS #(
       //               by modern synthesis tools.
       /////////////////////////////////////////////////////////////////////////////
       always @(posedge i_clk) begin
-        //	Multiply any time the inputs changes.
-        r_product <= $signed(r_multiplicand) * $signed(r_multiplier);
+        if (i_reset_sync == 1'b1) begin
+          r_product <= 128'h0;
+        end
+        else begin
+          //	Multiply any time the inputs changes.
+          r_product <= $signed(r_multiplicand) * $signed(r_multiplier);
+        end
       end
     end
   endgenerate
