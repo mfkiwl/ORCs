@@ -33,7 +33,7 @@
 // File name     : Goldschmidt_Integer_Divider_2CPS.v
 // Author        : Jose R Garcia
 // Created       : 2021/01/23 11:23:01
-// Last modified : 2021/01/31 01:26:22
+// Last modified : 2021/02/02 20:26:58
 // Project Name  : ORCs
 // Module Name   : Goldschmidt_Integer_Divider_2CPS
 // Description   : The Goldschmidt divider is an iterative method
@@ -57,6 +57,7 @@
 /////////////////////////////////////////////////////////////////////////////////
 module Goldschmidt_Integer_Divider_2CPS #(
   parameter integer P_GID_FACTORS_MSB  = 31,
+  parameter integer P_GID_ADDR_MSB     = 1,
   parameter integer P_GID_ACCURACY_LVL = 12,
   parameter integer P_GID_ROUND_UP_LVL = 3,
   parameter integer P_GID_ANLOGIC_MUL  = 0
@@ -64,15 +65,17 @@ module Goldschmidt_Integer_Divider_2CPS #(
   input i_clk,
   input i_reset_sync,
   // WB (Pipeline) Interface
-  input        i_slave_stb, // stb_i, start signal
-  input  [1:0] i_slave_tga, // [1] 0=quotient, 1=rem; [0] 0=signed, 1=unsigned
-  output       o_slave_ack, // ack_o, don signal
-  // WB(pipeline) master Read Interface
+  input                     i_slave_stb, // stb_i, start signal
+  input  [P_GID_ADDR_MSB:0] i_slave_addr, // stb_i, start signal
+  input  [1:0]              i_slave_tga, // [1] 0=quotient, 1=rem; [0] 0=signed, 1=unsigned
+  // WB(pipeline) Master Read Interface
   input  [P_GID_FACTORS_MSB:0] i_master_div0_read_data, // WB data, dividend
-  // WB(pipeline) master Read Interface
+  // WB(pipeline) Master Read Interface
   input  [P_GID_FACTORS_MSB:0] i_master_div1_read_data, // WB data, divisor
-  // WB(pipeline) master Write Interface
-  output [P_GID_FACTORS_MSB:0] o_master_div_write_data // WB data, result
+  // WB(pipeline) Master Write Interface
+  output                       o_master_div_write_stb,  // WB stb, result
+  output [P_GID_ADDR_MSB:0]    o_master_div_write_addr, // WB data, result
+  output [P_GID_FACTORS_MSB:0] o_master_div_write_data  // WB data, result
 );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -153,6 +156,8 @@ module Goldschmidt_Integer_Divider_2CPS #(
   wire [P_GID_FACTORS_MSB:0] w_result    = r_calculate_remainder==1'b1 ? ((r_converged==1'b1 && r_signed_extend==1'b1) ? ~w_remainder : w_remainder) :
                                                                          ((r_converged==1'b1 && r_signed_extend==1'b1) ? ~w_quotient  : w_quotient);
   reg                        r_div_write_stb;
+  // WB Control signals
+  reg [P_GID_ADDR_MSB:0] r_addr;    
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -302,10 +307,26 @@ module Goldschmidt_Integer_Divider_2CPS #(
       endcase
     end
   end
-  // WB Valid/Ready 
-  assign o_slave_ack = r_div_write_stb;
-  // Result Registers Write Access
+
+  ///////////////////////////////////////////////////////////////////////////////
+  // Process     : WB Control Process
+  // Description : Controls the access to the multiplier
+  ///////////////////////////////////////////////////////////////////////////////
+  always @(posedge i_clk) begin
+    if (i_reset_sync == 1'b1) begin
+      r_addr     <= 'h0;
+    end
+    else begin
+      if (i_slave_stb == 1'b1 && r_divider_state == S_IDLE) begin
+        r_addr <= i_slave_addr;
+      end
+    end
+  end
+  // WB(pipeline) Master Write access control
+  assign o_master_div_write_stb  = r_div_write_stb;
+  assign o_master_div_write_addr = r_addr;
   assign o_master_div_write_data = w_result;
+
 
   generate
     if (P_GID_ANLOGIC_MUL == 0) begin
