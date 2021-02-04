@@ -21,19 +21,27 @@ Supports User, Supervisor and Machine mode privilege profiles.
 No two Dhrystone benchmark are the same since this is a compiler/core benchmark. Therefore a third party core was benchmarked and included for comparison.
 
 Dhrystone test bench found in the picorv32 repo (https://github.com/cliffordwolf/picorv32/tree/master/dhrystone) was used and the same compiled code (hex file) on all cores for comparison.
-Implementation                                | CFLAGS (-march=) | Runs |         User Time         | Cycles/Instruction | Dhrystones/Sec/MHz | DMIPS/MHz
-:-------------------------------------------- | :--------------: | :--: | :-----------------------: | :----------------: | :----------------: | :-------:
-ORC_R32IMAZicsr (main, aggressive div*)       |       rv32im     | 100  | 53261 cycles,  26125 insn |       2.038        |       1876         |   1.068
-ORC_R32IMAZicsr (main, accurate div**)        |       rv32im     | 100  | 53472 cycles,  26136 insn |       2.045        |       1870         |   1.064
-ORC_R32IMAZicsr (no bypass, aggressive div*)  |       rv32im     | 100  | 53261 cycles,  26125 insn |       2.038        |       1876         |   1.068
-ORC_R32IMAZicsr (no bypass, accurate div**)   |       rv32im     | 100  | 53472 cycles,  26136 insn |       2.045        |       1870         |   1.064
-ORC_R32IMAZicsr (main)                        |       rv32i      | 100  | 58072 cycles,  29036 insn |       2.000        |       1722         |   0.980
-ORC_R32IM_BRAM (branch)                       |       rv32im     | 100  | 78602 cycles,  26136 insn |       3.007        |       1272         |   0.724
-ORC_R32I_BRAM  (branch)                       |       rv32i      | 100  | 85802 cycles,  29036 insn |       2.955        |       1165         |   0.663
-picorv32                                      |       rv32im     | 100  | 107758 cycles, 26136 insn |       4.122        |        928         |   0.528
-picorv32                                      |       rv32i      | 100  | 113154 cycles, 29036 insn |       3.897        |        883         |   0.502
-picorv32 (no look ahead)                      |       rv32im     | 100  | 145013 cycles, 26136 insn |       5.548        |        689         |   0.392
-picorv32 (no look ahead)                      |       rv32i      | 100  | 153707 cycles, 29036 insn |       5.293        |        650         |   0.369
+Implementation                                                | CFLAGS (-march=) | Runs |         User Time         | Cycles/Instruction | Dhrystones/Sec/MHz | DMIPS/MHz
+:------------------------------------------------------------ | :--------------: | :--: | :-----------------------: | :----------------: | :----------------: | :-------:
+ORC_R32IMAZicsr (main, bypass, no I$ support, aggressive div*)|       rv32im     | 100  | 53261 cycles,  26125 insn |       2.038        |       1876         |   1.068
+ORC_R32IMAZicsr (main, bypass, no I$ support, accurate div**) |       rv32im     | 100  | 53472 cycles,  26136 insn |       2.045        |       1870         |   1.064
+ORC_R32IMAZicsr (no bypass, supports I$, aggressive div*) <br> Theoretical Maximums with Instruction Cache ->|       rv32im     | 100  | 53261 cycles,  26125 insn <br> 38150 cycles, 26125 insn | 2.038 <br> 1.460 | 1876 <br> 2620 | 1.068 <br> 1.501
+ORC_R32IMAZicsr (no bypass, supports I$, accurate div**) <br> Theoretical Maximums with Instruction Cache -> |       rv32im     | 100  | 53472 cycles,  26136 insn <br> 38360 cycles, 26136 insn | 2.045 <br> 1.467 | 1870 <br> 2606 | 1.064 <br> 1.483
+ORC_R32IMAZicsr (main)                                        |       rv32i      | 100  | 58072 cycles,  29036 insn |       2.000        |       1722         |   0.980
+ORC_R32IM_BRAM (branch)                                       |       rv32im     | 100  | 78602 cycles,  26136 insn |       3.007        |       1272         |   0.724
+ORC_R32I_BRAM  (branch)                                       |       rv32i      | 100  | 85802 cycles,  29036 insn |       2.955        |       1165         |   0.663
+picorv32                                                      |       rv32im     | 100  | 107758 cycles, 26136 insn |       4.122        |        928         |   0.528
+picorv32                                                      |       rv32i      | 100  | 113154 cycles, 29036 insn |       3.897        |        883         |   0.502
+picorv32 (no look ahead)                                      |       rv32im     | 100  | 145013 cycles, 26136 insn |       5.548        |        689         |   0.392
+picorv32 (no look ahead)                                      |       rv32i      | 100  | 153707 cycles, 29036 insn |       5.293        |        650         |   0.369
+
+
+Number_Of_Runs: 100
+User_Time: 38360 cycles, 26136 insn
+Cycles_Per_Instruction: 1.467
+Dhrystones_Per_Second_Per_MHz: 2606
+DMIPS_Per_MHz: 1.483
+
 
 
 __*__ Top level parameters for an aggressive division(convergence in accepted more loosely) 

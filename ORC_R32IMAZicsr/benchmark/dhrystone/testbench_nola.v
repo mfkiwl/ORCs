@@ -4,10 +4,10 @@
 
 module testbench_nola # (
   // Test bench compile time parameters
-  parameter integer P_NUM_SIM_CLKS       = 210000,
+  parameter integer P_NUM_SIM_CLKS = 230000,
   // Compile time UUT configurable parameters
-  parameter integer P_DIV_ACCURACY       = 24, // Divisor bits '1' to indicate convergence. 
-  parameter integer P_DIV_ROUND_LEVEL    = 3   // result bits '1' to indicate round up result.
+  parameter integer P_DIV_ACCURACY    = 12, // Divisor bits '1' to indicate convergence. 
+  parameter integer P_DIV_ROUND_LEVEL = 2   // result bits '1' to indicate round up result.
 );
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -21,9 +21,18 @@ module testbench_nola # (
 	reg resetn = 0;
   // Instructions WB Interface Signals
   wire        w_inst_read_stb;
-  reg         w_inst_read_ack;
+  wire         w_inst_read_ack = w_inst_read_stb ? 1'b1 : 1'b0;
   wire [31:0] w_inst_read_addr;
-  reg  [31:0] w_inst_read_data;
+  wire [31:0] w_inst_read_data = w_inst_read_stb ? {memory[w_inst_read_addr + 3], memory[w_inst_read_addr + 2], memory[w_inst_read_addr + 1], memory[w_inst_read_addr + 0]} :
+  'bx;
+
+
+// 	if (w_inst_read_stb) begin
+// 	  w_inst_read_ack         = 1'b1;
+// 	  w_inst_read_data[ 7: 0] = memory[w_inst_read_addr + 0];
+// 	  w_inst_read_data[15: 8] = memory[w_inst_read_addr + 1];
+// 	  w_inst_read_data[23:16] = memory[w_inst_read_addr + 2];
+// 	  w_inst_read_data[31:24] = memory[w_inst_read_addr + 3];
   // WB Read 
   wire        w_master_read_stb;
   reg         w_master_read_ack;
@@ -103,21 +112,31 @@ module testbench_nola # (
   // Process     : Instruction WB Handshake Process
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-	always @(posedge clk) begin
-		w_inst_read_ack <= 1'b0;
-		w_inst_read_data[ 7: 0] <= 'bx;
-		w_inst_read_data[15: 8] <= 'bx;
-		w_inst_read_data[23:16] <= 'bx;
-		w_inst_read_data[31:24] <= 'bx;
-
-		if (w_inst_read_stb & !w_inst_read_ack) begin
-		  w_inst_read_ack         <= 1'b1;
-		  w_inst_read_data[ 7: 0] <= memory[w_inst_read_addr + 0];
-		  w_inst_read_data[15: 8] <= memory[w_inst_read_addr + 1];
-		  w_inst_read_data[23:16] <= memory[w_inst_read_addr + 2];
-		  w_inst_read_data[31:24] <= memory[w_inst_read_addr + 3];
-		end
-	end
+// always @(posedge clk) begin
+// 	w_inst_read_ack = 1'b0;
+// 	w_inst_read_data[ 7: 0] = 'bx;
+// 	w_inst_read_data[15: 8] = 'bx;
+// 	w_inst_read_data[23:16] = 'bx;
+// 	w_inst_read_data[31:24] = 'bx;
+// 
+// 	// if (w_inst_read_stb & !w_inst_read_ack) begin
+// 	//   w_inst_read_ack         <= 1'b1;
+// 	//   w_inst_read_data[ 7: 0] <= memory[w_inst_read_addr + 0];
+// 	//   w_inst_read_data[15: 8] <= memory[w_inst_read_addr + 1];
+// 	//   w_inst_read_data[23:16] <= memory[w_inst_read_addr + 2];
+// 	//   w_inst_read_data[31:24] <= memory[w_inst_read_addr + 3];
+// 	// end
+// 	if (w_inst_read_stb) begin
+// 	  w_inst_read_ack         = 1'b1;
+// 	  w_inst_read_data[ 7: 0] = memory[w_inst_read_addr + 0];
+// 	  w_inst_read_data[15: 8] = memory[w_inst_read_addr + 1];
+// 	  w_inst_read_data[23:16] = memory[w_inst_read_addr + 2];
+// 	  w_inst_read_data[31:24] = memory[w_inst_read_addr + 3];
+// 	end
+//   else begin
+// 	  w_inst_read_ack = 1'b0;
+//   end
+// end
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : External WB Read Handshake Process

@@ -19,7 +19,7 @@ test_trace: testbench.vvp
 	python3 ../showtrace.py testbench.trace dhry.elf > testbench.ins
 
 test_nola: 
-	iverilog -g2012 -gxtypes -o testbench_nola.iver -s testbench_nola ./testbench_nola.v ../../source/Generic_BRAM.v ../../source/Goldschmidt_Integer_Divider_2CPS.v ../../source/HCC_Arithmetic_Processor.v ../../source/Memory_Backplane.v ../../source/CSR.v ../../source/Hart_Core.v ../../source/ORC_R32IMAZicsr.v
+	iverilog -g2012 -gxtypes -o testbench_nola.iver -s testbench_nola ./testbench_nola.v ../../source/MUL_Processor.v ../../source/Goldschmidt_Integer_Divider_2CPS.v ../../source/Memory_Backplane.v ../../source/CSR.v ../../source/Hart_Core.v ../../source/ORC_R32IMAZicsr.v
 	vvp -N testbench_nola.iver
 
 timing: timing.txt
