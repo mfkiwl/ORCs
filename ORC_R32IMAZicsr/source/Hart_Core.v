@@ -33,7 +33,7 @@
 // File name     : Hart_Core.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/02/02 23:49:34
+// Last modified : 2021/02/03 23:40:54
 // Project Name  : ORCs
 // Module Name   : Hart_Core
 // Description   : The Hart_Core is a machine mode capable hart, implementation
@@ -141,10 +141,11 @@ module Hart_Core #(
   reg        r_program_counter_valid; // Program Counter Valid
   reg [3:0]  r_program_counter_state; // Current State Holder.
   // Decoder Signals
-  reg  [P_CORE_MEMORY_ADDR_MSB:0] r_rd1;                                             // reg with rd field
-  reg  [P_CORE_MEMORY_ADDR_MSB:0] r_rd2;                                             // reg with rd field
-  wire [P_CORE_MEMORY_ADDR_MSB:0] w_rd                   = i_inst_read_data[11:7];   // rd field
-  wire                            w_rd_not_zero          = w_rd==5'h0 ? 1'b0 : 1'b1; // not zero
+  reg  [P_CORE_MEMORY_ADDR_MSB:0] r_rd1;                                              // reg with rd field
+  reg  [P_CORE_MEMORY_ADDR_MSB:0] r_rd2;                                              // reg with rd field
+  reg  [P_CORE_MEMORY_ADDR_MSB:0] r_rd3;                                              // reg with rd field
+  wire [P_CORE_MEMORY_ADDR_MSB:0] w_rd                   = i_inst_read_data[11:7];    // rd field
+  wire                            w_rd_not_zero          = w_rd==5'h0 ? 1'b0 : 1'b1;  // not zero
   wire                            w_destination_not_zero = r_rd1==5'h0 ? 1'b0 : 1'b1; // not zero
 
   wire [4:0]  w_source1_pointer = i_inst_read_data[19:15];   // s1 field
@@ -163,8 +164,8 @@ module Hart_Core #(
                                   w_fct3==3'h6 ? 8'b01000000 :
                                   w_fct3==3'h7 ? 8'b10000000 :
                                                  8'b00000000;
-
-  wire [6:0]  w_opcode = (r_program_counter_state[1]==1'b1 && i_inst_read_ack==1'b1) ? i_inst_read_data[6:0] : 7'h0; // OPCODE field
+  // wire [6:0]  w_opcode = (r_program_counter_state[1]==1'b1 && i_inst_read_ack==1'b1) ? i_inst_read_data[6:0] : 7'h0; // OPCODE field
+  wire [6:0]  w_opcode = i_inst_read_ack==1'b1 ? i_inst_read_data[6:0] : 7'h0; // OPCODE field
 
   wire        w_lui    = w_opcode==L_LUI   ? 1'b1 : 1'b0;         // valid branch flag/
   wire        w_auipc  = w_opcode==L_AUIPC ? 1'b1 : 1'b0;         // valid JALR flag
@@ -275,7 +276,23 @@ module Hart_Core #(
   reg  r_decoded_instr;
   wire w_csr = (w_systm==1'b1 && |w_source1_pointer==1'b0 &&
                 |o_csr_read_addr==1'b1 && w_fct3_one_hot[2]==1'b1) ? 1'b1 : 1'b0; // Cycle or Instr reg
-                
+  // Bypass signals
+  wire [2:0] w_acks     = {i_master_read_ack, i_master_write_ack, i_master_div_ack};
+  wire [2:0] w_readies  = {r_master_read_ready, r_master_write_ready, r_div_ready};
+  wire       w_step_out = (w_acks==3'h0 && w_readies==3'h7) ? 1'b1 :
+                          (w_acks==3'h1 && w_readies==3'h6) ? 1'b1 :
+                          (w_acks==3'h2 && w_readies==3'h5) ? 1'b1 :
+                          (w_acks==3'h3 && w_readies==3'h4) ? 1'b1 :
+                          (w_acks==3'h4 && w_readies==3'h3) ? 1'b1 :
+                          (w_acks==3'h5 && w_readies==3'h2) ? 1'b1 :
+                          (w_acks==3'h6 && w_readies==3'h1) ? 1'b1 :
+                           w_acks==3'h7                     ? 1'b1 : 1'b0;
+  wire       w_rd1_rdy  = w_readies[2:1]==2'b11 ? 1'b1 :
+                          w_readies[2:1]==2'b10 && w_lcc==1'b1 ? 1'b1 :
+                          w_readies[2:1]==2'b01 && w_scc==1'b1 ? 1'b1 : 1'b0;
+  // 
+  wire w_rd2_conflict  = (r_div_ready==1'b0 && (r_rd2==w_source1_pointer || r_rd2==w_source2_pointer || r_rd2==w_rd)) ? 1'b1 : 1'b0;
+  wire w_addr_conflict = (^w_readies[2:1]==1'b1 && r_master_addr==w_master_addr) ? 1'b1 : 1'b0;
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
   ///////////////////////////////////////////////////////////////////////////////
@@ -290,7 +307,7 @@ module Hart_Core #(
       r_program_counter_state <= S_WAKEUP;
       r_pc_fetch              <= P_CORE_INITIAL_FETCH_ADDR;
       r_rd1                   <= 'h0;
-      r_rd2                   <= 'h0;
+      r_rd3                   <= 'h0;
       r_program_counter_valid <= 1'b0;
       r_decoded_instr         <= 1'b0;
       r_master_addr           <= 30'h0;
@@ -306,7 +323,8 @@ module Hart_Core #(
           // If the no valid inst is currently available or if the following process
           // is ready to consume the valid instruction.
           if (i_inst_read_ack == 1'b1 ) begin
-            if (w_lcc == 1'b1 || w_scc == 1'b1 || w_div == 1'b1) begin
+            // State Controls
+            if (w_lcc == 1'b1 || w_scc == 1'b1) begin
               // If a valid instruction was just received.
               r_master_addr           <= w_master_addr[31:2];
               r_master_select         <= o_master_write_sel;
@@ -314,9 +332,14 @@ module Hart_Core #(
               r_rd1                   <= w_rd;
               r_program_counter_state <= S_WAIT_FOR_EXT;
             end
+            else if (w_div == 1'b1) begin
+              r_decoded_instr         <= 1'b0;
+              r_rd2                   <= w_rd;
+              r_program_counter_state <= S_WAIT_FOR_EXT;
+            end
             else if (w_mul == 1'b1 || w_csr == 1'b1) begin
               // If a valid instruction was just received.
-              r_rd2                   <= w_rd;
+              r_rd3                   <= w_rd;
               r_decoded_instr         <= 1'b0;
               r_program_counter_state <= S_WAIT_FOR_SETTLE;
             end
@@ -326,6 +349,7 @@ module Hart_Core #(
               r_program_counter_state <= S_WAIT_FOR_ACK;
             end
 
+            // Counter Increments
             if (w_jal==1'b1) begin
               // Is an immediate jump request. Update the program counter with the 
               // jump value. (JAL)
@@ -346,18 +370,84 @@ module Hart_Core #(
           end
         end
         r_program_counter_state[2] : begin
-          // Wait one clock cycle to allow data to be stored in the registers.
-          if (i_master_read_ack == 1'b1 || i_master_write_ack == 1'b1 || 
-            i_master_div_ack == 1'b1) begin
-            // Data received. Transition to fetch new instruction.
-            r_decoded_instr         <= 1'b1;
-            r_program_counter_state <= S_WAIT_FOR_ACK;
+          // 
+          if (i_inst_read_ack == 1'b1 && w_addr_conflict == 1'b0 && w_rd2_conflict == 1'b0) begin
+            if ((w_lcc == 1'b1 || w_scc == 1'b1) &&  w_rd1_rdy == 1'b1) begin
+              // If a valid instruction was just received.
+              r_master_addr   <= w_master_addr[31:2];
+              r_master_select <= o_master_write_sel;
+              r_decoded_instr <= 1'b1;
+              r_rd1           <= w_rd;
+              r_pc_fetch      <= (r_pc_fetch+4);
+            end
+            else if (w_div == 1'b1 &&  r_div_ready == 1'b1) begin
+              r_decoded_instr <= 1'b1;
+              r_rd2           <= w_rd;
+              r_pc_fetch      <= (r_pc_fetch+4);
+            end
+            else if (w_mul == 1'b1 || w_csr == 1'b1) begin
+              r_rd3           <= w_rd;
+              r_decoded_instr <= 1'b0;
+
+              r_pc_fetch <= (r_pc_fetch+4);
+            end
+            else if (w_div == 1'b0 && w_lcc == 1'b0 && w_scc == 1'b0) begin
+              r_decoded_instr <= 1'b1;
+
+              // Counter Controls
+              if (w_jal==1'b1) begin
+                // Is an immediate jump request. Update the program counter with the 
+                // jump value. (JAL)
+                r_pc_fetch <= (r_pc_fetch+w_j_simm);
+              end
+              else if (w_jump_request == 1'b1) begin
+                // Jump request by comparison (Branch or JALR).
+                r_pc_fetch <= w_jump_value;
+              end
+              else begin
+                // Increment the program counter. Ignore this instruction
+                r_pc_fetch <= (r_pc_fetch+4);
+              end
+            end
+            // else begin
+            //   r_program_counter_valid <= 1'b0;
+            // end
+
+            // State Transition
+            if (w_step_out == 1'b1) begin
+              //r_program_counter_valid <= 1'b1;
+              r_program_counter_state <= S_WAIT_FOR_ACK;
+            end
+            else if (w_mul == 1'b1 || w_csr == 1'b1) begin
+              r_program_counter_state <= S_WAIT_FOR_SETTLE;
+            end
+
+          end 
+          else begin
+            // State Transition
+            if (w_step_out == 1'b1) begin
+              //r_program_counter_valid <= 1'b1;
+              r_decoded_instr         <= 1'b1;
+              r_program_counter_state <= S_WAIT_FOR_ACK;
+            end
+            else begin
+              r_decoded_instr <= 1'b0;
+              if (i_inst_read_ack == 1'b1) begin
+                //r_program_counter_valid <= 1'b0;
+              end
+            end
           end
         end
         r_program_counter_state[3] : begin
           // Wait one clock cycle to allow data to be stored in the registers.
-            r_decoded_instr         <= 1'b1;
+          r_decoded_instr <= 1'b1;
+          if (w_step_out == 1'b1) begin
+            // r_program_counter_valid <= 1'b1;
             r_program_counter_state <= S_WAIT_FOR_ACK;
+          end
+          else begin
+            r_program_counter_state <= S_WAIT_FOR_EXT;
+          end
         end
       endcase
     end
@@ -379,13 +469,13 @@ module Hart_Core #(
   // Description : Updates the write strobe, addr, and data.
   ///////////////////////////////////////////////////////////////////////////////
     // Register Write Strobe Control
-  assign o_master_core_write_stb = (r_program_counter_state[1]==1'b1 && w_rd_not_zero==1'b1 && i_inst_read_ack==1'b1) ? (
+  assign o_master_core_write_stb = (w_rd2_conflict==1'b0 && w_rd_not_zero==1'b1 && i_inst_read_ack==1'b1) ? (
                                      (w_auipc==1'b1 || w_lui==1'b1 ||  w_jal==1'b1 || w_rii==1'b1 ||
                                      w_rro==1'b1 || w_jalr==1'b1) ? 1'b1 : 1'b0) :
-                                   w_destination_not_zero==1'b1 && i_master_read_ack==1'b1 && r_program_counter_state[2]==1'b1 ? 1'b1 : 
+                                   w_destination_not_zero==1'b1 && i_master_read_ack==1'b1 ? 1'b1 : 
                                    1'b0;
   // Register write address Select
-  assign o_master_core_write_addr = r_program_counter_state[1]==1'b1 ? w_rd : r_rd1;
+  assign o_master_core_write_addr = i_master_read_ack==1'b1 ? r_rd1 : w_rd;
   // Registers Write Data select
   assign o_master_core_write_data = w_lui==1'b1 ? {i_inst_read_data[31:12], L_ALL_ZERO[11:0]} :
                                       // Load Upper Immediate.
@@ -528,14 +618,29 @@ module Hart_Core #(
   // Assignment  : MUL Processor Connections
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-  assign o_master_mul_stb  = w_mul;
+  assign o_master_mul_stb  = (w_mul==1'b1 && w_rd2_conflict==1'b0) ? 1'b1 : 1'b0;
   assign o_master_mul_tga  = w_fct3[1:0];
 
   ///////////////////////////////////////////////////////////////////////////////
   // Assignment  : DIV Processor Connections
   // Description : 
   ///////////////////////////////////////////////////////////////////////////////
-  assign o_master_div_stb  = w_div==1;
+  always @(posedge i_clk) begin
+    if (i_reset_sync == 1'b1) begin
+      r_div_ready <= 1'b1;
+    end
+    else begin
+      if (w_div == 1'b1) begin
+        // 
+        r_div_ready <= 1'b0;                       
+      end
+      if (r_div_ready == 1'b0 && i_master_div_ack == 1'b1) begin
+        //
+        r_div_ready <= 1'b1;
+      end
+    end
+  end
+  assign o_master_div_stb  = w_div;
   assign o_master_div_tga  = w_fct3[1:0];
 
   ///////////////////////////////////////////////////////////////////////////////
@@ -543,13 +648,13 @@ module Hart_Core #(
   // Description : Decodes and registers the instruction data.
   ///////////////////////////////////////////////////////////////////////////////
   assign o_csr_instr_decoded = r_decoded_instr;
-  assign o_csr_read_stb      = w_csr;
+  assign o_csr_read_stb      = (w_csr==1'b1 && w_rd2_conflict==1'b0) ? 1'b1 : 1'b0;
   assign o_csr_read_addr     = w_csr_field==L_RDCYCLE    ? 4'b0001 :
                                w_csr_field==L_RDCYCLEH   ? 4'b0010 :
                                w_csr_field==L_RDINSTRET  ? 4'b0100 :
                                w_csr_field==L_RDINSTRETH ? 4'b1000 : 
                                                            4'b0000;
   // General Purpose Signals
-  assign o_rd = r_rd2;
+  assign o_rd = r_rd3;
 
 endmodule
