@@ -1,1 +1,1 @@
--e git://github.com/jg-fossh/Goldschmidt_Integer_Divider.git#Dividider
+-e git://github.com/jg-fossh/Goldschmidt_Integer_Divider.git@branch/main#egg=Goldschmidt_Integer_Divider
