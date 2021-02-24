@@ -33,22 +33,26 @@
 // File name     : CSR.v
 // Author        : Jose R Garcia
 // Created       : 2020/12/06 00:33:28
-// Last modified : 2021/01/24 21:23:59
+// Last modified : 2021/02/02 23:09:35
 // Project Name  : ORCs
 // Module Name   : CSR
 // Description   : CSR and Counters.
 //
 // Additional Comments:
-//   .
+//   Currently only the Cycle and Instruction counters.
 /////////////////////////////////////////////////////////////////////////////////
 module CSR (
   // Component's clocks and resets
   input i_clk,        // clock
   input i_reset_sync, // reset
   // CSR Interface
-  input         i_csr_instr_decoded_stb, // Indicates an instruction was decode.
-  input  [3:0]  i_csr_read_addr,         //
-  output [31:0] o_csr_read_data          // 
+  input i_csr_instr_decoded_stb, // Indicates an instruction was decode.
+  // WB Interface
+  input         i_slave_csr_read_stb,  //
+  input  [3:0]  i_slave_csr_read_addr, //
+  //
+  output        o_master_csr_write_stb,  //
+  output [31:0] o_master_csr_write_data  // 
 );
   ///////////////////////////////////////////////////////////////////////////////
   // Internal Parameter Declarations
@@ -62,6 +66,7 @@ module CSR (
 	reg [63:0] r_instr_count;
   // Interface Signals
   reg [31:0] r_csr_read_data;
+  reg        r_csr_read_ack;
 
   ///////////////////////////////////////////////////////////////////////////////
   //            ********      Architecture Declaration      ********           //
@@ -69,7 +74,7 @@ module CSR (
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : Cycle Counter Process
-  // Description : .
+  // Description : Increments the cycle count with every clock transition.
   ///////////////////////////////////////////////////////////////////////////////
   always @(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
@@ -82,7 +87,8 @@ module CSR (
 
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : Instruction Counter Process
-  // Description : .
+  // Description : Increases the instruction count after the HART has finished
+  //               processing a valid instruction.
   ///////////////////////////////////////////////////////////////////////////////
   always @(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
@@ -93,34 +99,38 @@ module CSR (
     end
   end
 
-
   ///////////////////////////////////////////////////////////////////////////////
   // Process     : CSR Address Decoder
-  // Description : .
+  // Description : Decodes the address and maps it to the proper bit fields.
   ///////////////////////////////////////////////////////////////////////////////
   always @(posedge i_clk) begin
     if (i_reset_sync == 1'b1) begin
       r_csr_read_data <= 32'h0;
+      r_csr_read_ack  <= 1'b0;
     end
     else begin
-		  (* parallel_case, full_case *)
-		  case (1'b1)
-		  	i_csr_read_addr[0] : begin
-		  		r_csr_read_data <= r_cycle_count[31:0];
-        end
-		  	i_csr_read_addr[1] : begin
-		  		r_csr_read_data <= r_cycle_count[63:32];
-        end
-		  	i_csr_read_addr[2] : begin
-		  		r_csr_read_data <= r_instr_count[31:0];
-        end
-        i_csr_read_addr[3] : begin
-		  		r_csr_read_data <= r_instr_count[63:32];
-        end
-		  endcase
+      if (i_slave_csr_read_stb == 1'b1) begin
+		    case (1'b1)
+		    	i_slave_csr_read_addr[0] : begin
+		    		r_csr_read_data <= r_cycle_count[31:0];
+          end
+		    	i_slave_csr_read_addr[1] : begin
+		    		r_csr_read_data <= r_cycle_count[63:32];
+          end
+		    	i_slave_csr_read_addr[2] : begin
+		    		r_csr_read_data <= r_instr_count[31:0];
+          end
+          i_slave_csr_read_addr[3] : begin
+		    		r_csr_read_data <= r_instr_count[63:32];
+          end
+		    endcase
+      end
+      
+      r_csr_read_ack <= i_slave_csr_read_stb;
     end
   end
-  //
-  assign o_csr_read_data = r_csr_read_data;
+  // 
+  assign o_master_csr_write_stb  = r_csr_read_ack;
+  assign o_master_csr_write_data = r_csr_read_data;
 
 endmodule // CSR

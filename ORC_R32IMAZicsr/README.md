@@ -102,7 +102,7 @@ Step  | D                | d                 | 2-d
 6     | 3.99999999999997 | 0.999999999999994 | 1
 7     | 4                | 1                 | 1
 
-The code implementation compares the size of the divisor against 2*10^_n_ were _n_ is a natural number. The result of the comparison indicates against which 10^_m_, were _m_ is a negative integer, to multiply the divisor. Then the Goldschmidt division is performed until the divisor converges to degree indicated by `P_GCD_ACCURACY`. The quotient returned is the rounded up value to which the dividend converged to.
+The code implementation compares the size of the divisor against 2*10^_n_ were _n_ is a natural number. The result of the comparison indicates against which 10^_m_, were _m_ is a negative integer, to multiply the divisor. Then the Goldschmidt division is performed until the divisor converges to degree indicated by `P_GCD_ACCURACY`. The quotient returned is the rounded up value to which the dividend converged to. Each Goldschmidt step is performed in to two half steps in order use only one multiplier and save resources.
     
 The remainder calculation requires an extra which is why the address tag is used to make the decision on whether to do the calculation or skip it. The calculation simply take the value after the decimal point of the quotient a multiplies it by the divisor.
 
@@ -149,14 +149,14 @@ Signals                | Initial State | Dimension | Direction | Definition
 `i_master_read_data`   |      N/A      | `[31:0]`  |    In     | Write response data.
 `o_master_write_sel`   |      0x0      |  `[3:0]`  |    Out    | Write byte enable
 
-## 5 Generic Parameters
+## 5 Configurable Parameters
 
 Parameters              |   Default  | Description
 :---------------------- | :--------: | :---------------------------------------------------
 `P_FETCH_COUNTER_RESET` |      0     | Initial address fetched by the Instruction WB Read.
 `P_MEMORY_ADDR_MSB`     |      4     | Log2(Number_Of_Total_Register)-1 
 `P_MEMORY_DEPTH`        |     32     | Memory space depth.
-`P_DIV_ACCURACY`        | 4290672328 | Divisor Convergence Threshold. How close to one does it get to accept the result. These are the 32bits after the decimal point, 0.XXXXXXXX expressed as an integer. The default value represent the 999 part of a 64bit binary fractional number equal to 0.999.
+`P_DIV_ACCURACY`        |     12     | Divisor Convergence Threshold. How close to one does it get to accept the result. These are the 32bits after the decimal point, 0.XXXXXXXX expressed as an integer. The default value represent the 999 part of a 64bit binary fractional number equal to 0.999.
 `P_IS_ANLOGIC`          |      0     | When '0' it generates generic BRAM and multiplier. When '1' it generates ANLOGIC BRAMs and DSPs targeting the SiPEED board. 
 
 ## 6 Memory Map
